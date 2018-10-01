@@ -39,3 +39,5 @@ Thumbs.db
 
 # NPM packages folder.
 node_modules/
+
+\.ipynb_checkpoints/
