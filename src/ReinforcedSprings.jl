@@ -1,5 +1,9 @@
 module ReinforcedSprings
 
-greet() = print("Hello World!")
+    using Construction
+    using Graphics
+    using Physics
+
+    greet() = print("Hello World!")
 
 end # module
