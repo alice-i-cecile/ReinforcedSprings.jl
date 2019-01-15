@@ -17,3 +17,17 @@ end
 function complete_graph(n)
    return ones(Bool, n, n) 
 end
+
+function reshape_springs(springs::Array{Bool, 2})
+    
+    n = size(springs, 1)
+    sparse_c = Array{Int, 2}(undef, 2, 0)
+    
+    for i in 1:n, j in (i+1):n
+        if springs[i, j]
+            sparse_c = hcat(sparse_c, [i; j])
+        end
+    end
+    
+    return sparse_c
+end
