@@ -41,7 +41,7 @@ small_contraption = Contraption(regular_polygon(7, radius = 0.5),
                                 ones(7),
                                 complete_graph(7))
 
-small_contraption = Contraption(regular_polygon(7, radius = 2.),
+large_contraption = Contraption(regular_polygon(7, radius = 2.),
                                 zeros(2, 7),
                                 ones(7),
                                 complete_graph(7))
@@ -90,4 +90,3 @@ elastic_settings = PhysicsSettings(elasticity = 1.)
 
 small_settings = PhysicsSettings(bounds = Bounds((-10, 10), (-10, 10)))
 big_settings = PhysicsSettings(bounds = Bounds((-1000, 1000), (-1000, 1000)))
-
