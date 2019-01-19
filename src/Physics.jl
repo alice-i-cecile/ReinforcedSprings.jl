@@ -59,21 +59,27 @@ function Contraption(position::Array{Float64, 2},
 
 end
 
+struct Bounds
+    x::Tuple{Float64}
+    y::Tuple{Float64}
+end
+
 struct PhysicsSettings
     g::Float64
     drag::Float64
     elasticity::Float64
+    bounds::Bounds
 
-    # TODO: Double check typing and enforce names 
-    bounds::Tuple{Tuple{Float64}}
+    @assert drag >= 0.
+    @assert 0 <= elasticity <= 1
 end
 
 # Trivial constructor to allow sane defaults
 function PhysicsSettings(g::Float64 = 9.8,
                          drag::Float64 = 0.1,
                          elasticity::Float64 = 0.4,
-                         bounds = (x = (0., 100.),
-                         y = (0., 100.)))
+                         bounds::Bounds = ((-100., 100.),
+                                           (-100., 100.)))
 
     return PhysicsSettings(g, drag, elasticity, bounds)
 end
