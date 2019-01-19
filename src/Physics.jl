@@ -1,4 +1,4 @@
-using Distances
+import Distances
 
 # TODO: very inefficient for sparse connections,
 # upgrade to SparseArrays when performance becomes limiting
@@ -41,14 +41,14 @@ function Contraption(position::Array{Float64, 2},
 
     # Self-connection checking
     for i in 1:n
-        @assert spring[i, i] == 0
+        @assert springs[i, i] == 0
     end
 
     # Initialization
     rest_length = zeros(n, n)
     for i in 1:n, j in (i+1):n
         if springs[i, j]
-            rest_length[i, j] = norm(position[i] - position[j])
+            rest_length[i, j] = Distances.norm(position[i] - position[j])
             rest_length[j, i] = rest_length[i, j]
         end
     end
@@ -105,9 +105,9 @@ function stepped_dynamics(obj::Contraption, settings::PhysicsSettings, Δt::Floa
         # Springs
         # TODO: should connections be memoized?
         for j in 1:n # Don't double-count!
-            if springs(i, j) != 0.
+            if obj.springs[i, j] != 0.
                 Δs = s[:, j] - s[:, i]
-                current_length = norm(Δs)
+                current_length = Distances.norm(Δs)
                 direction = -Δs / current_length
     
                 a[:, i] += obj.springs[i,j] / obj.mass[i] * 
@@ -174,9 +174,9 @@ function stepped_dynamics(obj::Contraption, settings::PhysicsSettings, Δt::Floa
 
                 # Change directions and lose energy
                 if x_or_y == :x
-                    v[:, i] *= elasticity * [-1, 1]
+                    v[:, i] *= settings.elasticity * [-1, 1]
                 else 
-                    v[:, i] *= elasticity * [1, -1]
+                    v[:, i] *= settings.elasticity * [1, -1]
                 end
             else
                 s[:, i] = proposed_position

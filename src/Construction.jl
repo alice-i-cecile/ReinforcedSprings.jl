@@ -16,7 +16,10 @@ end
 
 function complete_graph(n)
     graph = ones(Bool, n, n)
-    graph[diagind(graph)] == 0 
+
+    for i in 1:n
+        graph[i, i] = 0
+    end
 
     return graph
 end

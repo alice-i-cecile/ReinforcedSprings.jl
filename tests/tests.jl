@@ -100,7 +100,7 @@ end
 @test elasticity_pogo_test()
 
 
-# Momentum should be conserved
+# Momentum should be conserved in the absence of drag or inelasticity
 function momentum_conservation_test()
 
 end
@@ -173,9 +173,12 @@ function fast_conservation_test()
 
 end
 
-@test fast_conservation_test
+@test fast_conservation_test()
 
 # Energy should be decreasing or conserved even at high spring strengths
 function strong_conservation_test()
 
 end
+
+@test strong_conservation_test()
+
