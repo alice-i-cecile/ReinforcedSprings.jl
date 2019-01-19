@@ -15,11 +15,13 @@ function regular_polygon(n; radius = 1, θ_0 = 0., center=[0., 0.])
 end
 
 function complete_graph(n)
-   return ones(Bool, n, n) 
+    graph = ones(Bool, n, n)
+    graph[diagind(graph)] == 0 
+
+    return graph
 end
 
 function reshape_springs(springs::Array{Bool, 2})
-    
     n = size(springs, 1)
     sparse_c = Array{Int, 2}(undef, 2, 0)
     
