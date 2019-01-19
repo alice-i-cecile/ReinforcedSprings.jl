@@ -71,6 +71,12 @@ strong_contraption = Contraption(regular_polygon(7),
                                  ones(7),
                                  10. * complete_graph(7))
 
+fast_contraption = Contraption(regular_polygon(7),
+                               1000 * ones(2, 7),
+                               ones(7),
+                               complete_graph(7))
+
+
 # Basic physics settings
 default_settings = PhysicsSettings()
 
