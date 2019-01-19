@@ -132,8 +132,8 @@ function stepped_dynamics(obj::Contraption, settings::PhysicsSettings, Δt::Floa
             proposed_position = s[:, i] + v[:, i] * Δt
 
             # Collision handling
-            if (bounds.x[1] <= proposed_position[1] <= bounds.x[2]) |
-               (bounds.y[1] <= proposed_position[2] <= bounds.y[2])
+            if !(bounds.x[1] <= proposed_position[1] <= bounds.x[2]) |
+               !(bounds.y[1] <= proposed_position[2] <= bounds.y[2])
                 
                 # Determine whether horizontal or vertical collision is first
                 # Catch 0 velocity cases
@@ -194,8 +194,17 @@ function engine(contraption::Contraption;
         Δt::Float64 = 0.01,
         t_total::Float64 = 10)
 
+
     n = size(contraption.position, 2)
     n_steps = div(t_total, Δt)
+
+    # Check that contraption is initialized in bounds
+    for i in 1:n
+        in_bounds(s) = (settings.bounds.x[1] <= s[1] <= settings.bounds.x[2]) &
+                       (settings.bounds.y[1] <= s[2] <= settings.bounds.y[2])
+
+        @assert in_bounds(contraption.position[:, i])
+    end
 
     # Store position and velocity evolution as an array 
     # for display, debugging and evaluation
