@@ -75,7 +75,7 @@ struct PhysicsSettings
 end
 
 # Trivial constructor to allow sane defaults
-function PhysicsSettings(g::Float64 = 9.8,
+function PhysicsSettings(g::Float64 = 10,
                          drag::Float64 = 0.1,
                          elasticity::Float64 = 0.4,
                          bounds::Bounds = ((-100., 100.),
