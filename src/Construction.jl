@@ -1,4 +1,4 @@
-function regular_polygon(n; radius = 0.3, θ_0 = 0., center=[0.5, 0.5])
+function regular_polygon(n; radius = 1, θ_0 = 0., center=[0., 0.])
     function create_point(i)
         θ = 2*π*i/n
         point = [center[1] + radius*cos(θ + θ_0), 
