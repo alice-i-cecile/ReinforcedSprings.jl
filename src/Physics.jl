@@ -1,78 +1,108 @@
 using Distances
 
-# FIXME: very inefficient for sparse connections
-# FIXME: split into mutable and immutable components?
-mutable struct Contraption
+# TODO: very inefficient for sparse connections,
+# upgrade to SparseArrays when performance becomes limiting
+struct Contraption
+    # Columns are points, row 1 is x-coordinates, row 2 is y-coordinates 
     position::Array{Float64, 2}
     velocity::Array{Float64, 2}
-    springs::Array{Bool, 2}
-    rest_length::Array{Float64, 2}
+
+    # Mass of point i
     mass::Array{Float64, 1}
-    strength::Array{Float64, 2}
+
+    # Zero value implies lack of spring
+    # Spring strength between point i and j
+    springs::Array{Float64, 2}
+
+    # Length of springs at which no force is applied
+    rest_length::Array{Float64, 2}
 end
 
-# TODO: add custom initialization of strength and masses
-# FIXME: consistency with column or row major data
-function Contraption(position, springs::Array{Bool, 2}) 
+function Contraption(position::Array{Float64, 2},
+                     velocity::Array{Float64, 2}, 
+                     mass::Array{Float64, 1}, 
+                     springs::Array{Float64, 2}) 
     
     # Basic shape checking
     n = size(position, 2)
-    @assert size(position, 1) == 2
-    @assert size(springs, 1) == size(springs, 2) == n
+
+    @assert size(position) ==  (2, n)
+
+    @assert size(velocity) == (2, n)
+
+    @assert size(mass) == n
+
+    @assert size(springs) == (n, n)
+
+    # Symmetry checking
+    for i in 1:n, j in (i+1):n
+        @assert springs[i, j] == springs[j, i]
+    end
 
     # Initialization
-    velocity = zeros(2, n)
-
     rest_length = zeros(n, n)
-    for i in 1:n, j in 1:n
+    for i in 1:n, j in (i+1):n
         if springs[i, j]
             rest_length[i, j] = norm(position[i] - position[j])
+            rest_length[j, i] = rest_length[i, j]
         end
-    end 
+    end
+    @assert size(rest_length) == (n, n)
 
-    mass = ones(size)
-    strength = ones(size, size)
+    return Contraption(position, velocity, mass,
+                       springs, rest_length)
 
-    return Contraption(position, velocity,
-                       springs, 
-                       mass, strength)
-                    
 end
 
-function stepped_dynamics(obj::Contraption; Δt::Float64 = 1.)
+struct PhysicsSettings
+    g::Float64
+    drag::Float64
+    elasticity::Float64
 
-    # TODO: abstract physics settings into struct
-    # Physics constants
-    g = 9.8
-    drag = 0.01
-    elasticity = 0.4
+    # TODO: Double check typing and enforce names 
+    bounds::Tuple(Tuple(Float64))
+end
 
-    # Bounding box
-    bounds = (x = (0, 100),
-              y = (0, 100))
+# Trivial constructor to allow sane defaults
+function PhysicsSettings(g::Float64 = 9.8,
+                         drag::Float64 = 0.1,
+                         elasticity::Float64 = 0.4,
+                         bounds = (x = (0., 100.),
+                         y = (0., 100.)))
+
+    return PhysicsSettings(g, drag, elasticity, bounds)
+end
+
+function stepped_dynamics(obj::Contraption, settings::PhysicsSettings; Δt::Float64 = 1.)
+    # Name binding for brevity
+    bounds = settings.bounds
+    n = size(obj.points, 2)
+
+    # Storing kinematics
+    s = deepcopy(obj.position)
+    v = deepcopy(obj.velocity)
+    a = zeros(2, n)
 
     # Compute acceleration from forces
-    for i in 1:size(obj.points, 1)
-
-        # Reset all acceleration
-        obj.a[i, :] = (0., 0.)
-
+    for i in 1:n
         # Gravity
-        obj.a[i, :] += (0., -g)
+        a[:, i] += (0., -settings.g)
 
         # Drag
-        obj.a[i, :] -= drag*obj.velocity[i, :]
+        a[:, i] -= settings.drag * v[:, i]
 
         # Springs
-        attached_points = which()
-        for j in attached_points
-            Δs = obj.position[j] - obj.position[i]
-            current_length = norm(Δs)
-            direction = -Δs / current_length
-
-            obj.a[i, :] += obj.strength[i,j] / obj.mass[i] * 
-                 (current_length - obj.rest_length[i,j]) * 
-                 direction # unit vector of force direction
+        # TODO: should connections be memoized?
+        for j in 1:n # Don't double-count!
+            if springs(i, j) != 0.
+                Δs = s[:, j] - s[:, i]
+                current_length = norm(Δs)
+                direction = -Δs / current_length
+    
+                a[:, i] += obj.springs[i,j] / obj.mass[i] * 
+                     (current_length - obj.rest_length[i,j]) * 
+                     direction # unit vector of force direction
+            end
         end
 
     end
@@ -81,14 +111,14 @@ function stepped_dynamics(obj::Contraption; Δt::Float64 = 1.)
     for i in 1:size(obj.points, 1)
 
         # Updating velocity from forces
-        obj.velocity[i, :] += obj.a[i, :] * Δt
+        v[:, i] += a[:, i] * Δt
 
+        # Continually attempt to apply velocity until result is in-bounds
         t_remaining = Δt
         while t_remaining > 0
 
             # Movement
-            proposed_position = obj.position[i, :] + 
-                                obj.velocity[i, :] * Δt
+            proposed_position = s[:, i] + v[:, i] * Δt
 
             # Collision handling
             if (bounds.x[1] <= proposed_position[1] <= bounds.x[2]) |
@@ -96,33 +126,25 @@ function stepped_dynamics(obj::Contraption; Δt::Float64 = 1.)
                 
                 # Determine whether horizontal or vertical collision is first
                 # Catch 0 velocity cases
-                if obj.velocity[i, 1] == 0
+                if v[1, i] == 0
                     x_or_y = :y
 
-                    Δt_bottom = obj.velocity[i, 2] / 
-                                ((obj.position[i, 2] - bounds.y[1]))
-                    Δt_top = obj.velocity[i, 2] / 
-                             ((obj.position[i, 2] - bounds.y[2]))
+                    Δt_bottom = v[2, i] / (s[2, i] - bounds.y[1])
+                    Δt_top    = v[2, i] / (s[2, i] - bounds.y[2])
 
                     Δt_c = max(Δt_bottom, Δt_top)
-                else if obj.velocity[i, 2] == 0
+                else if v[2, i] == 0
                     x_or_y = :x
 
-                    Δt_left = obj.velocity[i, 1] / 
-                              ((obj.position[i, 1] - bounds.x[1]))
-                    Δt_right = obj.velocity[i, 1] / 
-                               ((obj.position[i, 1] - bounds.x[2]))
+                    Δt_left  = v[1, i] / (s[1, i] - bounds.x[1])
+                    Δt_right = v[1, i] / (s[1, i] - bounds.x[2])
 
                     Δt_c = max(Δt_left, Δt_right)
                 else 
-                    Δt_left = obj.velocity[i, 1] / 
-                        ((obj.position[i, 1] - bounds.x[1]))
-                    Δt_right = obj.velocity[i, 1] / 
-                        ((obj.position[i, 1] - bounds.x[2]))
-                    Δt_bottom = obj.velocity[i, 2] / 
-                        ((obj.position[i, 2] - bounds.y[1]))
-                    Δt_top = obj.velocity[i, 2] / 
-                        ((obj.position[i, 2] - bounds.y[2]))
+                    Δt_left   = v[1, i] / (s[1, i] - bounds.x[1])
+                    Δt_right  = v[1, i] / (s[1, i] - bounds.x[2])
+                    Δt_bottom = v[2, i] / (s[2, i] - bounds.y[1])
+                    Δt_top    = v[2, i] / (s[2, i] - bounds.y[2])
 
                     # Only one of top/bottom will be positive
                     # Select that one as the collision which occurs in the future
@@ -131,28 +153,27 @@ function stepped_dynamics(obj::Contraption; Δt::Float64 = 1.)
                     Δt_y = max(Δt_top, Δt_bottom)
 
                     x_or_y = ifelse(Δt_x >= Δt_y, :x, :y)
-                    Δt_c = min(Δt_x, Δt_y)                    
+                    Δt_c = min(Δt_x, Δt_y)
                 end
                 
                 # Update proposal and time remaining in time step
-                proposed_position += obj.velocity*(Δt - Δt_c)
+                # Reverse movement to get to point where collision with wall occurs
+                proposed_position -= v*(Δt - Δt_c)
                 t_remaining -= Δt_c
 
                 # Change directions and lose energy
                 if x_or_y == :x
-                    obj.velocity[i, :] *= elasticity * [-1, 1]
+                    v[:, i] *= elasticity * [-1, 1]
                 else 
-                    obj.velocity[i, :] *= elasticity * [1, -1]
+                    v[:, i] *= elasticity * [1, -1]
                 end
             else
-                obj.position[i, :] = proposed_position
+                s[:, i] = proposed_position
                 t_remaining = 0
             end
         end
     end
 
-
-
-    return obj
+    return (s, v)
 
 end
