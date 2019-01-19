@@ -1,3 +1,3 @@
-include("Construction.jl")
-include("Graphics.jl")
-include("Physics.jl")
+include("construction.jl")
+include("graphics.jl")
+include("physics.jl")
