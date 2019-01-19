@@ -60,7 +60,7 @@ struct PhysicsSettings
     elasticity::Float64
 
     # TODO: Double check typing and enforce names 
-    bounds::Tuple(Tuple(Float64))
+    bounds::Tuple{Tuple{Float64}}
 end
 
 # Trivial constructor to allow sane defaults
@@ -133,7 +133,7 @@ function stepped_dynamics(obj::Contraption, settings::PhysicsSettings, Δt::Floa
                     Δt_top    = v[2, i] / (s[2, i] - bounds.y[2])
 
                     Δt_c = max(Δt_bottom, Δt_top)
-                else if v[2, i] == 0
+                elseif v[2, i] == 0
                     x_or_y = :x
 
                     Δt_left  = v[1, i] / (s[1, i] - bounds.x[1])

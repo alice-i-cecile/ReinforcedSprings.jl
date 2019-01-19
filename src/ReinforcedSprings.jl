@@ -1,9 +1,3 @@
-module ReinforcedSprings
-
-    using Construction
-    using Graphics
-    using Physics
-
-    greet() = print("Hello World!")
-
-end # module
+include("Construction.jl")
+include("Graphics.jl")
+include("Physics.jl")
