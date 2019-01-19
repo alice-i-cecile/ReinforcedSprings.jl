@@ -39,6 +39,11 @@ function Contraption(position::Array{Float64, 2},
         @assert springs[i, j] == springs[j, i]
     end
 
+    # Self-connection checking
+    for i in 1:n
+        @assert spring[i, i] == 0
+    end
+
     # Initialization
     rest_length = zeros(n, n)
     for i in 1:n, j in (i+1):n
