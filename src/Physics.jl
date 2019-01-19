@@ -73,7 +73,7 @@ function PhysicsSettings(g::Float64 = 9.8,
     return PhysicsSettings(g, drag, elasticity, bounds)
 end
 
-function stepped_dynamics(obj::Contraption, settings::PhysicsSettings; Δt::Float64 = 1.)
+function stepped_dynamics(obj::Contraption, settings::PhysicsSettings, Δt::Float64)
     # Name binding for brevity
     bounds = settings.bounds
     n = size(obj.points, 2)
@@ -176,4 +176,34 @@ function stepped_dynamics(obj::Contraption, settings::PhysicsSettings; Δt::Floa
 
     return (s, v)
 
+end
+
+function engine(contraption::Contraption;
+        settings::PhysicsSettings = PhysicsSettings(),
+        Δt::Float64 = 0.01,
+        t_total::Float64 = 10)
+
+    n = size(contraption.position, 2)
+    n_steps = div(t_total, Δt)
+
+    # Store position and velocity evolution as an array 
+    # for display, debugging and evaluation
+    # Axes are: time step, x vs y, point number
+    positions = Array{Float64}(undef, n_steps, 2, n)
+    velocities = Array{Float64}(undef, n_steps, 2, n)
+
+    for t in n_steps
+    positions[t, :, :] = contraption.position
+    velocities[t, :, :] = contraption.velocity
+
+    position, velocity = stepped_dynamics(contraption, settings, Δt)
+
+    contraption = Contraption(position, 
+                        velocity, 
+                        contraption.mass,
+                        contraption.springs,
+                        contraption.rest_length)
+    end
+
+    return (position = positions, velocity = velocities)
 end
