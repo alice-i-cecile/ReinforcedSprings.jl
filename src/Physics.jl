@@ -190,10 +190,13 @@ function stepped_dynamics(obj::Contraption, settings::PhysicsSettings, Δt::Floa
 end
 
 function engine(contraption::Contraption;
-        settings::PhysicsSettings = PhysicsSettings(),
-        Δt::Float64 = 0.01,
-        t_total::Float64 = 10)
+                settings::PhysicsSettings = PhysicsSettings(),
+                Δt::Float64 = 0.01,
+                t_total::Float64 = 10)
 
+
+    @assert Δt > 0
+    @assert t_total > 0
 
     n = size(contraption.position, 2)
     n_steps = div(t_total, Δt)
