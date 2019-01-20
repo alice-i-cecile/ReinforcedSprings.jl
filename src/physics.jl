@@ -138,8 +138,8 @@ function engine(contraption::Contraption;
 
         position, velocity = stepped_dynamics(contraption, settings, Δt)
 
-        contraption = Contraption(position, 
-                            velocity, 
+        contraption = Contraption(position,
+                            velocity,
                             contraption.mass,
                             contraption.springs,
                             contraption.rest_length)
