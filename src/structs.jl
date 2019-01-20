@@ -1,4 +1,5 @@
 import Distances
+using Parameters
 
 # TODO: very inefficient for sparse connections,
 # upgrade to SparseArrays when performance becomes limiting
@@ -60,27 +61,18 @@ function Contraption(position::Array{Float64, 2},
 end
 
 struct Bounds
-    x::Tuple{Float64}
-    y::Tuple{Float64}
+    x::Tuple{Float64, Float64}
+    y::Tuple{Float64, Float64}
 end
 
-struct PhysicsSettings
-    g::Float64
-    drag::Float64
-    elasticity::Float64
-    bounds::Bounds
+@with_kw struct PhysicsSettings
+    g::Float64  = 10.
+    drag::Float64 = 0.1
+    elasticity::Float64 = 0.4
+    bounds::Bounds = Bounds((-100., 100.),
+                            (-100., 100.))
 
     # FIXME: handle checking properly
     #@assert drag >= 0.
     #@assert 0 <= elasticity <= 1
-end
-
-# Trivial constructor to allow sane defaults
-function PhysicsSettings(g::Float64 = 10,
-                         drag::Float64 = 0.1,
-                         elasticity::Float64 = 0.4,
-                         bounds::Bounds = ((-100., 100.),
-                                           (-100., 100.)))
-
-    return PhysicsSettings(g, drag, elasticity, bounds)
 end

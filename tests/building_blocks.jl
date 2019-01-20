@@ -5,7 +5,7 @@ include("../src/construction.jl")
 one_contraption = Contraption(reshape([0.; 0.], (2,1)),
                               reshape([0.; 0.], (2,1)),
                               [1.],
-                              reshape([0.; 0.], (1,1)))
+                              reshape([0.], (1,1)))
 
 two_contraption = Contraption([1. -1.; 1. -1.],
                               [0. 0.; 0. 0.],
@@ -13,7 +13,7 @@ two_contraption = Contraption([1. -1.; 1. -1.],
                               [0. 1.; 1. 0.])
 
 three_contraption = Contraption([-1. 0. 1.; -1. 0. -1.],
-                                [0. 0. 0.; 0. 0. 0.; 0. 0. 0.],
+                                [0. 0. 0.; 0. 0. 0.],
                                 [1., 1., 1.],
                                 [0. 1. 1.; 1. 0. 1.; 1. 1. 0.])
 
@@ -37,7 +37,7 @@ squash_contraption = Contraption([1. -1.; 0. 0.],
                                  [1., 1.],
                                  [0. 1.; 1. 0.])
 
-small_contraption = Contraption(regular_polygon(7, radius = 0..5),
+small_contraption = Contraption(regular_polygon(7, radius = 0.5),
                                 zeros(2, 7),
                                 ones(7),
                                 complete_graph(7))
@@ -47,38 +47,38 @@ large_contraption = Contraption(regular_polygon(7, radius = 2.),
                                 ones(7),
                                 complete_graph(7))
 
-rotated_contraption = Contraption(regular_polygon(7, θ_0. = 1..),
+rotated_contraption = Contraption(regular_polygon(7, θ_0 = 1.),
                                   zeros(2, 7),
                                   ones(7),
                                   complete_graph(7))
 
 light_contraption = Contraption(regular_polygon(7),
                                 zeros(2, 7),
-                                0..1. * ones(7),
+                                0.1 * ones(7),
                                 complete_graph(7))
 
 heavy_contraption = Contraption(regular_polygon(7),
                                 zeros(2, 7),
-                                1.0.. * ones(7),
+                                1.0 * ones(7),
                                 complete_graph(7))
 
 weak_contraption = Contraption(regular_polygon(7),
                                zeros(2, 7),
                                ones(7),
-                               0..1. * complete_graph(7))
+                               0.1 * complete_graph(7))
 
 strong_contraption = Contraption(regular_polygon(7),
                                  zeros(2, 7),
                                  ones(7),
-                                 1.0.. * complete_graph(7))
+                                 10. * complete_graph(7))
 
 slow_contraption = Contraption(regular_polygon(7),
-                               0..0.1. * ones(2, 7),
+                               0.01 * ones(2, 7),
                                ones(7),
                                complete_graph(7))
 
 fast_contraption = Contraption(regular_polygon(7),
-                               1.0.0.0. * ones(2, 7),
+                               1000. * ones(2, 7),
                                ones(7),
                                complete_graph(7))
 

@@ -15,10 +15,10 @@ function regular_polygon(n; radius = 1, θ_0 = 0., center=[0., 0.])
 end
 
 function complete_graph(n)
-    graph = ones(Bool, n, n)
+    graph = ones(Float64, n, n)
 
     for i in 1:n
-        graph[i, i] = 0
+        graph[i, i] = 0.
     end
 
     return graph
