@@ -13,7 +13,15 @@ function centre_of_mass(contraption::Contraption)
 end
 
 function moment_of_inertia(contraption::Contraption)
+    CoM = centre_of_mass(contraption)
+    I = 0
 
+    for i in eachindex(contraption.mass)
+        r = Distances.norm(contraption.position[:, i] - CoM)
+        I += contraption.mass[i] * r^2
+    end
+
+    return I
 end
 
 function momentum(contraption::Contraption)
@@ -26,8 +34,25 @@ function momentum(contraption::Contraption)
     return momentum
 end
 
+# FIXME: requires 3D coordinates everywhere in order to work
 function angular_momentum(contraption::Contraption)
+    CoM = centre_of_mass(contraption)
+    L = (0, 0, 0)
 
+    for i in eachindex(contraption.mass)
+        r = contraption.position[:, i] - CoM
+        p = contraption.velocity[:, i] * contraption.mass[i]
+        L += Base.LinAlg.cross(r, p)
+    end
+
+    return L
+end
+
+# Computes average angular velocity derived from angular momentum and moment of inertia
+function angular_velocity(contraption::Contraption)
+    ω = angular_momentum(contraption) / moment_of_inertia(contraption)
+
+    return ω
 end
 
 function kinetic_energy(contraption::Contraption)
