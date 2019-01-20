@@ -14,7 +14,7 @@ function stepped_dynamics(obj::Contraption, settings::PhysicsSettings, Δt::Floa
     # Compute acceleration from forces
     for i in 1:n
         # Gravity
-        a[:, i] += (0., -settings.g)
+        a[:, i] += [0., -settings.g]
 
         # Drag
         a[:, i] -= settings.drag * v[:, i]
