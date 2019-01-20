@@ -3,8 +3,8 @@ include("physics.jl")
 function centre_of_mass(contraption::Contraption)
     CoM = (0, 0)
 
-    for i in eachindex(contraption.position)
-        CoM += contraption.position[:, i] * contraption.mass[i] 
+    for i in eachindex(contraption.mass)
+        CoM += contraption.mass[i]  * contraption.position[:, i]
     end
 
     CoM /= sum(contraption.mass)
@@ -19,7 +19,7 @@ end
 function momentum(contraption::Contraption)
     momentum = (0, 0)
     
-    for i in eachindex(contraption.velocity)
+    for i in eachindex(contraption.mass)
         momentum += contraption.velocity[:, i] * contraption.mass[i] 
     end
 
@@ -33,7 +33,7 @@ end
 function kinetic_energy(contraption::Contraption)
     E = 0
 
-    for i in eachindex(contraption.velocity)
+    for i in eachindex(contraption.mass)
         E += 0.5 * contraption.mass[i] * contraption.velocity[:, i] ^ 2   
     end
 

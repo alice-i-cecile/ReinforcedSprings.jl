@@ -24,7 +24,7 @@ function Contraption(position::Array{Float64, 2},
                      springs::Array{Float64, 2}) 
     
     # Basic shape checking
-    n = size(position, 2)
+    n = length(mass)
 
     @assert size(position) ==  (2, n)
 
@@ -87,7 +87,7 @@ end
 function stepped_dynamics(obj::Contraption, settings::PhysicsSettings, Δt::Float64)
     # Name binding for brevity
     bounds = settings.bounds
-    n = size(obj.points, 2)
+    n = length(obj.mass)
 
     # Storing kinematics
     s = deepcopy(obj.position)
@@ -198,7 +198,7 @@ function engine(contraption::Contraption;
     @assert Δt > 0
     @assert t_total > 0
 
-    n = size(contraption.position, 2)
+    n = length(contraption.mass)
     n_steps = div(t_total, Δt)
 
     # Check that contraption is initialized in bounds
