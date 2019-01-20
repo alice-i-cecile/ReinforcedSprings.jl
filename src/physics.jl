@@ -116,7 +116,7 @@ function engine(contraption::Contraption;
     @assert t_total > 0
 
     n = length(contraption.mass)
-    n_steps = div(t_total, Δt)
+    n_steps = Int(div(t_total, Δt))
 
     # Check that contraption is initialized in bounds
     for i in 1:n
@@ -133,16 +133,16 @@ function engine(contraption::Contraption;
     velocities = Array{Float64}(undef, n_steps, 2, n)
 
     for t in n_steps
-    positions[t, :, :] = contraption.position
-    velocities[t, :, :] = contraption.velocity
+        positions[t, :, :] = contraption.position
+        velocities[t, :, :] = contraption.velocity
 
-    position, velocity = stepped_dynamics(contraption, settings, Δt)
+        position, velocity = stepped_dynamics(contraption, settings, Δt)
 
-    contraption = Contraption(position, 
-                        velocity, 
-                        contraption.mass,
-                        contraption.springs,
-                        contraption.rest_length)
+        contraption = Contraption(position, 
+                            velocity, 
+                            contraption.mass,
+                            contraption.springs,
+                            contraption.rest_length)
     end
 
     return (position = positions, velocity = velocities)
