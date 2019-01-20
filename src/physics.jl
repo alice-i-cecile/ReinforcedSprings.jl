@@ -42,7 +42,7 @@ function stepped_dynamics(obj::Contraption, settings::PhysicsSettings, Δt::Floa
 
         # Continually attempt to apply velocity until result is in-bounds
         t_remaining = Δt
-        while t_remaining > 0
+        while t_remaining > 0.
 
             # Movement
             proposed_position = s[:, i] + v[:, i] * Δt
@@ -108,7 +108,7 @@ end
 function engine(contraption::Contraption;
                 settings::PhysicsSettings = PhysicsSettings(),
                 Δt::Float64 = 0.01,
-                t_total::Float64 = 10)
+                t_total::Float64 = 10.)
 
 
     @assert Δt > 0
