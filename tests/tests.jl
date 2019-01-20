@@ -1,4 +1,5 @@
 include("building_blocks.jl")
+include("../src/physics.jl")
 
 # Run experiments in parallel in order to compare behaviour
 function run_experiment(contraptions, settings_list; 

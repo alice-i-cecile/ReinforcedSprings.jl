@@ -1,4 +1,4 @@
-include("../src/ReinforcedSprings.jl")
+include("../src/structs.jl")
 
 # Basic contraptions
 one_contraption = Contraption([0; 0],
