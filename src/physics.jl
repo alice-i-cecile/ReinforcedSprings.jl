@@ -36,8 +36,7 @@ function stepped_dynamics(obj::Contraption, settings::PhysicsSettings, Δt::Floa
     end
 
     # Applying acceleration
-    for i in 1:size(obj.points, 1)
-
+    for i in 1:n
         # Updating velocity from forces
         v[:, i] += a[:, i] * Δt
 
