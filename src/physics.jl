@@ -90,9 +90,9 @@ function stepped_dynamics(obj::Contraption, settings::PhysicsSettings, Δt::Floa
 
                 # Change directions and lose energy
                 if x_or_y == :x
-                    v[:, i] *= settings.elasticity * [-1, 1]
+                    v[1, i] *= -settings.elasticity
                 else 
-                    v[:, i] *= settings.elasticity * [1, -1]
+                    v[2, i] *= -settings.elasticity
                 end
             else
                 s[:, i] = proposed_position
