@@ -1,4 +1,5 @@
 include("../src/structs.jl")
+include("../src/construction.jl")
 
 # Basic contraptions
 one_contraption = Contraption([0; 0],
