@@ -131,7 +131,7 @@ function engine(contraption::Contraption;
     positions = Array{Float64}(undef, n_steps, 2, n)
     velocities = Array{Float64}(undef, n_steps, 2, n)
 
-    for t in n_steps
+    for t in 1:n_steps
         positions[t, :, :] = contraption.position
         velocities[t, :, :] = contraption.velocity
 
