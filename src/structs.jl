@@ -72,7 +72,16 @@ end
     bounds::Bounds = Bounds((-100., 100.),
                             (-100., 100.))
 
-    # FIXME: handle checking properly
-    #@assert drag >= 0.
-    #@assert 0 <= elasticity <= 1
+    # Check that constants are sane
+    function PhysicsSettings(g, drag, elasticity, bounds)
+        if !(drag >= 0)
+            error("drag must be at least 0")
+        end
+
+        if !(0 <= elasticity <= 1)
+            error("elasticity must be between 0 and 1")
+        end
+
+        return new(g, drag, elasticity, bounds)
+    end
 end
