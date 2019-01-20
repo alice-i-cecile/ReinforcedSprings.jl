@@ -30,7 +30,7 @@ function Contraption(position::Array{Float64, 2},
 
     @assert size(velocity) == (2, n)
 
-    @assert size(mass) == n
+    @assert size(mass) == (n,)
 
     @assert size(springs) == (n, n)
 
@@ -47,7 +47,7 @@ function Contraption(position::Array{Float64, 2},
     # Initialization
     rest_length = zeros(n, n)
     for i in 1:n, j in (i+1):n
-        if springs[i, j]
+        if springs[i, j] != 0.
             rest_length[i, j] = Distances.norm(position[i] - position[j])
             rest_length[j, i] = rest_length[i, j]
         end
@@ -70,8 +70,9 @@ struct PhysicsSettings
     elasticity::Float64
     bounds::Bounds
 
-    @assert drag >= 0.
-    @assert 0 <= elasticity <= 1
+    # FIXME: handle checking properly
+    #@assert drag >= 0.
+    #@assert 0 <= elasticity <= 1
 end
 
 # Trivial constructor to allow sane defaults
