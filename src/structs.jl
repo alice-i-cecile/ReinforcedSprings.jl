@@ -42,7 +42,7 @@ function Contraption(position::Array{Float64, 2},
 
     # Self-connection checking
     for i in 1:n
-        @assert springs[i, i] == 0
+        @assert springs[i, i] == 0.
     end
 
     # Initialization
