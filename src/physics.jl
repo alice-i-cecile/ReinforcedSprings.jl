@@ -85,7 +85,7 @@ function stepped_dynamics(obj::Contraption, settings::PhysicsSettings, Δt::Floa
                 
                 # Update proposal and time remaining in time step
                 # Reverse movement to get to point where collision with wall occurs
-                proposed_position -= v*(Δt - Δt_c)
+                proposed_position -= v[:, i]*(Δt - Δt_c)
                 t_remaining -= Δt_c
 
                 # Change directions and lose energy
