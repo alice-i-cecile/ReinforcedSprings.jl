@@ -71,6 +71,11 @@ strong_contraption = Contraption(regular_polygon(7),
                                  ones(7),
                                  10. * complete_graph(7))
 
+slow_contraption = Contraption(regular_polygon(7),
+                               0.01 * ones(2, 7),
+                               ones(7),
+                               complete_graph(7))
+
 fast_contraption = Contraption(regular_polygon(7),
                                1000 * ones(2, 7),
                                ones(7),
@@ -80,8 +85,8 @@ fast_contraption = Contraption(regular_polygon(7),
 # Basic physics settings
 default_settings = PhysicsSettings()
 
-nograv_settings = PhysicsSettings(g = 0.)
 antigrav_settings = PhysicsSettings(g = -10)
+nograv_settings = PhysicsSettings(g = 0.)
 lowgrav_settings = PhysicsSettings(g = 0.01)
 higrav_settings = PhysicsSettings(g = 1000)
 
@@ -94,5 +99,8 @@ lowelastic_settings = PhysicsSettings(elasticity = 0.2)
 hielastic_settings = PhysicsSettings(elasticity = 0.8)
 elastic_settings = PhysicsSettings(elasticity = 1.)
 
+null_settings = PhysicsSettings(g = 0., drag = 0., elasticity = 1.)
+noloss_settings = PhysicsSettings(drag = 0., elasticity = 1.)
+
 small_settings = PhysicsSettings(bounds = Bounds((-10, 10), (-10, 10)))
-big_settings = PhysicsSettings(bounds = Bounds((-1000, 1000), (-1000, 1000)))
+large_settings = PhysicsSettings(bounds = Bounds((-1000, 1000), (-1000, 1000)))

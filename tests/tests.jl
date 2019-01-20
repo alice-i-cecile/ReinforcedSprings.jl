@@ -20,49 +20,85 @@ end
 # Physics behaviour tests ####
 
 # Contraptions should not accelerate in absence of external forces
-function newton_first_law_test()
+function newton_first_law_test(contraption)
+    results = run_experiment([contraption],
+                             [null_settings])
     return false
 end
 
-@test newton_first_law_test()
+@test newton_first_law_test(one_contraption)
+@test newton_first_law_test(two_contraption)
+@test newton_first_law_test(slow_contraption)
 
 # Springs should pull points together when they're stretched
 function stretch_test()
+    results = run_experiment([stretch_contraption],
+                             [null_settings],
+                             t_total = 1.)
+
     return false
 end
 
-@test stretch_test
+@test stretch_test()
 
 # Springs should push points away when they're compressed
 function compression_test()
+    results = run_experiment([squash_contraption],
+                             [null_settings],
+                             t_total = 1.)
     return false
 end 
 
 @test compression_test()
 
 # Contraptions should fall when there's gravity
-function falling_test()
+function falling_test(contraption)
+    results = run_experiment([contraption],
+                             [default_settings],
+                             t_total = 1.)
+
     return false
 end
 
-@test falling_test()
+@test falling_test(one_contraption)
+@test falling_test(two_contraption)
+@test falling_test(three_contraption)
 
 # Contraptions should fall faster in more gravity
-function gravity_falling_test()
+function gravity_falling_test(contraption)
+    results = run_experiment([contraption for _ in 1:5],
+                             [antigrav_settings,
+                              nograv_settings,
+                              lowgrav_settings,
+                              default_settings,
+                              higrav_settings],
+                             t_total = 1.)
+
     return false
 end
 
-@test gravity_falling_test()
+@test gravity_falling_test(one_contraption)
+@test gravity_falling_test(three_contraption)
 
 # Contraptions should fall slower with more drag
 function drag_falling_test()
+    results = run_experiment([contraption for _ in 1:4],
+                             [nodrag_settings,
+                              lowdrag_settings,
+                              default_settings,
+                              hidrag_settings],
+                             t_total = 1.)
     return false
 end
 
-@test drag_falling_test
+@test drag_falling_test(one_contraption)
+@test drag_falling_test(three_contraption)
 
 # Contraptions should oscillate at about the same speed regardless of initial compression or extension
 function oscillation_direction_test()
+    results = run_experiment([stretch_contraption, squash_contraption],
+                             [null_settings, null_settings])
+
     return false
 end
 
@@ -70,6 +106,11 @@ end
 
 # Contraptions should oscillate at about the same speed regardless of drag
 function oscillation_drag_test()
+    results = run_experiment([stretch_contraption for _ in 1:4],
+                             [nodrag_settings,
+                              lowdrag_settings,
+                              default_settings,
+                              hidrag_settings])
     return false
 end
 
@@ -77,63 +118,89 @@ end
 
 # Contraptions should have dampened oscillations, with faster damping in more drag
 function oscillation_damping_test()
+    results = run_experiment([stretch_contraption for _ in 1:4],
+                             [nodrag_settings,
+                              lowdrag_settings,
+                              default_settings,
+                              hidrag_settings])
     return false
 end 
 
 @test oscillation_damping_test()
 
 # Contraptions should bounce
-function bounce_test()
+function bounce_test(contraption)
+    results = run_experiment([contraption],
+                             [default_settings])
+
     return false
 end
 
-@test bounce_test()
+@test bounce_test(one_contraption)
+@test bounce_test(two_contraption)
+@test bounce_test(three_contraption)
+@test bounce_test(seven_contraption)
+
 
 # Contraptions should bounce higher with more elasticity
 function elasticity_bounce_test()
+    results = run_experiment([contraption for _ in 1:5],
+                             [inelastic_settings,
+                              lowelastic_settings,
+                              default_settings,
+                              hielastic_settings,
+                              elastic_settings])
     return false
 end
 
-@test elasticity_bounce_test()
-
-# Pogo contraptions should bounce higher with more elasticity
-function elasticity_pogo_test()
-    return false
-end
-
-@test elasticity_pogo_test()
-
-
-# Momentum should be conserved in the absence of drag or inelasticity
-function momentum_conservation_test()
-    return false
-end
-
-@test momentum_conservation_test()
+@test elasticity_bounce_test(one_contraption)
+@test elasticity_bounce_test(two_contraption)
+@test elasticity_bounce_test(three_contraption)
+@test elasticity_bounce_test(seven_contraption)
+@test elasticity_bounce_test(pogo_contraption)
 
 # Energy should be conserved in the absence of drag or inelasticity
-function energy_conservation_test()
+function energy_conservation_test(contraption)
+    results = run_experiment([contraption],
+                             [noloss_settings])
+
     return false
 end
 
-@test energy_conservation_test()
+@test energy_conservation_test(one_contraption)
+@test energy_conservation_test(seven_contraption)
+@test energy_conservation_test(fast_contraption)
+@test energy_conservation_test(strong_contraption)
 
 # Contraptions should eventually come to rest
-function come_to_rest_test()
+function come_to_rest_test(contraption)
+    results = run_experiment([contraption],
+                             [default_settings])
     return false
 end
 
-@test come_to_rest_test()
+@test come_to_rest_test(one_contraption)
+@test come_to_rest_test(two_contraption)
+@test come_to_rest_test(three_contraption)
 
 # Contraptions should spin after bouncing iff they're off-centre
 function spin_test()
+    results = run_experiment([seven_contraption, rotated],
+                             [default_settings, default_settings])
+
     return false
 end
 
 @test spin_test()
 
-# Larger contraptions should hit the wall sooner
+# Larger contraptions should hit the ground sooner
 function large_collision_test()
+    results = run_experiment([small_contraption, 
+                              seven_contraption, 
+                              large_contraption],
+                             [default_settings,
+                              default_settings,
+                              default_settings])
     return false
 end
 
@@ -141,6 +208,13 @@ end
 
 # Contraptions should take longer to hit the wall in larger environments
 function large_env_test()
+    results = run_experiment([seven_contraption, 
+                              seven_contraption, 
+                              seven_contraption],
+                             [small_settings,
+                              default_settings,
+                              large_settings])
+
     return false
 end
 
@@ -148,6 +222,13 @@ end
 
 # Larger contraptions should rest at a higher point
 function large_rest_test()
+    results = run_experiment([small_contraption, 
+                              seven_contraption, 
+                              large_contraption],
+                             [default_settings,
+                              default_settings,
+                              default_settings])
+
     return false
 end
 
@@ -155,6 +236,13 @@ end
 
 # Light contraptions should rest at a higher point
 function heavy_rest_test()
+    results = run_experiment([light_contraption, 
+                              seven_contraption, 
+                              heavy_contraption],
+                             [default_settings,
+                              default_settings,
+                              default_settings])
+
     return false
 end
 
@@ -162,6 +250,13 @@ end
 
 # Strong contraptions should rest at a higher point
 function strong_rest_test()
+    results = run_experiment([weak_contraption, 
+                              seven_contraption, 
+                              strong_contraption],
+                             [default_settings,
+                              default_settings,
+                              default_settings])
+
     return false
 end
 
@@ -169,22 +264,11 @@ end
 
 # Fast contraptions should be approximately uniformly distributed over the bounding box at random times
 function fast_distribution_test()
+    results = run_experiment([fast_contraption],
+                             [null_settings])
+
     return false
 end
 
 @test fast_distribution_test()
-
-# Energy should be decreasing or conserved even at high speeds
-function fast_conservation_test()
-    return false
-end
-
-@test fast_conservation_test()
-
-# Energy should be decreasing or conserved even at high spring strengths
-function strong_conservation_test()
-    return false
-end
-
-@test strong_conservation_test()
 
