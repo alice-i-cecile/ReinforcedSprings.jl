@@ -103,5 +103,5 @@ elastic_settings = PhysicsSettings(elasticity = 1.)
 null_settings = PhysicsSettings(g = 0., drag = 0., elasticity = 1.)
 noloss_settings = PhysicsSettings(drag = 0., elasticity = 1.)
 
-small_settings = PhysicsSettings(bounds = Bounds((-10., 10.), (-10., 10.)))
-large_settings = PhysicsSettings(bounds = Bounds((-1000., 1000.), (-1000., 1000.)))
+small_settings = PhysicsSettings(bounds = Bounds((-2.5, 2.5), (-2.5, 2.5)))
+large_settings = PhysicsSettings(bounds = Bounds((-10., 10.), (-10., 10.)))

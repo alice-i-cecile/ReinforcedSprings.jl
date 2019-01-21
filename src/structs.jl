@@ -69,8 +69,8 @@ end
     g::Float64  = 10.
     drag::Float64 = 0.1
     elasticity::Float64 = 0.4
-    bounds::Bounds = Bounds((-100., 100.),
-                            (-100., 100.))
+    bounds::Bounds = Bounds((-5., 5.),
+                            (-5., 5.))
 
     # Check that constants are sane
     function PhysicsSettings(g, drag, elasticity, bounds)
