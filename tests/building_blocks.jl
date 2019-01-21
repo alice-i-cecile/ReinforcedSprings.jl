@@ -22,6 +22,16 @@ global seven_contraption = Contraption(regular_polygon(7),
                                        ones(7),
                                        100. * complete_graph(7))
 
+global hundred_contraption = Contraption(regular_polygon(100),
+                                         zeros(2, 100),
+                                         ones(100),
+                                         100. * complete_graph(100))
+
+global thousand_contraption = Contraption(regular_polygon(1000),
+                                          zeros(2, 1000),
+                                          ones(1000),
+                                          100. * complete_graph(1000))
+
 global pogo_contraption = Contraption([0. 1.; 0. -1.],
                                       [0. 0.; 0. 0.],
                                       [1., 1.],
