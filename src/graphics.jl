@@ -1,4 +1,5 @@
 using Compose
+import Distances
 
 include("structs.jl")
 
@@ -9,12 +10,13 @@ function build(contraption::Contraption)
     x = contraption.position[1, :]
     y = contraption.position[2, :]
     
-    # TODO: Scale point size proportional to cube root of mass
-    r = [0.01]
+    # Scale point size proportional to cube root of mass
+    r = [0.01] .* contraption.mass .^ (1/3)
     
     # Springs ##
     n = length(contraption.mass)
     X_i, Y_i, X_j, Y_j = [], [], [], []
+    W = []
 
     for i in 1:n, j in (i+1):n
         if contraption.springs[i, j] != 0
@@ -26,9 +28,18 @@ function build(contraption::Contraption)
             push!(X_j, x_j)
             push!(Y_j, y_j)
 
-            # TODO: Scale base spring width proportional to square root of strength
-        
-            # TODO: Scale final spring width to conserve total spring volume
+            # Base width of spring
+            w = 0.2mm
+
+            # Scale base spring width proportional to square root of strength
+            w *= sqrt(contraption.springs[i,j])
+
+            # Scale final spring width to conserve total spring volume
+            # Base length * base width ^ 2 = current length * current width ^2
+            current_length = Distances.norm(contraption.position[:, i] - contraption.position[:, j])
+            w *= sqrt(contraption.rest_length[i, j] / current_length)
+
+            push!(W, w)
         end
     end
 
@@ -39,6 +50,7 @@ function build(contraption::Contraption)
                   line(spring_array),
                   fill("black"),
                   stroke("black"),
+                  linewidth(W),
                   fillopacity(1.),
                   strokeopacity(0.5))
 
