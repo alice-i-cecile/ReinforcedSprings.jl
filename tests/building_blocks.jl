@@ -32,7 +32,7 @@ global thousand_contraption = Contraption(regular_polygon(1000),
                                           ones(1000),
                                           100. * complete_graph(1000))
 
-global pogo_contraption = Contraption([0. 1.; 0. -1.],
+global pogo_contraption = Contraption([0. 0.; 1. -1.],
                                       [0. 0.; 0. 0.],
                                       [1., 1.],
                                       100. * [0. 1.; 1. 0.])
