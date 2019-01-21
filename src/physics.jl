@@ -25,7 +25,7 @@ function stepped_dynamics(obj::Contraption, settings::PhysicsSettings, Δt::Floa
             if obj.springs[i, j] != 0.
                 Δs = s[:, j] - s[:, i]
                 current_length = Distances.norm(Δs)
-                direction = -Δs / current_length
+                direction = Δs / current_length
     
                 a[:, i] += obj.springs[i,j] / obj.mass[i] * 
                      (current_length - obj.rest_length[i,j]) * 
