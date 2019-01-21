@@ -3,7 +3,7 @@ using Parameters
 
 # TODO: very inefficient for sparse connections,
 # upgrade to SparseArrays when performance becomes limiting
-struct Contraption
+mutable struct Contraption
     # Columns are points, row 1 is x-coordinates, row 2 is y-coordinates 
     position::Array{Float64, 2}
     velocity::Array{Float64, 2}
