@@ -63,6 +63,18 @@ end
 struct Bounds
     x::Tuple{Float64, Float64}
     y::Tuple{Float64, Float64}
+    width::Float64
+    height::Float64
+
+    function Bounds(x, y)
+        @assert x[1] < x[2]
+        @assert y[1] < y[2]
+
+        width = x[2] - x[1]
+        height = y[2] - y[1]
+
+        return new(x, y, width, height)
+    end
 end
 
 @with_kw struct PhysicsSettings
