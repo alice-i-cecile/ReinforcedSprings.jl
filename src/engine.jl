@@ -6,7 +6,8 @@ function engine(contraption::Contraption;
                 Δt::Float64 = 0.01,
                 t_total::Float64 = 10.,
                 graphics::Bool = false,
-                logging::Bool = true)
+                logging::Bool = true, 
+                sleep::Bool = true)
 
     @assert Δt > 0
     @assert t_total > 0
@@ -45,7 +46,9 @@ function engine(contraption::Contraption;
 
             scene = build(contraption, settings.bounds)
             draw(SVGJS(), scene)
-            sleep(Δt) # FIXME: not true constant framerate
+            if sleep
+                sleep(Δt) # FIXME: not true constant framerate
+            end
         end
 
         # Update state
