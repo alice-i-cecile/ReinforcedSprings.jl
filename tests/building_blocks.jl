@@ -59,7 +59,7 @@ light_contraption = Contraption(regular_polygon(7),
 
 heavy_contraption = Contraption(regular_polygon(7),
                                 zeros(2, 7),
-                                1.0 * ones(7),
+                                10. * ones(7),
                                 complete_graph(7))
 
 weak_contraption = Contraption(regular_polygon(7),
