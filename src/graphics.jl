@@ -29,10 +29,10 @@ function build(contraption::Contraption)
             push!(Y_j, y_j)
 
             # Base width of spring
-            w = 0.2mm
+            w = 1.0mm
 
             # Scale base spring width proportional to square root of strength
-            w *= sqrt(contraption.springs[i,j])
+            w *= sqrt(contraption.springs[i,j]) / 100
 
             # Scale final spring width to conserve total spring volume
             # Base length * base width ^ 2 = current length * current width ^2
