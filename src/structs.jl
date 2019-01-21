@@ -46,6 +46,8 @@ function Contraption(position::Array{Float64, 2},
     end
 
     # Initialization
+    # FIXME: rest_length is not being computed properly
+    # See: three_contraption.position
     rest_length = zeros(n, n)
     for i in 1:n, j in (i+1):n
         if springs[i, j] != 0.
