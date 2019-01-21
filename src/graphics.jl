@@ -59,10 +59,21 @@ function build(contraption::Contraption)
 end
 
 function build(bounds::Bounds)
-    # Set corners of box to edge of bounds
 
+    # Create non-square box if not square bounds
+    if bounds.width == bounds.height
+        scale_x, scale_y = 1., 1.
+    elseif bounds.width < bounds.height
+        scale_x, scale_y = bounds.width/bounds.height, 1.
+    else
+        scale_x, scale_y = 1. , bounds.height / bounds.width
+    end
 
-    return "NYI"
+    obj = compose(context(), # Defaults to (0, 0, 1, 1)
+                rectangle(0, 0, scale_x, scale_y),
+                fill("white"), stroke("black"), linewidth(0.4mm))
+
+    return obj
 
 end
 
@@ -71,7 +82,13 @@ function build(contraption::Contraption, bounds::Bounds)
 
     contraption_sprite = build(contraption)
 
-    # Rescale view box to fit the bounds
+    # Rescale contraption based on bound size
+    # Center such that (0, 0) is in the middle of the canvas
+    scale_x = 1/bounds.width
+    scale_y = 1/bounds.height
+    
+    scene = compose(bounds_sprite, 
+                    (context(0.5, 0.5, scale_x, scale_y), contraption_sprite))
 
-    return "NYI"
+    return scene
 end
