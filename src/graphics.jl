@@ -43,6 +43,10 @@ function build(contraption::Contraption)
         end
     end
 
+    # Flip y-coordinates to match vector graphics convention
+    y = -y
+    Y_i, Y_j = -Y_i, -Y_j
+
     spring_array = [[(x_i, y_i), (x_j, y_j)] for (x_i, y_i, x_j, y_j) in zip(X_i, Y_i, X_j, Y_j)]
         
     obj = compose(context(),
