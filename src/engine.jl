@@ -5,13 +5,13 @@ function engine(contraption::Contraption;
                 settings::PhysicsSettings = PhysicsSettings(),
                 Δt::Float64 = 0.01,
                 t_total::Float64 = 10.,
-                graphics::Bool = false,
+                render::Bool = false,
                 logging::Bool = true, 
-                sleep::Bool = true)
+                realtime::Bool = true)
 
     @assert Δt > 0
     @assert t_total > 0
-    @assert graphics | logging
+    @assert render | logging
 
     n = length(contraption.mass)
     n_steps = Int(div(t_total, Δt))
@@ -41,12 +41,12 @@ function engine(contraption::Contraption;
             velocities[t, :, :] = contraption.velocity
         end
 
-        if graphics
+        if render
             IJulia.clear_output(true)
 
             scene = build(contraption, settings.bounds)
             draw(SVGJS(), scene)
-            if sleep
+            if realtime
                 sleep(Δt) # FIXME: not true constant framerate
             end
         end
