@@ -97,6 +97,11 @@ global detached_contraption = Contraption(regular_polygon(7),
                                           ones(7),
                                           zeros(7, 7))
 
+global loop_contraption = Contraption(regular_polygon(17),
+                                      zeros(2, 17), 
+                                      ones(17),
+                                      3000*loop_graph(17, [1,2,4]))                                          
+
 # Basic physics settings
 global default_settings = PhysicsSettings()
 

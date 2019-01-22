@@ -1,3 +1,4 @@
+# Point mass configuration ####
 function regular_polygon(n; radius = 1, θ_0 = 0., center=[0., 0.])
     function create_point(i)
         θ = 2*π*i/n
@@ -14,6 +15,7 @@ function regular_polygon(n; radius = 1, θ_0 = 0., center=[0., 0.])
     return points
 end
 
+# Spring configuration ####
 function complete_graph(n)
     graph = ones(Float64, n, n)
 
@@ -24,15 +26,19 @@ function complete_graph(n)
     return graph
 end
 
-function reshape_springs(springs::Array{Bool, 2})
-    n = size(springs, 1)
-    sparse_c = Array{Int, 2}(undef, 2, 0)
-    
+function loop_graph(n, connections = [1,])
+    graph = zeros(Float64, n, n)
+
+    # Ensure that neighbours that are i away in other direction are connected
+    complementary_connections = [n - i for i in connections]
+    append!(connections, complementary_connections)
+
     for i in 1:n, j in (i+1):n
-        if springs[i, j]
-            sparse_c = hcat(sparse_c, [i; j])
+        if (j - i) ∈ connections
+            graph[i, j], graph[j, i] = 1., 1.
         end
     end
-    
-    return sparse_c
+
+    return graph
 end
+
