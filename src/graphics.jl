@@ -8,24 +8,22 @@ function build(contraption::Contraption)
 
     # Point masses ##
     x = contraption.position[1, :]
-    y = contraption.position[2, :]
+    y = - contraption.position[2, :] # Flip coordinates for graphics
     
     # Scale point size proportional to cube root of mass
     r = [0.01] .* contraption.mass .^ (1/3)
     
-    # Springs ##
+    points = compose(context(),
+                  circle(x, y, r),
+                  fill("black"),
+                  fillopacity(1.))
+
     # Simplify drawing if no springs are found
     if sum(contraption.springs) == 0.
-        y = -y # Flip coordinates for graphics
-
-        obj = compose(context(),
-                      circle(x, y, r),
-                      fill("black"),
-                      fillopacity(1.))
-
-        return obj
+        return points
     end
 
+    # Springs ##
     n = length(contraption.mass)
     X_i, Y_i, X_j, Y_j = [], [], [], []
     W = []
@@ -35,10 +33,11 @@ function build(contraption::Contraption)
             x_i, y_i = contraption.position[:, i]
             x_j, y_j = contraption.position[:, j]
 
+            # Flip y-coordinates to match vector graphics convention
             push!(X_i, x_i)
-            push!(Y_i, y_i)
+            push!(Y_i, -y_i)
             push!(X_j, x_j)
-            push!(Y_j, y_j)
+            push!(Y_j, -y_j)
 
             # Base width of spring
             w = 1.0mm
@@ -55,22 +54,17 @@ function build(contraption::Contraption)
         end
     end
 
-    # Flip y-coordinates to match vector graphics convention
-    y = -y
-    Y_i, Y_j = -Y_i, -Y_j
-
     spring_array = [[(x_i, y_i), (x_j, y_j)] for (x_i, y_i, x_j, y_j) in zip(X_i, Y_i, X_j, Y_j)]
-        
-    obj = compose(context(),
-                  circle(x, y, r),
-                  line(spring_array),
-                  fill("black"),
-                  stroke("black"),
-                  linewidth(W),
-                  fillopacity(1.),
-                  strokeopacity(0.5))
 
-    return obj
+    lines = compose(context(),
+                    line(spring_array),
+                    stroke("black"),
+                    linewidth(W),
+                    strokeopacity(0.5))
+
+    composition = compose(context(), points, lines)
+
+    return composition
 
 end
 
