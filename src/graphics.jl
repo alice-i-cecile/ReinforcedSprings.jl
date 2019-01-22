@@ -14,6 +14,18 @@ function build(contraption::Contraption)
     r = [0.01] .* contraption.mass .^ (1/3)
     
     # Springs ##
+    # Simplify drawing if no springs are found
+    if sum(contraption.springs) == 0.
+        y = -y # Flip coordinates for graphics
+
+        obj = compose(context(),
+                      circle(x, y, r),
+                      fill("black"),
+                      fillopacity(1.))
+
+        return obj
+    end
+
     n = length(contraption.mass)
     X_i, Y_i, X_j, Y_j = [], [], [], []
     W = []

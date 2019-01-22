@@ -35,9 +35,13 @@ function Contraption(position::Array{Float64, 2},
 
     @assert size(springs) == (n, n)
 
-    # Symmetry checking
+    # Spring field checking
     for i in 1:n, j in (i+1):n
+        # Symmetry checking
         @assert springs[i, j] == springs[j, i]
+
+        # Positivity checking
+        @assert springs[i, j] >= 0.
     end
 
     # Self-connection checking

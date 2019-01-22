@@ -92,6 +92,10 @@ global fast_contraption = Contraption(regular_polygon(7),
                                       ones(7),
                                       100. * complete_graph(7))
 
+global detached_contraption = Contraption(regular_polygon(7),
+                                          zeros(2, 7),
+                                          ones(7),
+                                          zeros(7, 7))
 
 # Basic physics settings
 global default_settings = PhysicsSettings()
