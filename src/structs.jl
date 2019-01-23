@@ -53,8 +53,10 @@ function Contraption(position::Array{Float64, 2},
     rest_length = zeros(n, n)
     for i in 1:n, j in (i+1):n
         if springs[i, j] != 0.
-            rest_length[i, j] = Distances.norm(position[:, i] - position[:, j])
-            rest_length[j, i] = rest_length[i, j]
+            initial_length = Distances.norm(position[:, i] - position[:, j])
+            @assert initial_length > 0.
+            
+            rest_length[i, j], rest_length[j, i] = initial_length, initial_length  
         end
     end
     @assert size(rest_length) == (n, n)
