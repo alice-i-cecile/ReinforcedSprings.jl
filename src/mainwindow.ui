@@ -33,7 +33,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="build">
      <attribute name="title">
@@ -48,9 +48,34 @@
         <height>561</height>
        </rect>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout">
+      <layout class="QHBoxLayout" name="build_layout">
        <item>
-        <widget class="QGraphicsView" name="build_info">
+        <widget class="QLabel" name="build_info">
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="baseSize">
+          <size>
+           <width>200</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Mass: 50</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="textInteractionFlags">
+          <set>Qt::NoTextInteraction</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGraphicsView" name="build_canvas">
          <property name="mouseTracking">
           <bool>true</bool>
          </property>
@@ -58,9 +83,6 @@
           <bool>true</bool>
          </property>
         </widget>
-       </item>
-       <item>
-        <widget class="QListView" name="build_canvas"/>
        </item>
       </layout>
      </widget>
@@ -72,32 +94,55 @@
      <widget class="QWidget" name="horizontalLayoutWidget_2">
       <property name="geometry">
        <rect>
-        <x>0</x>
+        <x>10</x>
         <y>0</y>
         <width>951</width>
         <height>561</height>
        </rect>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <layout class="QHBoxLayout" name="play_layout">
        <item>
-        <widget class="QGraphicsView" name="play_canvas"/>
+        <widget class="QLabel" name="play_info">
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="baseSize">
+          <size>
+           <width>200</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>FPS: NYI</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="textInteractionFlags">
+          <set>Qt::NoTextInteraction</set>
+         </property>
+        </widget>
        </item>
        <item>
-        <widget class="QListView" name="play_info">
-         <property name="mouseTracking">
-          <bool>true</bool>
+        <widget class="QGraphicsView" name="play_canvas">
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>0</height>
+          </size>
          </property>
-         <property name="tabletTracking">
-          <bool>true</bool>
-         </property>
-         <property name="modelColumn">
-          <number>0</number>
+         <property name="baseSize">
+          <size>
+           <width>200</width>
+           <height>0</height>
+          </size>
          </property>
         </widget>
        </item>
       </layout>
-      <zorder>play_canvas</zorder>
-      <zorder>play_info</zorder>
      </widget>
     </widget>
    </widget>
