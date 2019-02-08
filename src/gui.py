@@ -82,6 +82,11 @@ class PongGame(Widget):
         if touch.x > self.width - self.width / 3:
             self.player2.center_y = touch.y
 
+    def on_touch_down(self, touch):
+        new_ball = PongBall(center_x = touch.x,
+                            center_y = touch.y)
+        self.add_widget(new_ball)
+        return True
 
 class PongApp(App):
     def build(self):
