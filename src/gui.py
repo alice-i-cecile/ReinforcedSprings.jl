@@ -10,7 +10,13 @@ from kivy.core.window import Window
 class PlayArea(Widget):
     pass
 
-class SpringBall(Widget):
+class Contraption(Widget):
+    pass
+
+class Spring(Widget):
+    pass
+
+class Mass(Widget):
     velocity_x = NumericProperty(0)
     velocity_y = NumericProperty(0)
     velocity = ReferenceListProperty(velocity_x, velocity_y)
@@ -60,8 +66,8 @@ class SpringGame(Widget):
 
 
     def on_touch_down(self, touch):
-        new_ball = SpringBall(center_x = touch.x,
-                            center_y = touch.y)
+        new_ball = Mass(center_x = touch.x,
+                        center_y = touch.y)
         self.add_widget(new_ball)
         return True
 
