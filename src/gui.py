@@ -1,7 +1,7 @@
 from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.properties import NumericProperty, ReferenceListProperty,\
-    ObjectProperty
+    ObjectProperty, ListProperty
 from kivy.vector import Vector
 from kivy.clock import Clock
 from kivy.core.window import Window
@@ -15,17 +15,23 @@ class Contraption(Widget):
     def instantiate(self):
         mass_1 = Mass()
         self.add_widget(mass_1)
-        mass_1.center = (500, 500)
+        mass_1.center = (400, 300)
  
-
         mass_2 = Mass()
         self.add_widget(mass_2)
         mass_2.center = (300, 500)
 
+        # FIXME: positions don't dynamically update
+        spring_12 = Spring()
+        spring_12.start = mass_1.center
+        spring_12.end = mass_2.center
+        self.add_widget(spring_12)
+
         return True
 
 class Spring(Widget):
-    pass
+    start = ListProperty([0, 0])
+    end = ListProperty([0, 0])
 
 class Mass(Widget):
     velocity_x = NumericProperty(0)
@@ -51,30 +57,35 @@ class SpringGame(Widget):
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
         if keycode[1] == 'w':
             for component in self.contraption.children:
-                component.velocity_y += 1
+                if type(component) is Mass:
+                    component.velocity_y += 1
         elif keycode[1] == 's':
             for component in self.contraption.children:
-                component.velocity_y -= 1
+                if type(component) is Mass:
+                    component.velocity_y -= 1
         elif keycode[1] == 'd':
             for component in self.contraption.children:
-                component.velocity_x += 1
+                if type(component) is Mass:
+                    component.velocity_x += 1
         elif keycode[1] == 'a':
             for component in self.contraption.children:
-                component.velocity_x -= 1
+                if type(component) is Mass:
+                    component.velocity_x -= 1
         return True
 
     def update(self, dt):
         # FIXME: generalize to spring behaviour
         for component in self.contraption.children:
-            component.move()
-            
-            # bounce mass off sides
-            if (component.x < self.x) or (component.right > self.right):
-                component.velocity_x *= -1
+            if type(component) is Mass:
+                component.move()
+                
+                # bounce mass off sides
+                if (component.x < self.x) or (component.right > self.right):
+                    component.velocity_x *= -1
 
-            # bounce mass off bottom or top
-            if (component.y < self.y) or (component.top > self.top):
-                component.velocity_y *= -1
+                # bounce mass off bottom or top
+                if (component.y < self.y) or (component.top > self.top):
+                    component.velocity_y *= -1
 
         return True
 

@@ -17,6 +17,13 @@
             pos: self.parent.center_x - 0.8*(self.parent.width / 2), self.parent.center_y - 0.8*(self.parent.height / 2)
             size: 0.8*self.parent.width, 0.8*self.parent.height
 
+<Spring>:
+    canvas:
+        Color:
+            rgba: 0, 0, 1, 1
+        Line:
+            points: [self.start, self.end]
+
 <SpringGame>:
     contraption: main_contraption
     play_area: spring_play_area
@@ -27,3 +34,4 @@
     Contraption:
         id: main_contraption
         center: self.parent.center
+
