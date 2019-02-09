@@ -1,7 +1,7 @@
 #:kivy 1.10.1
 
 <Mass>:
-    size: 10, 10 
+    size: 20, 20 
     canvas:
         Color:
             rgba: 1, 0, 0, 1     
@@ -18,13 +18,12 @@
             size: 0.8*self.parent.width, 0.8*self.parent.height
 
 <SpringGame>:
-    ball: spring_ball
+    contraption: main_contraption
     play_area: spring_play_area
 
     PlayArea:
         id: spring_play_area
 
     Contraption:
-        Mass:
-            id: spring_ball
-            center: self.parent.parent.center
+        id: main_contraption
+        center: self.parent.center

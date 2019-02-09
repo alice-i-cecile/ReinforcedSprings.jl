@@ -11,7 +11,18 @@ class PlayArea(Widget):
     pass
 
 class Contraption(Widget):
-    pass
+        
+    def instantiate(self):
+        mass_1 = Mass()
+        self.add_widget(mass_1)
+        mass_1.center = (500, 500)
+ 
+
+        mass_2 = Mass()
+        self.add_widget(mass_2)
+        mass_2.center = (300, 500)
+
+        return True
 
 class Spring(Widget):
     pass
@@ -22,10 +33,11 @@ class Mass(Widget):
     velocity = ReferenceListProperty(velocity_x, velocity_y)
 
     def move(self):
+        #self.velocity_y -= 1 # gravity
         self.pos = Vector(*self.velocity) + self.pos
 
 class SpringGame(Widget):
-    ball = ObjectProperty(None)
+    contraption = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super(SpringGame, self).__init__(**kwargs)
@@ -38,43 +50,44 @@ class SpringGame(Widget):
 
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
         if keycode[1] == 'w':
-            self.ball.velocity_y += 1
+            for component in self.contraption.children:
+                component.velocity_y += 1
         elif keycode[1] == 's':
-            self.ball.velocity_y -= 1
+            for component in self.contraption.children:
+                component.velocity_y -= 1
         elif keycode[1] == 'd':
-            self.ball.velocity_x += 1
+            for component in self.contraption.children:
+                component.velocity_x += 1
         elif keycode[1] == 'a':
-            self.ball.velocity_x -= 1
+            for component in self.contraption.children:
+                component.velocity_x -= 1
         return True
 
-    def serve_ball(self, vel=(4, 1)):
-        self.ball.center = self.center
-        self.ball.velocity = vel
-
     def update(self, dt):
-        self.ball.move()
+        # FIXME: generalize to spring behaviour
+        for component in self.contraption.children:
+            component.move()
+            
+            # bounce mass off sides
+            if (component.x < self.x) or (component.right > self.right):
+                component.velocity_x *= -1
 
-        # FIXME: bounce off play area instead
-        # bounce ball off sides
-        if (self.ball.x < self.x) or (self.ball.right > self.right):
-            self.ball.velocity_x *= -1
+            # bounce mass off bottom or top
+            if (component.y < self.y) or (component.top > self.top):
+                component.velocity_y *= -1
 
-        # bounce ball off bottom or top
-        if (self.ball.y < self.y) or (self.ball.top > self.top):
-            self.ball.velocity_y *= -1
-
-
+        return True
 
     def on_touch_down(self, touch):
-        new_ball = Mass(center_x = touch.x,
+        new_mass = Mass(center_x = touch.x,
                         center_y = touch.y)
-        self.add_widget(new_ball)
+        self.contraption.add_widget(new_mass)
         return True
 
 class SpringApp(App):
     def build(self):
         game = SpringGame()
-        game.serve_ball()
+        game.contraption.instantiate()
         Clock.schedule_interval(game.update, 1.0 / 60.0)
         return game
 
