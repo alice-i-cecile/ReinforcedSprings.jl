@@ -7,7 +7,7 @@ from kivy.clock import Clock
 from kivy.core.window import Window
 
 
-class PongPaddle(Widget):
+class SpringPaddle(Widget):
     score = NumericProperty(0)
 
     def bounce_ball(self, ball):
@@ -19,7 +19,7 @@ class PongPaddle(Widget):
             ball.velocity = vel.x, vel.y + offset
 
 
-class PongBall(Widget):
+class SpringBall(Widget):
     velocity_x = NumericProperty(0)
     velocity_y = NumericProperty(0)
     velocity = ReferenceListProperty(velocity_x, velocity_y)
@@ -28,13 +28,13 @@ class PongBall(Widget):
         self.pos = Vector(*self.velocity) + self.pos
 
 
-class PongGame(Widget):
+class SpringGame(Widget):
     ball = ObjectProperty(None)
     player1 = ObjectProperty(None)
     player2 = ObjectProperty(None)
 
     def __init__(self, **kwargs):
-        super(PongGame, self).__init__(**kwargs)
+        super(SpringGame, self).__init__(**kwargs)
         self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
 
@@ -83,18 +83,18 @@ class PongGame(Widget):
             self.player2.center_y = touch.y
 
     def on_touch_down(self, touch):
-        new_ball = PongBall(center_x = touch.x,
+        new_ball = SpringBall(center_x = touch.x,
                             center_y = touch.y)
         self.add_widget(new_ball)
         return True
 
-class PongApp(App):
+class SpringApp(App):
     def build(self):
-        game = PongGame()
+        game = SpringGame()
         game.serve_ball()
         Clock.schedule_interval(game.update, 1.0 / 60.0)
         return game
 
 
 if __name__ == '__main__':
-        PongApp().run()
+        SpringApp().run()
