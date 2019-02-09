@@ -1,51 +1,29 @@
 #:kivy 1.10.1
 
 <SpringBall>:
-    size: 50, 50 
+    size: 10, 10 
     canvas:
+        Color:
+            rgba: 1, 0, 0, 1     
         Ellipse:
-            pos: self.pos
-            size: self.size          
-
-<SpringPaddle>:
-    size: 25, 200
-    canvas:
-        Rectangle:
             pos: self.pos
             size: self.size
 
+<PlayArea>:
+    canvas:
+        Color:
+            rgba: 1, 1, 1, 1     
+        Rectangle:
+            pos: self.parent.center_x - 0.8*(self.parent.width / 2), self.parent.center_y - 0.8*(self.parent.height / 2)
+            size: 0.8*self.parent.width, 0.8*self.parent.height
+
 <SpringGame>:
     ball: spring_ball
-    player1: player_left
-    player2: player_right
-    
-    canvas:
-        Rectangle:
-            pos: self.center_x-5, 0
-            size: 10, self.height
-    
-    Label:
-        font_size: 70  
-        center_x: root.width / 4
-        top: root.top - 50
-        text: str(root.player1.score)
-        
-    Label:
-        font_size: 70  
-        center_x: root.width * 3 / 4
-        top: root.top - 50
-        text: str(root.player2.score)
-    
+    play_area: spring_play_area
+
+    PlayArea:
+        id: spring_play_area
+
     SpringBall:
         id: spring_ball
         center: self.parent.center
-        
-    SpringPaddle:
-        id: player_left
-        x: root.x
-        center_y: root.center_y
-        
-    SpringPaddle:
-        id: player_right
-        x: root.width-self.width
-        center_y: root.center_y
