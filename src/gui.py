@@ -23,15 +23,38 @@ class Contraption(Widget):
 
         # FIXME: positions don't dynamically update
         spring_12 = Spring()
-        spring_12.start = mass_1.center
-        spring_12.end = mass_2.center
+        spring_12.mass_1 = mass_1
+        spring_12.mass_2 = mass_2
         self.add_widget(spring_12)
 
         return True
 
+    def update(self):
+        for component in filter(lambda x: type(x) is Mass, self.children):
+            # Update mass position
+            component.move()
+                
+            # bounce mass off sides
+            if (component.x < self.parent.x) or (component.right > self.parent.right):
+                component.velocity_x *= -1
+
+            # bounce mass off bottom or top
+            if (component.y < self.parent.y) or (component.top > self.parent.top):
+                component.velocity_y *= -1
+
+        for component in filter(lambda x: type(x) is Spring, self.children):
+            # Update spring position
+            component.start = component.mass_1.center
+            component.end = component.mass_2.center
+
+        return True
+
 class Spring(Widget):
-    start = ListProperty([0, 0])
-    end = ListProperty([0, 0])
+    mass_1 = ObjectProperty(None)
+    mass_2 = ObjectProperty(None)
+
+    start = ListProperty((0,0))
+    end = ListProperty((0,0))
 
 class Mass(Widget):
     velocity_x = NumericProperty(0)
@@ -74,19 +97,7 @@ class SpringGame(Widget):
         return True
 
     def update(self, dt):
-        # FIXME: generalize to spring behaviour
-        for component in self.contraption.children:
-            if type(component) is Mass:
-                component.move()
-                
-                # bounce mass off sides
-                if (component.x < self.x) or (component.right > self.right):
-                    component.velocity_x *= -1
-
-                # bounce mass off bottom or top
-                if (component.y < self.y) or (component.top > self.top):
-                    component.velocity_y *= -1
-
+        self.contraption.update()
         return True
 
     def on_touch_down(self, touch):
