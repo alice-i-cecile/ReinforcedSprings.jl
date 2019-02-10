@@ -64,6 +64,7 @@ class Mass(Widget):
 
 class SpringGame(Widget):
     contraption = ObjectProperty(None)
+    play_area = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super(SpringGame, self).__init__(**kwargs)
@@ -98,6 +99,7 @@ class SpringGame(Widget):
         return True
 
     # FIXME: right clicking creates phantom point
+    # FIXME: does not spawn at touched location on Ubuntu. Might be coordinate issue?
     def on_touch_down(self, touch):
         new_mass = Mass(center_x = touch.x,
                         center_y = touch.y)
