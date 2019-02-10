@@ -13,19 +13,16 @@ class PlayArea(Widget):
 class Contraption(Widget):
         
     def instantiate(self):
-        mass_1 = Mass()
-        self.add_widget(mass_1)
-        mass_1.center = (400, 300)
- 
-        mass_2 = Mass()
-        self.add_widget(mass_2)
-        mass_2.center = (300, 500)
+        mass_list = list(filter(lambda x: type(x) is Mass, self.children))
+        n = len(mass_list)
 
-        # FIXME: positions don't dynamically update
-        spring_12 = Spring()
-        spring_12.mass_1 = mass_1
-        spring_12.mass_2 = mass_2
-        self.add_widget(spring_12)
+        for i in range(0, n-1):
+            for j in range(i+1, n):
+                spring_ij = Spring()
+                spring_ij.mass_1 = mass_list[i]
+                spring_ij.mass_2 = mass_list[j]
+
+                self.add_widget(spring_ij)
 
         return True
 
@@ -100,10 +97,14 @@ class SpringGame(Widget):
         self.contraption.update()
         return True
 
+    # FIXME: right clicking creates phantom point
     def on_touch_down(self, touch):
         new_mass = Mass(center_x = touch.x,
                         center_y = touch.y)
         self.contraption.add_widget(new_mass)
+
+        self.contraption.instantiate()
+
         return True
 
 class SpringApp(App):
