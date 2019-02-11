@@ -6,12 +6,26 @@ from kivy.vector import Vector
 from kivy.clock import Clock
 from kivy.core.window import Window
 
-
 class PlayArea(Widget):
     pass
 
+class Mass(Widget):
+    velocity_x = NumericProperty(0)
+    velocity_y = NumericProperty(0)
+    velocity = ReferenceListProperty(velocity_x, velocity_y)
+
+    def move(self, dt):
+        #self.velocity_y -= dt*1 # gravity
+        self.pos = dt*Vector(*self.velocity) + self.pos # cannot use +=
+
+class Spring(Widget):
+    mass_1 = ObjectProperty(None)
+    mass_2 = ObjectProperty(None)
+
+    start = ListProperty((0,0))
+    end = ListProperty((0,0))
+
 class Contraption(Widget):
-        
     def instantiate(self):
         mass_list = list(filter(lambda x: type(x) is Mass, self.children))
         n = len(mass_list)
@@ -26,16 +40,16 @@ class Contraption(Widget):
 
         return True
 
-    def update(self):
+    def update(self, dt):
         for component in filter(lambda x: type(x) is Mass, self.children):
             # Update mass position
-            component.move()
+            component.move(dt)
                 
-            # bounce mass off sides
+            # Bounce mass off sides
             if (component.x < self.parent.x) or (component.right > self.parent.right):
                 component.velocity_x *= -1
 
-            # bounce mass off bottom or top
+            # Bounce mass off bottom or top
             if (component.y < self.parent.y) or (component.top > self.parent.top):
                 component.velocity_y *= -1
 
@@ -45,22 +59,6 @@ class Contraption(Widget):
             component.end = component.mass_2.center
 
         return True
-
-class Spring(Widget):
-    mass_1 = ObjectProperty(None)
-    mass_2 = ObjectProperty(None)
-
-    start = ListProperty((0,0))
-    end = ListProperty((0,0))
-
-class Mass(Widget):
-    velocity_x = NumericProperty(0)
-    velocity_y = NumericProperty(0)
-    velocity = ReferenceListProperty(velocity_x, velocity_y)
-
-    def move(self):
-        #self.velocity_y -= 1 # gravity
-        self.pos = Vector(*self.velocity) + self.pos
 
 class SpringGame(Widget):
     contraption = ObjectProperty(None)
@@ -76,26 +74,28 @@ class SpringGame(Widget):
         self._keyboard = None
 
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
+        keyboard_strength = 50.
+        
         if keycode[1] == 'w':
             for component in self.contraption.children:
                 if type(component) is Mass:
-                    component.velocity_y += 1
+                    component.velocity_y += keyboard_strength
         elif keycode[1] == 's':
             for component in self.contraption.children:
                 if type(component) is Mass:
-                    component.velocity_y -= 1
+                    component.velocity_y -= keyboard_strength
         elif keycode[1] == 'd':
             for component in self.contraption.children:
                 if type(component) is Mass:
-                    component.velocity_x += 1
+                    component.velocity_x += keyboard_strength
         elif keycode[1] == 'a':
             for component in self.contraption.children:
                 if type(component) is Mass:
-                    component.velocity_x -= 1
+                    component.velocity_x -= keyboard_strength
         return True
 
     def update(self, dt):
-        self.contraption.update()
+        self.contraption.update(dt)
         return True
 
     # FIXME: right clicking creates phantom point
@@ -113,7 +113,10 @@ class SpringApp(App):
     def build(self):
         game = SpringGame()
         game.contraption.instantiate()
-        Clock.schedule_interval(game.update, 1.0 / 60.0)
+        
+        # Clock passes dt as argument to game.update
+        dt = 1.0 / 60.0
+        Clock.schedule_interval(game.update, dt)
         return game
 
 
