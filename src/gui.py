@@ -6,17 +6,30 @@ from kivy.vector import Vector
 from kivy.clock import Clock
 from kivy.core.window import Window
 
+import numpy as np
+
+# Create a Julia session with the appropriate contraption loaded
+def open_jl(contraption):
+
+    # Return way to access that session
+    return True
+
+# Update variables in Julia session to reflect current state
+def update_jl(jl_session, contraption = None, inputs = None):
+
+    return True
+
+# Fetch next system state
+def physics_jl(jl_session, dt):
+
+    # Return a matrix of coordinates
+    return True
+
 class PlayArea(Widget):
     pass
 
 class Mass(Widget):
-    velocity_x = NumericProperty(0)
-    velocity_y = NumericProperty(0)
-    velocity = ReferenceListProperty(velocity_x, velocity_y)
-
-    def move(self, dt):
-        #self.velocity_y -= dt*1 # gravity
-        self.pos = dt*Vector(*self.velocity) + self.pos # cannot use +=
+    pass
 
 class Spring(Widget):
     mass_1 = ObjectProperty(None)
@@ -26,7 +39,9 @@ class Spring(Widget):
     end = ListProperty((0,0))
 
 class Contraption(Widget):
-    def instantiate(self):
+
+    def connect(self):
+        # Fully connect all points
         mass_list = list(filter(lambda x: type(x) is Mass, self.children))
         n = len(mass_list)
 
@@ -38,23 +53,22 @@ class Contraption(Widget):
 
                 self.add_widget(spring_ij)
 
+        # TODO: record spring strength and presence
+        self.springs = "NYI"
+        
         return True
 
     def update(self, dt):
+
+        # Fetch updated positions given by physics engine
+        positions = physics_jl(self.jl_session, dt)
+
+        # Update mass position
         for component in filter(lambda x: type(x) is Mass, self.children):
-            # Update mass position
-            component.move(dt)
-                
-            # Bounce mass off sides
-            if (component.x < self.parent.x) or (component.right > self.parent.right):
-                component.velocity_x *= -1
+            component.pos = positions + "NYI"
 
-            # Bounce mass off bottom or top
-            if (component.y < self.parent.y) or (component.top > self.parent.top):
-                component.velocity_y *= -1
-
+        # Update spring position
         for component in filter(lambda x: type(x) is Spring, self.children):
-            # Update spring position
             component.start = component.mass_1.center
             component.end = component.mass_2.center
 
@@ -73,25 +87,17 @@ class SpringGame(Widget):
         self._keyboard.unbind(on_key_down=self._on_keyboard_down)
         self._keyboard = None
 
-    def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
-        keyboard_strength = 50.
-        
+    def _on_keyboard_down(self, keyboard, keycode, text, modifiers):        
+
+        # FIXME: Allow for multiple inputs to be pressed at once
         if keycode[1] == 'w':
-            for component in self.contraption.children:
-                if type(component) is Mass:
-                    component.velocity_y += keyboard_strength
+            update_jl(self.jl_session, inputs = ["up"])
         elif keycode[1] == 's':
-            for component in self.contraption.children:
-                if type(component) is Mass:
-                    component.velocity_y -= keyboard_strength
+            update_jl(self.jl_session, inputs = ["down"])
         elif keycode[1] == 'd':
-            for component in self.contraption.children:
-                if type(component) is Mass:
-                    component.velocity_x += keyboard_strength
+            update_jl(self.jl_session, inputs = ["right"])
         elif keycode[1] == 'a':
-            for component in self.contraption.children:
-                if type(component) is Mass:
-                    component.velocity_x -= keyboard_strength
+            update_jl(self.jl_session, inputs = ["left"])
         return True
 
     def update(self, dt):
@@ -105,15 +111,19 @@ class SpringGame(Widget):
                         center_y = touch.y)
         self.contraption.add_widget(new_mass)
 
-        self.contraption.instantiate()
+        self.contraption.connect()
+
+        update_jl(self.jl_session, contraption = self.contraption)
 
         return True
 
 class SpringApp(App):
     def build(self):
         game = SpringGame()
-        game.contraption.instantiate()
-        
+
+        # Open Julia physics engine
+        open_jl(game.contraption) 
+
         # Clock passes dt as argument to game.update
         dt = 1.0 / 60.0
         Clock.schedule_interval(game.update, dt)
