@@ -1,6 +1,9 @@
-authors = ["Alice Cecile <alice.i.cecile@gmail.com>"]
 name = "ReinforcedSprings"
 uuid = "43e212e0-1776-11e9-1b6b-1747a0a742e1"
+authors = ["Alice Cecile <alice.i.cecile@gmail.com>"]
 version = "0.1.0"
 
 [deps]
+Compose = "a81c6b42-2e10-5240-aca2-a61377ecd94b"
+Distances = "b4f34e82-e78d-54a5-968a-f98e89d6e8f7"
+Parameters = "d96e819e-fc66-5662-9728-84c9c7592b0a"
