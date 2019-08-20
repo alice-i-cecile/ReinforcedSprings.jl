@@ -1,5 +1,5 @@
-name: example_flutter
-description: An example project for flutter-desktop-embedding.
+name: flutter_example
+description: A Flutter GUI for the Reinforced Springs project.
 
 environment:
   sdk: '>=2.0.0 <3.0.0'

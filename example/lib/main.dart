@@ -27,13 +27,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Reinforced Springs',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         // See https://github.com/flutter/flutter/wiki/Desktop-shells#fonts
         fontFamily: 'Roboto',
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Build'),
     );
   }
 }
