@@ -1,85 +1,119 @@
-// Copyright 2018 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
+import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart';
 import 'package:flutter/foundation.dart'
     show debugDefaultTargetPlatformOverride;
-import 'package:flutter/material.dart';
 
-void main() {
+main() {
   // See https://github.com/flutter/flutter/wiki/Desktop-shells#target-platform-override
   debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
 
-  runApp(new MyApp());
+  runApp(MaterialApp(home: PhysicsCardDragDemo()));
 }
 
-class MyApp extends StatelessWidget {
+class PhysicsCardDragDemo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Reinforced Springs',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        // See https://github.com/flutter/flutter/wiki/Desktop-shells#fonts
-        fontFamily: 'Roboto',
+    return Scaffold(
+      appBar: AppBar(),
+      body: DraggableCard(
+        child: FlutterLogo(
+          size: 128,
+        ),
       ),
-      home: MyHomePage(title: 'Build'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
+/// A draggable card that moves back to [Alignment.center] when it's
+/// released.
+class DraggableCard extends StatefulWidget {
+  final Widget child;
+  DraggableCard({this.child});
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _DraggableCardState createState() => _DraggableCardState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _DraggableCardState extends State<DraggableCard>
+    with SingleTickerProviderStateMixin {
+  AnimationController _controller;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
+  /// The alignment of the card as it is dragged or being animated.
+  ///
+  /// While the card is being dragged, this value is set to the values computed
+  /// in the GestureDetector onPanUpdate callback. If the animation is running,
+  /// this value is set to the value of the [_animation].
+  Alignment _dragAlignment = Alignment.center;
+
+  Animation<Alignment> _animation;
+
+  /// Calculates and runs a [SpringSimulation].
+  void _runAnimation(Offset pixelsPerSecond, Size size) {
+    _animation = _controller.drive(
+      AlignmentTween(
+        begin: _dragAlignment,
+        end: Alignment.center,
+      ),
+    );
+    // Calculate the velocity relative to the unit interval, [0,1],
+    // used by the animation controller.
+    final unitsPerSecondX = pixelsPerSecond.dx / size.width;
+    final unitsPerSecondY = pixelsPerSecond.dy / size.height;
+    final unitsPerSecond = Offset(unitsPerSecondX, unitsPerSecondY);
+    final unitVelocity = unitsPerSecond.distance;
+
+    const spring = SpringDescription(
+      mass: 30,
+      stiffness: 1,
+      damping: 1,
+    );
+
+    final simulation = SpringSimulation(spring, 0, 1, -unitVelocity);
+
+    _controller.animateWith(simulation);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this);
+
+    _controller.addListener(() {
+      setState(() {
+        _dragAlignment = _animation.value;
+      });
     });
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
+    final size = MediaQuery.of(context).size;
+    return GestureDetector(
+      onPanDown: (details) {
+        _controller.stop();
+      },
+      onPanUpdate: (details) {
+        setState(() {
+          _dragAlignment += Alignment(
+            details.delta.dx / (size.width / 2),
+            details.delta.dy / (size.height / 2),
+          );
+        });
+      },
+      onPanEnd: (details) {
+        _runAnimation(details.velocity.pixelsPerSecond, size);
+      },
+      child: Align(
+        alignment: _dragAlignment,
+        child: Card(
+          child: widget.child,
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
       ),
     );
   }
