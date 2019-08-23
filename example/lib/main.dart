@@ -43,9 +43,7 @@ class BuildTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return(
       Center(
-        child: Text(
-          'Create a contraption here.'
-        ),
+        child: Display(),
       )
     );
   }
@@ -56,22 +54,35 @@ class PlayTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return(
       Center(
-        child: Text(
-          'Play with your contraption here.'
-        ),
+        child: Display()
+      )
+      );
+  }
+}
+
+class Display extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return(
+      Container(
+        // TODO: Dynamically inherit constraints from parent?
+        width: 400,
+        height: 400,
+        decoration: BoxDecoration(
+          border: Border.all(width: 2),
+        )
       )
     );
   }
 }
+
 
 class LearnTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return(
       Center(
-        child: Text(
-          'Teach your contraption here.'
-        ),
+        child: Display(),
       )
     );
   }
