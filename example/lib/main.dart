@@ -16,14 +16,32 @@ class ModeTabs extends StatelessWidget {
         length: 3,
         child: Scaffold(
           appBar: AppBar(
+            title: Text("My Contraption"),
+            actions: <Widget>[
+              IconButton(
+                icon: const Icon(Icons.add_circle_outline),
+                tooltip: 'New Contraption'
+              ),
+              IconButton(
+                icon: const Icon(Icons.folder_open),
+                tooltip: 'Load Contraption'
+              ),
+              IconButton(
+                icon: const Icon(Icons.save),
+                tooltip: 'Save Contraption',
+              ),
+              IconButton(
+                icon: const Icon(Icons.settings),
+                tooltip: 'Program Settings',
+              ),
+            ], 
             bottom: TabBar(
               tabs: [
                 Tab(icon: Icon(Icons.edit)),
-                Tab(icon: Icon(Icons.nature)),
-                Tab(icon: Icon(Icons.lightbulb_outline)),
+                Tab(icon: Icon(Icons.toys)),
+                Tab(icon: Icon(Icons.school)),
               ],
             ),
-            title: Text('Reinforced Springs'),
           ),
           body: TabBarView(
             children: [
