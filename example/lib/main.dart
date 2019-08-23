@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/physics.dart';
 import 'package:flutter/foundation.dart'
     show debugDefaultTargetPlatformOverride;
 
@@ -28,13 +27,52 @@ class ModeTabs extends StatelessWidget {
           ),
           body: TabBarView(
             children: [
-              Icon(Icons.edit),
-              Icon(Icons.nature),
-              Icon(Icons.lightbulb_outline),
+              BuildTab(),
+              PlayTab(),
+              LearnTab(),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class BuildTab extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return(
+      Center(
+        child: Text(
+          'Create a contraption here.'
+        ),
+      )
+    );
+  }
+}
+
+class PlayTab extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return(
+      Center(
+        child: Text(
+          'Play with your contraption here.'
+        ),
+      )
+    );
+  }
+}
+
+class LearnTab extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return(
+      Center(
+        child: Text(
+          'Teach your contraption here.'
+        ),
+      )
     );
   }
 }
