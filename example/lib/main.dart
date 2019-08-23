@@ -34,6 +34,11 @@ class ModeTabs extends StatelessWidget {
                 icon: const Icon(Icons.settings),
                 tooltip: 'Program Settings',
               ),
+              IconButton(
+                icon: const Icon(Icons.help),
+                tooltip: 'Help',
+              ),
+
             ], 
             bottom: TabBar(
               tabs: [
@@ -60,21 +65,89 @@ class BuildTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return(
-      Center(
-        child: Display(),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[BuildInterface(), Display()],
+      )
+    );
+  }
+}
+class BuildInterface extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return(
+      Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Text("Mass"), 
+          Text("Spring Strength"),
+          Text("Components"),
+          Text("Control 4"),
+          Text("Control 5"),
+        ]
+      )
+    );
+  }
+}
+class PlayTab extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return(
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[PlayInterface(), Display()],
+      )
+      );
+  }
+}
+
+
+class PlayInterface extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return(
+      Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Text("Gravity"), 
+          Text("Elasticity"),
+          Text("Environment"),
+          Text("Control 4"),
+          Text("Control 5"),
+        ]
       )
     );
   }
 }
 
-class PlayTab extends StatelessWidget {
+class LearnTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return(
-      Center(
-        child: Display()
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[LearnInterface(), Display()],
       )
-      );
+    );
+  }
+}
+
+
+class LearnInterface extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return(
+      Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Text("Behaviours"), 
+          Text("Goals"),
+          Text("Learning Strategy"),
+          Text("Control 4"),
+          Text("Control 5"),
+        ]
+      )
+    );
   }
 }
 
@@ -89,18 +162,6 @@ class Display extends StatelessWidget{
         decoration: BoxDecoration(
           border: Border.all(width: 2),
         )
-      )
-    );
-  }
-}
-
-
-class LearnTab extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return(
-      Center(
-        child: Display(),
       )
     );
   }
