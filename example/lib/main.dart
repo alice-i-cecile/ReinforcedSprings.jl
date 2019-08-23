@@ -156,12 +156,11 @@ class Display extends StatelessWidget{
   Widget build(BuildContext context) {
     return(
       Container(
-        // TODO: Dynamically inherit constraints from parent?
         width: 400,
         height: 400,
         decoration: BoxDecoration(
           border: Border.all(width: 2),
-        )
+        ),
       )
     );
   }
