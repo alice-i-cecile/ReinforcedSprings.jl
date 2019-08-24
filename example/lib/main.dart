@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:positioned_tap_detector/positioned_tap_detector.dart';
+
+import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart'
     show debugDefaultTargetPlatformOverride;
 
@@ -9,17 +11,20 @@ main() {
 
   runApp(MaterialApp(
     home: ChangeNotifierProvider(
-      builder: (context) => Counter(),
+      builder: (context) => ContraptionPosition(),
       child: ModeTabs(),
     )
   ));
 }
 
-class Counter with ChangeNotifier {
-  int value = 0;
+class ContraptionPosition with ChangeNotifier {
+  double x = 100;
+  double y = 200;
 
-  void increment() {
-    value += 1;
+  void spawn(position) {
+    print(position);
+    x = position.relative.dx;
+    y = position.relative.dy;
     notifyListeners();
   }
 }
@@ -119,11 +124,11 @@ class BuildDisplay extends StatelessWidget{
         decoration: BoxDecoration(
           border: Border.all(width: 2),
         ),
-        child: FlatButton(
-          child: Consumer<Counter>(
-            builder: (context, counter, child) => Text('${counter.value}')
+        child: PositionedTapDetector(
+          child: Consumer<ContraptionPosition>(
+            builder: (context, contraption, child) => Text('${contraption.x}, ${contraption.y}')
           ),
-          onPressed: () => Provider.of<Counter>(context, listen: false).increment()
+          onTap: (position) => Provider.of<ContraptionPosition>(context, listen: false).spawn(position)
         )
       )
     );
