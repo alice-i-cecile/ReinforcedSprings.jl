@@ -291,19 +291,86 @@ class PlayTab extends StatelessWidget {
   }
 }
 
+class PlayEngine extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return(
+      Text("Select engine:")
+    );
+  }
+}
+class PlayControls extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return(
+      Column(children: <Widget>[
+        Text("WASD / Arrow Keys: Apply directional force."),
+        Text("Z/X: Apply torque."),
+        Text("Hold: Accelerate towards the point selected.")
+      ])
+    );
+  }
+}
+
+class PlayStatus extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return(
+      Column(children: <Widget>[
+        Row(
+          children: <Widget>[
+            IconButton(                
+              icon: const Icon(Icons.play_arrow),
+              tooltip: 'Play',
+              onPressed: (){},
+            ),
+            IconButton(                
+              icon: const Icon(Icons.pause),
+              tooltip: 'Pause',
+              onPressed: (){},
+            ),
+            IconButton(                
+              icon: const Icon(Icons.replay),
+              tooltip: 'Restart',
+              onPressed: (){},
+            ),
+          ],
+        ),
+        Text("FPS: ??")
+      ],)
+    );
+  }
+}
 
 class PlayInterface extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return(
       Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Text("Gravity"), 
-          Text("Elasticity"),
-          Text("Environment"),
-          Text("Control 4"),
-          Text("Control 5"),
+          // Engine
+          Container(
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(width: 0, color: Colors.black),
+              ),
+            ),
+            child: PlayEngine()
+          ),
+          // Controls
+          Container(
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(width: 0, color: Colors.black),
+              ),
+            ),
+            child: PlayControls()
+          ),
+          // Status
+          Container(
+              child: PlayStatus()
+          ),
         ]
       )
     );
