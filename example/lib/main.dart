@@ -95,18 +95,163 @@ class BuildTab extends StatelessWidget {
     );
   }
 }
+
+class BuildProperties extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return(
+      Column(
+        children: <Widget>[
+          Row(children: <Widget>[
+            Text("Mass", style: TextStyle(fontWeight: FontWeight.bold)),
+            Slider(
+              min: 0.0,
+              value: 1.0,
+              max: 100.0,
+              label: "currentMass",
+              onChanged: (newMass) {}),
+          ]),
+          Row(children: <Widget>[
+            Text("Spring Strength", style: TextStyle(fontWeight: FontWeight.bold)),
+            Slider(
+              min: 0.0,
+              value: 1.0,
+              max: 100.0,
+              label: "currentStrength",
+              onChanged: (newStrength) {}),
+          ]),
+          Row(children: <Widget>[
+            Text("Gravity", style: TextStyle(fontWeight: FontWeight.bold)),
+            Slider(
+              min: -100.0,
+              value: 10.0,
+              max: 100.0,
+              label: "currentGravity",
+              onChanged: (newStrength) {}),
+          ]),
+          Row(children: <Widget>[
+            Text("Elasticity", style: TextStyle(fontWeight: FontWeight.bold)),
+            Slider(
+              min: 0.0,
+              value: 0.4,
+              max: 1.0,
+              label: "currentElasticity",
+              onChanged: (newStrength) {}),
+          ]),
+          Row(children: <Widget>[
+            Text("Drag", style: TextStyle(fontWeight: FontWeight.bold)),
+            Slider(
+              min: 0.0,
+              value: 0.4,
+              max: 1.0,
+              label: "currentDrag",
+              onChanged: (newDrag) {}),
+          ]),
+        ]
+      )
+    );
+  }
+}
+
+class BuildTools extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return(
+      Column(children: <Widget>[
+        Row(children: <Widget>[
+          IconButton(                
+            icon: const Icon(Icons.near_me),
+            tooltip: 'Select',
+            onPressed: (){},
+          ),
+          IconButton(                
+            icon: const Icon(Icons.delete),
+            tooltip: 'Delete',
+            onPressed: (){},
+          ),
+        ],),
+        Row(children: <Widget>[
+          IconButton(                
+            icon: const Icon(Icons.rotate_right),
+            tooltip: 'Rotate',
+            onPressed: (){},
+          ),
+          IconButton(                
+            icon: const Icon(Icons.flip),
+            tooltip: 'Mirror',
+            onPressed: (){},
+          ),
+        ]),
+        Row(children: <Widget>[
+          IconButton(                
+            icon: const Icon(Icons.share),
+            tooltip: 'Connect',
+            onPressed: (){},
+          ),
+          IconButton(                
+            icon: const Icon(Icons.scatter_plot),
+            tooltip: 'Disconnect',
+            onPressed: (){},
+          ),
+        ],),
+        Row(children: <Widget>[
+          IconButton(                
+            icon: const Icon(Icons.undo),
+            tooltip: 'Undo',
+            onPressed: (){},
+          ),
+          IconButton(                
+            icon: const Icon(Icons.redo),
+            tooltip: 'Redo',
+            onPressed: (){},
+          ),
+        ],)
+      ])
+    );
+  }
+}
+class BuildComponents extends StatelessWidget{
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Text("Point"),
+        Text("Spring")
+      ],
+    );
+  }
+}
+
 class BuildInterface extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return(
       Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Text("Mass"), 
-          Text("Spring Strength"),
-          Text("Components"),
-          Text("Control 4"),
-          Text("Control 5"),
+          // Properties
+          Container(
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(width: 0, color: Colors.black),
+              ),
+            ),
+            child: BuildProperties()
+          ),
+          // Tools
+          Container(
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(width: 0, color: Colors.black),
+              ),
+            ),
+            child: BuildTools()
+          ),
+          // Components
+          Container(
+              child: BuildComponents()
+          ),
         ]
       )
     );
