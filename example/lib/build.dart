@@ -193,7 +193,7 @@ class BuildDisplay extends StatelessWidget{
     return(
       Consumer<ContraptionPosition>(
         builder: (context, contraption, child) =>  CustomPaint(
-          painter: ContraptionPainter(contraption.x, contraption.y),
+          painter: ContraptionPainter(contraption),
           child: Container(
             width: 400,
             height: 400,
@@ -212,12 +212,10 @@ class BuildDisplay extends StatelessWidget{
 
 class ContraptionPainter extends CustomPainter {
 
-  double dx;
-  double dy;
+  ContraptionPosition contraptionPosition;
 
-  ContraptionPainter(double dx, double dy){
-    this.dx = dx;
-    this.dy = dy;
+  ContraptionPainter(ContraptionPosition contraptionPosition){
+    this.contraptionPosition = contraptionPosition;
   }
   
   @override
@@ -227,20 +225,15 @@ class ContraptionPainter extends CustomPainter {
 
     var linePaint = Paint();
 
-    Offset pointA = Offset(dx, dy);
-    Offset pointB = Offset(200, 300);
+    for (var point in contraptionPosition.points){
+      canvas.drawCircle(point, pointRadius, pointPaint);
+    }
 
-    canvas.drawCircle(pointA, pointRadius, pointPaint);
-    canvas.drawCircle(pointB, pointRadius, pointPaint);
-
-    canvas.drawLine(pointA, pointB, linePaint);
+    for (var line in contraptionPosition.lines){
+      canvas.drawLine(contraptionPosition.points[line[0]], contraptionPosition.points[line[1]], linePaint);
+    }
   }
 
-  // Since this Sky painter has no fields, it always paints
-  // the same thing and semantics information is the same.
-  // Therefore we return false here. If we had fields (set
-  // from the constructor) then we would return true if any
-  // of them differed from the same fields on the oldDelegate.
   @override
   bool shouldRepaint(ContraptionPainter oldDelegate) => true;
 }
