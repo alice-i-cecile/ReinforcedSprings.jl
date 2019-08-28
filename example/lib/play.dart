@@ -7,7 +7,7 @@ class PlayTab extends StatelessWidget {
     return(
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[PlayInterface(), Display()],
+        children: <Widget>[PlayInterface(), PlayDisplay()],
       )
       );
   }
