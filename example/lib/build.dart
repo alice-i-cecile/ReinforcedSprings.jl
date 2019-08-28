@@ -2,7 +2,6 @@ import 'package:provider/provider.dart';
 import 'package:positioned_tap_detector/positioned_tap_detector.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/semantics.dart';
 
 import 'contraption.dart';
 
@@ -192,19 +191,18 @@ class BuildDisplay extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return(
-      CustomPaint(
-        painter: ContraptionPainter(),
-        child: Container(
-          width: 400,
-          height: 400,
-          decoration: BoxDecoration(
-            border: Border.all(width: 2),
-          ),
-          child: PositionedTapDetector(
-            child: Consumer<ContraptionPosition>(
-              builder: (context, contraption, child) => Text('${contraption.x}, ${contraption.y}')
+      Consumer<ContraptionPosition>(
+        builder: (context, contraption, child) =>  CustomPaint(
+          painter: ContraptionPainter(contraption.x, contraption.y),
+          child: Container(
+            width: 400,
+            height: 400,
+            decoration: BoxDecoration(
+              border: Border.all(width: 2),
             ),
-            onTap: (position) => Provider.of<ContraptionPosition>(context, listen: false).spawn(position)
+            child: PositionedTapDetector(
+              onTap: (position) => Provider.of<ContraptionPosition>(context, listen: false).spawn(position)
+            )
           )
         )
       )
@@ -213,6 +211,15 @@ class BuildDisplay extends StatelessWidget{
 }
 
 class ContraptionPainter extends CustomPainter {
+
+  double dx;
+  double dy;
+
+  ContraptionPainter(double dx, double dy){
+    this.dx = dx;
+    this.dy = dy;
+  }
+  
   @override
   void paint(Canvas canvas, Size size) {
     double pointRadius = 3.0;
@@ -220,7 +227,7 @@ class ContraptionPainter extends CustomPainter {
 
     var linePaint = Paint();
 
-    Offset pointA = Offset(100, 200);
+    Offset pointA = Offset(dx, dy);
     Offset pointB = Offset(200, 300);
 
     canvas.drawCircle(pointA, pointRadius, pointPaint);
@@ -235,7 +242,5 @@ class ContraptionPainter extends CustomPainter {
   // from the constructor) then we would return true if any
   // of them differed from the same fields on the oldDelegate.
   @override
-  bool shouldRepaint(ContraptionPainter oldDelegate) => false;
-  @override
-  bool shouldRebuildSemantics(ContraptionPainter oldDelegate) => false;
+  bool shouldRepaint(ContraptionPainter oldDelegate) => true;
 }
