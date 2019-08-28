@@ -193,7 +193,7 @@ class BuildDisplay extends StatelessWidget{
   Widget build(BuildContext context) {
     return(
       CustomPaint(
-        painter: Sky(),
+        painter: ContraptionPainter(),
         child: Container(
           width: 400,
           height: 400,
@@ -212,42 +212,21 @@ class BuildDisplay extends StatelessWidget{
   }
 }
 
-class Sky extends CustomPainter {
+class ContraptionPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    var rect = Offset.zero & size;
-    var gradient = RadialGradient(
-      center: const Alignment(0.7, -0.6),
-      radius: 0.2,
-      colors: [const Color(0xFFFFFF00), const Color(0xFF0099FF)],
-      stops: [0.4, 1.0],
-    );
-    canvas.drawRect(
-      rect,
-      Paint()..shader = gradient.createShader(rect),
-    );
-  }
+    double pointRadius = 3.0;
+    var pointPaint = Paint();
 
-  @override
-  SemanticsBuilderCallback get semanticsBuilder {
-    return (Size size) {
-      // Annotate a rectangle containing the picture of the sun
-      // with the label "Sun". When text to speech feature is enabled on the
-      // device, a user will be able to locate the sun on this picture by
-      // touch.
-      var rect = Offset.zero & size;
-      var width = size.shortestSide * 0.4;
-      rect = const Alignment(0.8, -0.9).inscribe(Size(width, width), rect);
-      return [
-        CustomPainterSemantics(
-          rect: rect,
-          properties: SemanticsProperties(
-            label: 'Sun',
-            textDirection: TextDirection.ltr,
-          ),
-        ),
-      ];
-    };
+    var linePaint = Paint();
+
+    Offset pointA = Offset(100, 200);
+    Offset pointB = Offset(200, 300);
+
+    canvas.drawCircle(pointA, pointRadius, pointPaint);
+    canvas.drawCircle(pointB, pointRadius, pointPaint);
+
+    canvas.drawLine(pointA, pointB, linePaint);
   }
 
   // Since this Sky painter has no fields, it always paints
@@ -256,7 +235,7 @@ class Sky extends CustomPainter {
   // from the constructor) then we would return true if any
   // of them differed from the same fields on the oldDelegate.
   @override
-  bool shouldRepaint(Sky oldDelegate) => false;
+  bool shouldRepaint(ContraptionPainter oldDelegate) => false;
   @override
-  bool shouldRebuildSemantics(Sky oldDelegate) => false;
+  bool shouldRebuildSemantics(ContraptionPainter oldDelegate) => false;
 }
