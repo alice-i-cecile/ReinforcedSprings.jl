@@ -29,28 +29,9 @@ class BuildInterface extends StatelessWidget {
       Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          // Properties
-          Container(
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(width: 0, color: Colors.black),
-              ),
-            ),
-            child: BuildProperties()
-          ),
-          // Tools
-          Container(
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(width: 0, color: Colors.black),
-              ),
-            ),
-            child: BuildTools()
-          ),
-          // Components
-          Container(
-              child: BuildComponents()
-          ),
+          BuildProperties(),
+          BuildTools(),
+          BuildComponents()
         ]
       )
     );

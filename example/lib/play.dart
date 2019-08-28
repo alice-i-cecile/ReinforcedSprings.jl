@@ -21,30 +21,10 @@ class PlayInterface extends StatelessWidget {
       Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          // Engine
-          Container(
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(width: 0, color: Colors.black),
-              ),
-            ),
-            child: PlayEngine()
-          ),
-          // Controls
-          Container(
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(width: 0, color: Colors.black),
-              ),
-            ),
-            child: PlayControls()
-          ),
-          // Status
-          Container(
-              child: PlayStatus()
-          ),
-        ]
-      )
+          PlayEngine(),
+          PlayControls(),
+          PlayStatus()
+      ])
     );
   }
 }
