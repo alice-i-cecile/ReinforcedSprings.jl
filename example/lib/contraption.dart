@@ -65,6 +65,7 @@ class ContraptionParameters with ChangeNotifier {
 class ContraptionState with ChangeNotifier{
   var points = <Offset>[];
   var lines = [];
+  var velocity = [];
 
   // TODO: get appropriate context
   var context;
@@ -77,6 +78,7 @@ class ContraptionState with ChangeNotifier{
 
     //points = contraptionParameters.points;
     //lines = contraptionParameters.lines;
+    //velocity = [[0.0, 0.0] for int i in 1:points.length];
 
     notifyListeners();
   }
@@ -85,9 +87,8 @@ class ContraptionState with ChangeNotifier{
     // Start a timer that repeats itself
 
     //var newState = engine(environment, contraptionParameters, this);
-
-    //points = newState.points;
-    //lines = newState.lines;
+    //points = newState['points'];
+    //velocity = newState['velocity'];
 
     notifyListeners();
   }
