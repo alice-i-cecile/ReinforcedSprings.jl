@@ -68,7 +68,10 @@ class ModeTabs extends StatelessWidget {
                 builder: (context) => Tool(),
                 child: BuildTab(),
               ),
-              PlayTab(),
+              ChangeNotifierProvider(
+                builder: (context) => GameStatus(),
+                child: PlayTab(),
+              ),
               LearnTab(),
             ],
           ),

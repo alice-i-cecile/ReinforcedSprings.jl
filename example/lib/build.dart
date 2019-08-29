@@ -42,7 +42,8 @@ class BuildInterface extends StatelessWidget {
           BuildTools(),
           BuildComponents(),
           Consumer<Tool>(
-            builder: (context, tool, child) => Text("Tool: ${tool.selectedTool}"))
+            builder: (context, tool, child) => Text("Tool: ${tool.selectedTool}")
+          )
         ]
       )
     );
@@ -189,7 +190,7 @@ class BuildDisplay extends StatelessWidget{
     var contraption = Provider.of<ContraptionPosition>(context, listen: false);
 
     return CustomPaint(
-      painter: ContraptionPainter(contraption),
+      painter: BuildPainter(contraption),
       child: Container(
         width: 400,
         height: 400,
@@ -204,11 +205,11 @@ class BuildDisplay extends StatelessWidget{
   }
 }
 
-class ContraptionPainter extends CustomPainter {
+class BuildPainter extends CustomPainter {
 
   ContraptionPosition contraptionPosition;
 
-  ContraptionPainter(ContraptionPosition contraptionPosition) : super(repaint: contraptionPosition) {
+  BuildPainter(ContraptionPosition contraptionPosition) : super(repaint: contraptionPosition) {
     this.contraptionPosition = contraptionPosition;
   }
   
@@ -229,5 +230,5 @@ class ContraptionPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(ContraptionPainter oldDelegate) => true;
+  bool shouldRepaint(BuildPainter oldDelegate) => true;
 }
