@@ -16,7 +16,7 @@ class ContraptionPosition with ChangeNotifier {
         lines.add([p1, p2]);
       }
     }
-  }
 
     notifyListeners();
+  }
 }
