@@ -121,7 +121,7 @@ class BuildTools extends StatelessWidget{
           IconButton(                
             icon: const Icon(Icons.flip),
             tooltip: 'Mirror',
-            onPressed: (){},
+            onPressed: () => Provider.of<ContraptionPosition>(context).mirror(),
           ),
         ]),
         Row(children: <Widget>[

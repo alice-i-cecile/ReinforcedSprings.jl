@@ -19,4 +19,17 @@ class ContraptionPosition with ChangeNotifier {
 
     notifyListeners();
   }
+
+  void mirror(){
+    double center = 200.0;
+    
+    for (int i = 0; i < points.length; i++){
+      // Distance between center and initial position is c - x
+      // Distance between center and final position must be the same
+      // Thus c + (c-x) gives the final position
+      points[i] = Offset(2*center - points[i].dx, points[i].dy);
+    }
+
+    notifyListeners();
+  }
 }
