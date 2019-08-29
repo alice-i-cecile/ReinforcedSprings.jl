@@ -39,8 +39,10 @@ class BuildInterface extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           BuildProperties(),
-          BuildTools(),
-          BuildComponents(),
+          Row(children: <Widget>[
+            BuildTools(),
+            BuildComponents()
+          ]),
           Consumer<Tool>(
             builder: (context, tool, child) => Text("Tool: ${tool.selectedTool}")
           )
