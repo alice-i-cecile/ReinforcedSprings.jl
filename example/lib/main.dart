@@ -67,8 +67,11 @@ class ModeTabs extends StatelessWidget {
           ),
           body: TabBarView(
             children: [
-              ChangeNotifierProvider(
-                builder: (context) => Tool(),
+              MultiProvider(
+                providers: [
+                  ChangeNotifierProvider(builder: (context) => Tool()),
+                  ChangeNotifierProvider(builder: (context) => Selection()),
+                ],
                 child: BuildTab(),
               ),
               MultiProvider(

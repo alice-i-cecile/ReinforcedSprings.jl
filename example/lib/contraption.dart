@@ -16,7 +16,7 @@ class ContraptionParameters with ChangeNotifier {
     notifyListeners();
   }
 
-  void spawn(position) {
+  void create(position) {
     points.add(position.relative);
 
     // Create complete graph connections
@@ -27,6 +27,22 @@ class ContraptionParameters with ChangeNotifier {
         lines.add([p1, p2]);
       }
     }
+
+    notifyListeners();
+  }
+
+  void delete(Set<int> selected){
+    points.remove(selected);
+
+    var newLines = [];
+    for (int i = 0; i < lines.length; i ++){
+      if (!(selected.contains(lines[i][0]) || 
+            selected.contains(lines[i][1]))){
+        newLines.add(lines[i]);
+      }
+    } 
+
+    lines = newLines;
 
     notifyListeners();
   }

@@ -15,6 +15,47 @@ class Tool with ChangeNotifier{
   }
 }
 
+class Selection with ChangeNotifier{
+  Set<int> selectedNodes = Set();
+
+  void clearSelection(){
+    selectedNodes = Set();
+
+    notifyListeners();
+  }
+
+
+
+  void select(position){
+    // TODO: get current point list
+    /*var points = Provider.of<ContraptionParameters>(context).points;
+
+    // Find nearest node to tapped position
+    double min = (points[0] - position).distanceSquared();
+    int nodeNum = 0;
+
+    for (int i = 1; i < points.length; i++){
+      double current = (points[i] - position).distanceSquared()
+      if (current < min){
+        nodeNum = i;
+        min = current;
+      }
+    } 
+
+    // Select if new, deselect otherwise
+    if (selectedNodes.contains(nodeNum)){
+      selectedNodes.add(nodeNum);
+    } else {
+      selectedNodes.remove(nodeNum);
+    }
+
+    notifyListeners();*/
+  }
+
+  // TODO: modify selected points
+  // TODO: dynamic gesture handling based on selected tool
+}
+
 // TAB
 class BuildTab extends StatelessWidget {
   @override
@@ -123,7 +164,7 @@ class BuildTools extends StatelessWidget{
           IconButton(                
             icon: const Icon(Icons.close),
             tooltip: 'Clear Selection',
-            onPressed: () => {},
+            onPressed: () => Provider.of<Selection>(context, listen: false).clearSelection(),
           ),
         ],),
         Row(children: <Widget>[
@@ -163,10 +204,12 @@ class BuildTools extends StatelessWidget{
           )
         ]),
         Row(children: <Widget>[
-          IconButton(                
-            icon: const Icon(Icons.delete),
-            tooltip: 'Delete',
-            onPressed: () => Provider.of<Tool>(context, listen: false).changeTool('Delete'),
+          Consumer<Selection>(
+            builder: (context, selection, child) => IconButton(                
+              icon: const Icon(Icons.delete),
+              tooltip: 'Delete',
+              onPressed: () => Provider.of<ContraptionParameters>(context, listen: false).delete(selection.selectedNodes),
+            ),
           )
         ])
       ])
@@ -207,7 +250,7 @@ class BuildDisplay extends StatelessWidget{
           border: Border.all(width: 2),
         ),
         child: PositionedTapDetector(
-          onTap: (position) => contraption.spawn(position)
+          onTap: (position) => contraption.create(position)
         )
       )
     );
