@@ -116,7 +116,7 @@ class BuildTools extends StatelessWidget{
           IconButton(                
             icon: const Icon(Icons.rotate_right),
             tooltip: 'Rotate',
-            onPressed: (){},
+            onPressed: () => Provider.of<ContraptionPosition>(context).rotate(3.14159/6.0),
           ),
           IconButton(                
             icon: const Icon(Icons.flip),

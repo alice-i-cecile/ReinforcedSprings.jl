@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 class ContraptionPosition with ChangeNotifier {
   var points = <Offset>[];
@@ -28,6 +29,23 @@ class ContraptionPosition with ChangeNotifier {
       // Distance between center and final position must be the same
       // Thus c + (c-x) gives the final position
       points[i] = Offset(2*center - points[i].dx, points[i].dy);
+    }
+
+    notifyListeners();
+  }
+
+  void rotate(angle){
+    double cx = 200.0;
+    double cy = 200.0;
+    
+    for (int i = 0; i < points.length; i++){
+      double dx = points[i].dx;
+      double dy = points[i].dy;
+
+      double rx = cos(angle) * (dx - cx) - sin(angle) * (dy - cy) + cx;
+      double ry = sin(angle) * (dx - cx) + cos(angle) * (dy - cy) + cy;
+
+      points[i] = Offset(rx, ry);
     }
 
     notifyListeners();
