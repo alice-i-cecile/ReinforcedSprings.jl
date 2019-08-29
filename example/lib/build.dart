@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'contraption.dart';
 
+// STATE
 class Tool with ChangeNotifier{
   String selectedTool = "Node";
 
@@ -24,24 +25,7 @@ class Selection with ChangeNotifier{
     notifyListeners();
   }
 
-
-
-  void select(position){
-    // TODO: get current point list
-    /*var points = Provider.of<ContraptionParameters>(context).points;
-
-    // Find nearest node to tapped position
-    double min = (points[0] - position).distanceSquared();
-    int nodeNum = 0;
-
-    for (int i = 1; i < points.length; i++){
-      double current = (points[i] - position).distanceSquared()
-      if (current < min){
-        nodeNum = i;
-        min = current;
-      }
-    } 
-
+  void select(nodeNum){
     // Select if new, deselect otherwise
     if (selectedNodes.contains(nodeNum)){
       selectedNodes.add(nodeNum);
@@ -49,11 +33,90 @@ class Selection with ChangeNotifier{
       selectedNodes.remove(nodeNum);
     }
 
-    notifyListeners();*/
+    notifyListeners();
   }
 
   // TODO: modify selected points
   // TODO: dynamic gesture handling based on selected tool
+}
+
+// Interaction
+void buildGesture(ContraptionParameters contraption, Offset position, String tool, Selection selection){
+  
+  double distance(Offset a, Offset b){
+    double d = (a.dx - b.dx)*(a.dx - b.dx) + 
+               (a.dy - b.dy)*(a.dy - b.dy);
+    return d;
+  }
+
+  switch(tool) {
+    case "Node": {
+      contraption.node(position);
+      break;
+    }
+    case "Spring": {
+      if (contraption.points.length >= 2){
+        var points = contraption.points;
+        double first = distance(points[0], position);
+        double second = distance(points[1], position);
+        int node1 = 0;
+        int node2 = 1;
+
+        // Node1 is always the closest node found
+        if (first > second){
+          var temp = first;
+          first = second;
+          second = temp;
+
+          var tempNode = node1;
+          node1 = node2;
+          node2 = tempNode;
+        }
+
+        for (int i = 1; i < points.length; i++){
+          double current = distance(points[i], position);
+          if (current < second){
+            if (current < first){
+              second = first;
+              node2 = node1;
+
+              first = current;
+              node1 = i;
+            } else {
+              second = current;
+              node2 = i;
+            }
+          }
+        } 
+
+        contraption.spring(node1, node2);
+      }
+
+      break;
+    }
+    case "Select": {
+      if (contraption.points.length >= 1){
+        var points = contraption.points;
+            
+        // Find nearest node to tapped position
+        double min = distance(points[0], position);
+        int nodeNum = 0;
+
+        for (int i = 1; i < points.length; i++){
+          double current = distance(points[i], position);
+          if (current < min){
+            nodeNum = i;
+            min = current;
+          }
+        } 
+
+        selection.select(nodeNum);      
+      }
+
+
+      break;
+    }
+  }
 }
 
 // TAB
@@ -151,6 +214,7 @@ class BuildProperties extends StatelessWidget{
 }
 
 class BuildTools extends StatelessWidget{
+  //TODO: change connect and disconnect to ContraptionParameters methods
   @override
   Widget build(BuildContext context) {
     return(
@@ -249,14 +313,19 @@ class BuildDisplay extends StatelessWidget{
         decoration: BoxDecoration(
           border: Border.all(width: 2),
         ),
-        child: PositionedTapDetector(
-          onTap: (position) => contraption.create(position)
+        child: Consumer<Selection>(
+          builder: (context, selection, child) => Consumer<Tool>(
+            builder: (context, tool, child) => PositionedTapDetector(
+              onTap: (position) => buildGesture(contraption, position.relative, tool.selectedTool, selection)
+            )
+          )
         )
       )
     );
   }
 }
 
+// TODO: Display selected nodes
 class BuildPainter extends CustomPainter {
 
   ContraptionParameters contraptionParameters;

@@ -7,26 +7,23 @@ import 'engine.dart';
 
 class ContraptionParameters with ChangeNotifier {
   var points = <Offset>[];
-  var lines = [];
+  var lines = Set();
 
   void blank(){
     points = <Offset>[];
-    lines = [];
+    lines = Set();
 
     notifyListeners();
   }
 
-  void create(position) {
-    points.add(position.relative);
+  void node(position) {
+    points.add(position);
 
-    // Create complete graph connections
-    if (points.length > 1){
-      int p1 = points.length - 1;
+    notifyListeners();
+  }
 
-      for (int p2 = 0; p2 < p1; p2++){
-        lines.add([p1, p2]);
-      }
-    }
+  void spring(int node1, int node2){
+    lines.add([node1, node2]);
 
     notifyListeners();
   }
@@ -34,11 +31,11 @@ class ContraptionParameters with ChangeNotifier {
   void delete(Set<int> selected){
     points.remove(selected);
 
-    var newLines = [];
-    for (int i = 0; i < lines.length; i ++){
-      if (!(selected.contains(lines[i][0]) || 
-            selected.contains(lines[i][1]))){
-        newLines.add(lines[i]);
+    var newLines = Set();
+    for (var line in lines){
+      if (!(selected.contains(line[0]) || 
+            selected.contains(line[1]))){
+        newLines.add(line);
       }
     } 
 
@@ -47,6 +44,7 @@ class ContraptionParameters with ChangeNotifier {
     notifyListeners();
   }
 
+  // TODO: vary mirror based on selected nodes
   void mirror(){
     double center = 200.0;
     
@@ -60,6 +58,7 @@ class ContraptionParameters with ChangeNotifier {
     notifyListeners();
   }
 
+  // TODO: vary rotate based on selected nodes
   void rotate(angle){
     double cx = 200.0;
     double cy = 200.0;
@@ -80,7 +79,7 @@ class ContraptionParameters with ChangeNotifier {
 
 class ContraptionState with ChangeNotifier{
   var points = <Offset>[];
-  var lines = [];
+  var lines = Set();
   var velocity = [];
 
   // TODO: get appropriate context
