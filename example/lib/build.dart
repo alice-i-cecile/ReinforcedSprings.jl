@@ -171,20 +171,18 @@ class BuildDisplay extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return(
-      Consumer<ContraptionPosition>(
-        builder: (context, contraption, child) => CustomPaint(
-          painter: ContraptionPainter(contraption),
-          child: Container(
-            width: 400,
-            height: 400,
-            decoration: BoxDecoration(
-              border: Border.all(width: 2),
-            ),
-            child: PositionedTapDetector(
-              onTap: (position) => contraption.spawn(position)
-            )
-          )
+    var contraption = Provider.of<ContraptionPosition>(context, listen: false);
+
+    return CustomPaint(
+      painter: ContraptionPainter(contraption),
+      child: Container(
+        width: 400,
+        height: 400,
+        decoration: BoxDecoration(
+          border: Border.all(width: 2),
+        ),
+        child: PositionedTapDetector(
+          onTap: (position) => contraption.spawn(position)
         )
       )
     );
@@ -195,7 +193,7 @@ class ContraptionPainter extends CustomPainter {
 
   ContraptionPosition contraptionPosition;
 
-  ContraptionPainter(ContraptionPosition contraptionPosition) {
+  ContraptionPainter(ContraptionPosition contraptionPosition) : super(repaint: contraptionPosition) {
     this.contraptionPosition = contraptionPosition;
   }
   
