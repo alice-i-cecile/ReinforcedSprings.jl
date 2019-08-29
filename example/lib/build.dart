@@ -119,9 +119,9 @@ class BuildTools extends StatelessWidget{
             onPressed: () => Provider.of<Tool>(context, listen: false).changeTool('Select'),
           ),
           IconButton(                
-            icon: const Icon(Icons.delete),
-            tooltip: 'Delete',
-            onPressed: () => Provider.of<Tool>(context, listen: false).changeTool('Delete'),
+            icon: const Icon(Icons.close),
+            tooltip: 'Clear Selection',
+            onPressed: () => {},
           ),
         ],),
         Row(children: <Widget>[
@@ -158,8 +158,15 @@ class BuildTools extends StatelessWidget{
             icon: const Icon(Icons.redo),
             tooltip: 'Redo',
             onPressed: (){},
-          ),
-        ],)
+          )
+        ]),
+        Row(children: <Widget>[
+          IconButton(                
+            icon: const Icon(Icons.delete),
+            tooltip: 'Delete',
+            onPressed: () => Provider.of<Tool>(context, listen: false).changeTool('Delete'),
+          )
+        ])
       ])
     );
   }
