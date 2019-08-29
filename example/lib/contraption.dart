@@ -1,6 +1,9 @@
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'dart:math';
+
+import 'engine.dart';
 
 class ContraptionParameters with ChangeNotifier {
   var points = <Offset>[];
@@ -62,6 +65,36 @@ class ContraptionParameters with ChangeNotifier {
 class ContraptionState with ChangeNotifier{
   var points = <Offset>[];
   var lines = [];
+
+  // TODO: get appropriate context
+  var context;
+
+  //var environment = Provider.of<Environment>(context);
+  //var contraptionParameters = Provider.of<ContraptionParameters>(context);
+
+  void reset(){
+    this.pause();
+
+    //points = contraptionParameters.points;
+    //lines = contraptionParameters.lines;
+
+    notifyListeners();
+  }
+
+  void play(){
+    // Start a timer that repeats itself
+
+    //var newState = engine(environment, contraptionParameters, this);
+
+    //points = newState.points;
+    //lines = newState.lines;
+
+    notifyListeners();
+  }
+
+  void pause(){
+
+  }
 }
 
 class Environment with ChangeNotifier{

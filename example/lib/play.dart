@@ -2,29 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'contraption.dart';
-import 'engine.dart';
 
 class GameStatus with ChangeNotifier{
-  String gameOn = 'Pause';
   String engine = 'Dart';
-
-  void play(){
-    gameOn = 'Play';
-
-    notifyListeners();
-  }
-
-  void pause(){
-    gameOn = 'Pause';
-
-    notifyListeners();
-  }
-
-  void reset(){
-    gameOn = 'Pause';
-
-    notifyListeners();
-  }
+  double fps = 60.0;
 
   void setEngine(String engineName){
     engine = engineName;
@@ -93,23 +74,22 @@ class PlayStatus extends StatelessWidget{
             IconButton(                
               icon: const Icon(Icons.play_arrow),
               tooltip: 'Play',
-              onPressed: () => Provider.of<GameStatus>(context, listen: false).play(),
+              onPressed: () => Provider.of<ContraptionState>(context, listen: false).play(),
             ),
             IconButton(                
               icon: const Icon(Icons.pause),
               tooltip: 'Pause',
-              onPressed: () => Provider.of<GameStatus>(context, listen: false).pause(),
+              onPressed: () => Provider.of<ContraptionState>(context, listen: false).pause(),
             ),
             IconButton(                
               icon: const Icon(Icons.replay),
               tooltip: 'Reset',
-              onPressed: () => Provider.of<GameStatus>(context, listen: false).reset(),
+              onPressed: () => Provider.of<ContraptionState>(context, listen: false).reset(),
             ),
           ],
         ),
-        Text("FPS: ??"),
         Consumer<GameStatus>(
-            builder: (context, status, child) => Text("${status.gameOn} / ${status.engine}")
+            builder: (context, status, child) => Text("Running using ${status.engine} at ${status.fps} FPS")
           )
       ],)
     );

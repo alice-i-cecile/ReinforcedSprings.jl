@@ -15,8 +15,11 @@ main() {
   debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
 
   runApp(MaterialApp(
-    home: ChangeNotifierProvider(
-      builder: (context) => ContraptionParameters(),
+    home: MultiProvider(
+      providers: [
+        ChangeNotifierProvider(builder: (context) => ContraptionParameters()),
+        ChangeNotifierProvider(builder: (context) => Environment()),
+      ],
       child: ModeTabs(),
     )
   ));
@@ -68,8 +71,11 @@ class ModeTabs extends StatelessWidget {
                 builder: (context) => Tool(),
                 child: BuildTab(),
               ),
-              ChangeNotifierProvider(
-                builder: (context) => GameStatus(),
+              MultiProvider(
+                providers: [
+                  ChangeNotifierProvider(builder: (context) => GameStatus()),
+                  ChangeNotifierProvider(builder: (context) => ContraptionState()),
+                ],
                 child: PlayTab(),
               ),
               LearnTab(),
