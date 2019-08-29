@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'contraption.dart';
 
 // STATE
+// TODO: add drag tool
 class Tool with ChangeNotifier{
   String selectedTool = "Node";
 
@@ -27,7 +28,7 @@ class Selection with ChangeNotifier{
 
   void select(nodeNum){
     // Select if new, deselect otherwise
-    if (selectedNodes.contains(nodeNum)){
+    if (!selectedNodes.contains(nodeNum)){
       selectedNodes.add(nodeNum);
     } else {
       selectedNodes.remove(nodeNum);
@@ -35,14 +36,10 @@ class Selection with ChangeNotifier{
 
     notifyListeners();
   }
-
-  // TODO: modify selected points
-  // TODO: dynamic gesture handling based on selected tool
 }
 
 // Interaction
 void buildGesture(ContraptionParameters contraption, Offset position, String tool, Selection selection){
-  
   double distance(Offset a, Offset b){
     double d = (a.dx - b.dx)*(a.dx - b.dx) + 
                (a.dy - b.dy)*(a.dy - b.dy);
@@ -110,9 +107,9 @@ void buildGesture(ContraptionParameters contraption, Offset position, String too
           }
         } 
 
-        selection.select(nodeNum);      
+        //selection.selectedNodes.add(nodeNum);
+        selection.select(nodeNum);    
       }
-
 
       break;
     }
@@ -149,6 +146,9 @@ class BuildInterface extends StatelessWidget {
           ]),
           Consumer<Tool>(
             builder: (context, tool, child) => Text("Tool: ${tool.selectedTool}")
+          ),
+          Consumer<Selection>(
+            builder: (context, selection, child) => Text("Selection: ${selection.selectedNodes}")
           )
         ]
       )
@@ -304,18 +304,19 @@ class BuildDisplay extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     var contraption = Provider.of<ContraptionParameters>(context, listen: false);
+    var selected = Provider.of<Selection>(context, listen: false);
 
     return CustomPaint(
-      painter: BuildPainter(contraption),
+      painter: BuildPainter(contraption, selected),
       child: Container(
         width: 400,
         height: 400,
         decoration: BoxDecoration(
           border: Border.all(width: 2),
         ),
-        child: Consumer<Selection>(
-          builder: (context, selection, child) => Consumer<Tool>(
-            builder: (context, tool, child) => PositionedTapDetector(
+        child: Consumer<Tool>(
+          builder: (context, tool, child) => Consumer<Selection>(
+            builder: (context, selection, child) => PositionedTapDetector(
               onTap: (position) => buildGesture(contraption, position.relative, tool.selectedTool, selection)
             )
           )
@@ -325,24 +326,35 @@ class BuildDisplay extends StatelessWidget{
   }
 }
 
-// TODO: Display selected nodes
 class BuildPainter extends CustomPainter {
-
   ContraptionParameters contraptionParameters;
+  Selection selection;
 
-  BuildPainter(ContraptionParameters contraptionParameters) : super(repaint: contraptionParameters) {
+  // TODO: repaint when selection changes
+  BuildPainter(ContraptionParameters contraptionParameters, Selection selection) : super(repaint: contraptionParameters) {
     this.contraptionParameters = contraptionParameters;
+    this.selection = selection;
   }
   
   @override
   void paint(Canvas canvas, Size size) {
     double pointRadius = 3.0;
     var pointPaint = Paint();
+    var selectPaint = Paint();
+    selectPaint.color = Colors.red;
 
     var linePaint = Paint();
 
-    for (var point in contraptionParameters.points){
-      canvas.drawCircle(point, pointRadius, pointPaint);
+    var selected = selection.selectedNodes;
+
+    for (int i = 0; i < contraptionParameters.points.length; i++){
+      var point = contraptionParameters.points[i];
+      
+      if (selected.contains(i)) {
+        canvas.drawCircle(point, pointRadius, selectPaint);
+      } else {
+        canvas.drawCircle(point, pointRadius, pointPaint);
+      }
     }
 
     for (var line in contraptionParameters.lines){

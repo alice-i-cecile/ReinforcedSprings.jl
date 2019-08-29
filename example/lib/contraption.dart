@@ -29,6 +29,7 @@ class ContraptionParameters with ChangeNotifier {
   }
 
   void delete(Set<int> selected){
+    // TODO: does not remove selected nodes
     points.remove(selected);
 
     var newLines = Set();
