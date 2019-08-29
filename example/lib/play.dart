@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'contraption.dart';
+import 'engine.dart';
 
 class GameStatus with ChangeNotifier{
   String gameOn = 'Pause';
@@ -120,7 +121,7 @@ class PlayDisplay extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    var contraption = Provider.of<ContraptionPosition>(context, listen: false);
+    var contraption = Provider.of<ContraptionParameters>(context, listen: false);
 
     return CustomPaint(
       painter: PlayPainter(contraption),
@@ -137,10 +138,10 @@ class PlayDisplay extends StatelessWidget{
 
 class PlayPainter extends CustomPainter {
 
-  ContraptionPosition contraptionPosition;
+  ContraptionParameters contraptionParameters;
 
-  PlayPainter(ContraptionPosition contraptionPosition) : super(repaint: contraptionPosition) {
-    this.contraptionPosition = contraptionPosition;
+  PlayPainter(ContraptionParameters contraptionParameters) : super(repaint: contraptionParameters) {
+    this.contraptionParameters = contraptionParameters;
   }
   
   @override
@@ -150,12 +151,12 @@ class PlayPainter extends CustomPainter {
 
     var linePaint = Paint();
 
-    for (var point in contraptionPosition.points){
+    for (var point in contraptionParameters.points){
       canvas.drawCircle(point, pointRadius, pointPaint);
     }
 
-    for (var line in contraptionPosition.lines){
-      canvas.drawLine(contraptionPosition.points[line[0]], contraptionPosition.points[line[1]], linePaint);
+    for (var line in contraptionParameters.lines){
+      canvas.drawLine(contraptionParameters.points[line[0]], contraptionParameters.points[line[1]], linePaint);
     }
   }
 

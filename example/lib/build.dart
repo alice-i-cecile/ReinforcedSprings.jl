@@ -128,12 +128,12 @@ class BuildTools extends StatelessWidget{
           IconButton(                
             icon: const Icon(Icons.rotate_right),
             tooltip: 'Rotate',
-            onPressed: () => Provider.of<ContraptionPosition>(context, listen: false).rotate(3.14159/6.0),
+            onPressed: () => Provider.of<ContraptionParameters>(context, listen: false).rotate(3.14159/6.0),
           ),
           IconButton(                
             icon: const Icon(Icons.flip),
             tooltip: 'Mirror',
-            onPressed: () => Provider.of<ContraptionPosition>(context, listen: false).mirror(),
+            onPressed: () => Provider.of<ContraptionParameters>(context, listen: false).mirror(),
           ),
         ]),
         Row(children: <Widget>[
@@ -187,7 +187,7 @@ class BuildDisplay extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    var contraption = Provider.of<ContraptionPosition>(context, listen: false);
+    var contraption = Provider.of<ContraptionParameters>(context, listen: false);
 
     return CustomPaint(
       painter: BuildPainter(contraption),
@@ -207,10 +207,10 @@ class BuildDisplay extends StatelessWidget{
 
 class BuildPainter extends CustomPainter {
 
-  ContraptionPosition contraptionPosition;
+  ContraptionParameters contraptionParameters;
 
-  BuildPainter(ContraptionPosition contraptionPosition) : super(repaint: contraptionPosition) {
-    this.contraptionPosition = contraptionPosition;
+  BuildPainter(ContraptionParameters contraptionParameters) : super(repaint: contraptionParameters) {
+    this.contraptionParameters = contraptionParameters;
   }
   
   @override
@@ -220,12 +220,14 @@ class BuildPainter extends CustomPainter {
 
     var linePaint = Paint();
 
-    for (var point in contraptionPosition.points){
+    for (var point in contraptionParameters.points){
       canvas.drawCircle(point, pointRadius, pointPaint);
     }
 
-    for (var line in contraptionPosition.lines){
-      canvas.drawLine(contraptionPosition.points[line[0]], contraptionPosition.points[line[1]], linePaint);
+    for (var line in contraptionParameters.lines){
+      canvas.drawLine(contraptionParameters.points[line[0]], 
+                      contraptionParameters.points[line[1]], 
+                      linePaint);
     }
   }
 

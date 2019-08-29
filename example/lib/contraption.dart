@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
-class ContraptionPosition with ChangeNotifier {
+class ContraptionParameters with ChangeNotifier {
   var points = <Offset>[];
   var lines = [];
 
@@ -57,4 +57,15 @@ class ContraptionPosition with ChangeNotifier {
 
     notifyListeners();
   }
+}
+
+class ContraptionState with ChangeNotifier{
+  var points = <Offset>[];
+  var lines = [];
+}
+
+class Environment with ChangeNotifier{
+  double gravity = 10;
+  double drag = 0.01;
+  double elasticity = 0.1;
 }
