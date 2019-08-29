@@ -159,8 +159,12 @@ class BuildComponents extends StatelessWidget{
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        Text("Point"),
-        Text("Spring")
+        RaisedButton(
+          onPressed: (){},
+          child: Text("Node")),
+        RaisedButton(
+          onPressed: (){},
+          child: Text("Spring"))
       ],
     );
   }
