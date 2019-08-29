@@ -64,7 +64,10 @@ class ModeTabs extends StatelessWidget {
           ),
           body: TabBarView(
             children: [
-              BuildTab(),
+              ChangeNotifierProvider(
+                builder: (context) => Tool(),
+                child: BuildTab(),
+              ),
               PlayTab(),
               LearnTab(),
             ],

@@ -5,6 +5,15 @@ import 'package:flutter/material.dart';
 
 import 'contraption.dart';
 
+class Tool with ChangeNotifier{
+  String selectedTool = "Node";
+
+  void changeTool(String toolName){
+    selectedTool = toolName;
+
+    notifyListeners();
+  }
+}
 
 // TAB
 class BuildTab extends StatelessWidget {
@@ -31,7 +40,9 @@ class BuildInterface extends StatelessWidget {
         children: <Widget>[
           BuildProperties(),
           BuildTools(),
-          BuildComponents()
+          BuildComponents(),
+          Consumer<Tool>(
+            builder: (context, tool, child) => Text("Tool: ${tool.selectedTool}"))
         ]
       )
     );
@@ -104,12 +115,12 @@ class BuildTools extends StatelessWidget{
           IconButton(                
             icon: const Icon(Icons.near_me),
             tooltip: 'Select',
-            onPressed: (){},
+            onPressed: () => Provider.of<Tool>(context, listen: false).changeTool('Select'),
           ),
           IconButton(                
             icon: const Icon(Icons.delete),
             tooltip: 'Delete',
-            onPressed: (){},
+            onPressed: () => Provider.of<Tool>(context, listen: false).changeTool('Delete'),
           ),
         ],),
         Row(children: <Widget>[
@@ -128,12 +139,12 @@ class BuildTools extends StatelessWidget{
           IconButton(                
             icon: const Icon(Icons.share),
             tooltip: 'Connect',
-            onPressed: (){},
+            onPressed: () => Provider.of<Tool>(context, listen: false).changeTool('Connect'),
           ),
           IconButton(                
             icon: const Icon(Icons.scatter_plot),
             tooltip: 'Disconnect',
-            onPressed: (){},
+            onPressed: () => Provider.of<Tool>(context, listen: false).changeTool('Disconnect'),
           ),
         ],),
         Row(children: <Widget>[
@@ -160,10 +171,10 @@ class BuildComponents extends StatelessWidget{
     return Column(
       children: <Widget>[
         RaisedButton(
-          onPressed: (){},
+          onPressed: () => Provider.of<Tool>(context, listen: false).changeTool('Node'),
           child: Text("Node")),
         RaisedButton(
-          onPressed: (){},
+          onPressed: () => Provider.of<Tool>(context, listen: false).changeTool('Spring'),
           child: Text("Spring"))
       ],
     );
