@@ -6,6 +6,13 @@ class ContraptionPosition with ChangeNotifier {
   var points = <Offset>[];
   var lines = [];
 
+  void blank(){
+    points = <Offset>[];
+    lines = [];
+
+    notifyListeners();
+  }
+
   void spawn(position) {
     points.add(position.relative);
 

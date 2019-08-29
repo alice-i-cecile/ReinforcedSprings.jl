@@ -35,7 +35,7 @@ class ModeTabs extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.add_circle_outline),
                 tooltip: 'New Contraption',
-                onPressed: (){},
+                onPressed: () => Provider.of<ContraptionPosition>(context).blank(),
               ),
               IconButton(
                 icon: const Icon(Icons.folder_open),
