@@ -246,7 +246,7 @@ class ContraptionState with ChangeNotifier{
   }
 
   void play(Environment environment, ContraptionParameters contraptionParameters){
-    int timeStep = 200;
+    int timeStep = 50;
     Timer.periodic(Duration(milliseconds: timeStep),
     (timer){
       simulate(environment, contraptionParameters, timeStep.toDouble()/1000);
@@ -272,5 +272,5 @@ class ContraptionState with ChangeNotifier{
 class Environment with ChangeNotifier{
   double gravity = 10;
   double drag = 0.01;
-  double elasticity = 0.1;
+  double elasticity = 0.8;
 }
