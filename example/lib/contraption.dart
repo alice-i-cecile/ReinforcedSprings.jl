@@ -52,15 +52,42 @@ class ContraptionParameters with ChangeNotifier {
     notifyListeners();
   }
 
-  // TODO: vary mirror based on selected nodes
-  void mirror(){
-    double center = 200.0;
+  // TODO: allow for mirroring around other axes
+  void mirror(Set<int> selected){
+    double width = 400.0;
+    double sumX = 0.0;
+    int n = selected.length;
+
+    if (selected.length == 0){
+      n = points.length;
+      for (int i = 0; i < points.length; i++){
+        sumX += points[i].dx;
+      }
+    } else {
+      for (int i = 0; i < points.length; i++){
+        if (selected.contains(i)){
+          sumX += points[i].dx;
+        }
+      }
+    }
+
+    double center = sumX/n;
     
     for (int i = 0; i < points.length; i++){
       // Distance between center and initial position is c - x
       // Distance between center and final position must be the same
       // Thus c + (c-x) gives the final position
-      points[i] = Offset(2*center - points[i].dx, points[i].dy);
+      if (selected.length == 0 || selected.contains(i)){
+        double newX = 2*center - points[i].dx;
+
+        if (newX < 0){
+          newX = 0;
+        } else if (newX > width){
+          newX = width;
+        }
+        
+        points[i] = Offset(newX, points[i].dy);
+      }
     }
 
     notifyListeners();

@@ -237,10 +237,12 @@ class BuildTools extends StatelessWidget{
             tooltip: 'Rotate',
             onPressed: () => Provider.of<ContraptionParameters>(context, listen: false).rotate(3.14159/6.0),
           ),
-          IconButton(                
-            icon: const Icon(Icons.flip),
-            tooltip: 'Mirror',
-            onPressed: () => Provider.of<ContraptionParameters>(context, listen: false).mirror(),
+          Consumer<Selection>(
+            builder: (context, selection, child) => IconButton(
+              icon: const Icon(Icons.flip),
+              tooltip: 'Mirror',
+              onPressed: () => Provider.of<ContraptionParameters>(context, listen: false).mirror(selection.selectedNodes)
+            )
           ),
         ]),
         Row(children: <Widget>[
