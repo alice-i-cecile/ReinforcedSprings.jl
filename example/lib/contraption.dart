@@ -29,7 +29,6 @@ class ContraptionParameters with ChangeNotifier {
   }
 
   void delete(Set<int> selected){
-    // TODO: selection changes when points are deleted
     var newPoints = <Offset>[];
 
     for (int i = 0; i < points.length; i++){

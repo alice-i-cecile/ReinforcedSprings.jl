@@ -283,7 +283,11 @@ class BuildTools extends StatelessWidget{
             builder: (context, selection, child) => IconButton(                
               icon: const Icon(Icons.delete),
               tooltip: 'Delete',
-              onPressed: () => Provider.of<ContraptionParameters>(context, listen: false).delete(selection.selectedNodes),
+              onPressed: (){
+                Provider.of<ContraptionParameters>(context, listen: false).delete(selection.selectedNodes);
+                selection.clearSelection();
+                }
+                ,
             ),
           )
         ])
