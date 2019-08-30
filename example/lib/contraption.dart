@@ -176,10 +176,14 @@ class ContraptionParameters with ChangeNotifier {
     double height = 400.0;
 
     int n = selected.length;
+    if (n == 0){
+      n = points.length;
+    }
+
     double sumX = 0.0;
     double sumY = 0.0;
     for (int i = 0; i < points.length; i++){
-      if (selected.contains(i)){
+      if (selected.contains(i) || selected.length == 0){
         sumX += points[i].dx;
         sumY += points[i].dy;
       }
@@ -189,7 +193,7 @@ class ContraptionParameters with ChangeNotifier {
     var shift = [position.dx - center[0], position.dy - center[1]];
 
     for (int i = 0; i < points.length; i++){
-      if (selected.contains(i)){
+      if (selected.contains(i) || selected.length == 0){
         double newX = points[i].dx + shift[0];
         double newY = points[i].dy + shift[1];
 
