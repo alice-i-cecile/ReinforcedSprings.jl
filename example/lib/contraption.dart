@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'dart:async';
 
 import 'engine.dart';
 
@@ -245,10 +246,16 @@ class ContraptionState with ChangeNotifier{
   }
 
   void play(Environment environment, ContraptionParameters contraptionParameters){
-    // Start a timer that repeats itself
+    int timeStep = 200;
+    Timer.periodic(Duration(milliseconds: timeStep),
+    (timer){
+      simulate(environment, contraptionParameters, timeStep.toDouble()/1000);
+    });
+  }
 
+  void simulate(Environment environment, ContraptionParameters contraptionParameters, double timeStep){
     if (velocity.length != 0){
-      var newState = engine(environment, contraptionParameters, this);
+      var newState = engine(environment, contraptionParameters, this, timeStep);
       points = newState['points'];
       velocity = newState['velocity'];
 
@@ -263,7 +270,7 @@ class ContraptionState with ChangeNotifier{
 }
 
 class Environment with ChangeNotifier{
-  double gravity = 10;
+  double gravity = 50;
   double drag = 0.01;
   double elasticity = 0.1;
 }

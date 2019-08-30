@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 
 import 'contraption.dart';
 
-engine(Environment environment, ContraptionParameters contraptionParameters, ContraptionState contraptionState, {double timeStep: 1/60}){
+engine(Environment environment, ContraptionParameters contraptionParameters, ContraptionState contraptionState, double timeStep){
 
   var newPoints = contraptionState.points;
   var newVelocity = contraptionState.velocity;
