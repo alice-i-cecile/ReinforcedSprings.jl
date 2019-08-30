@@ -1,6 +1,5 @@
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'dart:math';
 
 import 'engine.dart';
@@ -235,34 +234,31 @@ class ContraptionState with ChangeNotifier{
   var lines = Set();
   var velocity = [];
 
-  // TODO: get appropriate context
-  var context;
-
-  //var environment = Provider.of<Environment>(context);
-  //var contraptionParameters = Provider.of<ContraptionParameters>(context);
-
-  void reset(){
+  void reset(ContraptionParameters contraptionParameters){
     this.pause();
 
-    //points = contraptionParameters.points;
-    //lines = contraptionParameters.lines;
-    //velocity = [[0.0, 0.0] for int i in 1:points.length];
+    points = contraptionParameters.points;
+    lines = contraptionParameters.lines;
+    velocity = List.filled(points.length, [0.0, 0.0]);
 
     notifyListeners();
   }
 
-  void play(){
+  void play(Environment environment, ContraptionParameters contraptionParameters){
     // Start a timer that repeats itself
 
-    //var newState = engine(environment, contraptionParameters, this);
-    //points = newState['points'];
-    //velocity = newState['velocity'];
+    if (velocity.length != 0){
+      var newState = engine(environment, contraptionParameters, this);
+      points = newState['points'];
+      velocity = newState['velocity'];
 
-    notifyListeners();
+      notifyListeners();
+    }
   }
 
   void pause(){
 
+    notifyListeners();
   }
 }
 

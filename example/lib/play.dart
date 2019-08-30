@@ -71,26 +71,32 @@ class PlayStatus extends StatelessWidget{
       Column(children: <Widget>[
         Row(
           children: <Widget>[
-            IconButton(                
-              icon: const Icon(Icons.play_arrow),
-              tooltip: 'Play',
-              onPressed: () => Provider.of<ContraptionState>(context, listen: false).play(),
+            Consumer<ContraptionParameters>(builder: (context, parameters, child) =>
+              Consumer<Environment>(builder: (context, environment, child) =>
+                IconButton(
+                  icon: const Icon(Icons.play_arrow),
+                  tooltip: 'Play',
+                  onPressed: () => Provider.of<ContraptionState>(context, listen: false).play(environment, parameters)
+                )
+              )
             ),
             IconButton(                
               icon: const Icon(Icons.pause),
               tooltip: 'Pause',
               onPressed: () => Provider.of<ContraptionState>(context, listen: false).pause(),
             ),
-            IconButton(                
-              icon: const Icon(Icons.replay),
-              tooltip: 'Reset',
-              onPressed: () => Provider.of<ContraptionState>(context, listen: false).reset(),
-            ),
+            Consumer<ContraptionParameters>(
+              builder: (context, parameters, child) => IconButton(
+                icon: const Icon(Icons.replay),
+                tooltip: 'Reset',
+                onPressed: () => Provider.of<ContraptionState>(context, listen: false).reset(parameters)
+              )
+            )
           ],
         ),
         Consumer<GameStatus>(
             builder: (context, status, child) => Text('Running using ${status.engine} at ${status.fps} FPS')
-          )
+        )
       ],)
     );
   }
@@ -101,7 +107,7 @@ class PlayDisplay extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    var contraption = Provider.of<ContraptionParameters>(context, listen: false);
+    var contraption = Provider.of<ContraptionState>(context, listen: false);
 
     return CustomPaint(
       painter: PlayPainter(contraption),
@@ -118,10 +124,10 @@ class PlayDisplay extends StatelessWidget{
 
 class PlayPainter extends CustomPainter {
 
-  ContraptionParameters contraptionParameters;
+  ContraptionState contraptionState;
 
-  PlayPainter(ContraptionParameters contraptionParameters) : super(repaint: contraptionParameters) {
-    this.contraptionParameters = contraptionParameters;
+  PlayPainter(ContraptionState contraptionState) : super(repaint: contraptionState) {
+    this.contraptionState = contraptionState;
   }
   
   @override
@@ -131,12 +137,14 @@ class PlayPainter extends CustomPainter {
 
     var linePaint = Paint();
 
-    for (var point in contraptionParameters.points){
+    for (var point in contraptionState.points){
       canvas.drawCircle(point, pointRadius, pointPaint);
     }
 
-    for (var line in contraptionParameters.lines){
-      canvas.drawLine(contraptionParameters.points[line[0]], contraptionParameters.points[line[1]], linePaint);
+    for (var line in contraptionState.lines){
+      canvas.drawLine(contraptionState.points[line[0]], 
+                      contraptionState.points[line[1]], 
+                      linePaint);
     }
   }
 
