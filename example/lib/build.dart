@@ -244,15 +244,19 @@ class BuildTools extends StatelessWidget{
           ),
         ]),
         Row(children: <Widget>[
-          IconButton(                
-            icon: const Icon(Icons.share),
-            tooltip: 'Connect',
-            onPressed: () => Provider.of<Tool>(context, listen: false).changeTool('Connect'),
+          Consumer<Selection>(
+            builder: (context, selection, child) => IconButton(
+              icon: const Icon(Icons.share),
+              tooltip: 'Connect',
+              onPressed: () => Provider.of<ContraptionParameters>(context, listen: false).connect(selection.selectedNodes)
+            ),
           ),
-          IconButton(                
-            icon: const Icon(Icons.scatter_plot),
-            tooltip: 'Disconnect',
-            onPressed: () => Provider.of<Tool>(context, listen: false).changeTool('Disconnect'),
+          Consumer<Selection>(
+            builder: (context, selection, child) => IconButton(
+              icon: const Icon(Icons.scatter_plot),
+              tooltip: 'Disconnect',
+              onPressed: () => Provider.of<ContraptionParameters>(context, listen: false).disconnect(selection.selectedNodes)
+            ),
           ),
         ],),
         Row(children: <Widget>[

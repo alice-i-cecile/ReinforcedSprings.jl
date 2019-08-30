@@ -83,6 +83,33 @@ class ContraptionParameters with ChangeNotifier {
 
     notifyListeners();
   }
+
+  void connect(Set<int> selected){
+    for (int i in selected){
+      for (int j in selected){
+        if (i > j){
+          lines.add([i, j]);
+        }
+      }
+    }
+
+    notifyListeners();
+  }
+
+  void disconnect(Set<int> selected){
+    var newLines = Set();
+    
+    for (var line in lines){
+      if (!(selected.contains(line[0]) && 
+            selected.contains(line[1]))){
+            newLines.add(line);
+          }
+    }
+
+    lines = newLines;
+
+    notifyListeners();
+  }
 }
 
 class ContraptionState with ChangeNotifier{
