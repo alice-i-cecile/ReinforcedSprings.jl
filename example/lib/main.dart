@@ -33,7 +33,7 @@ class ModeTabs extends StatelessWidget {
         length: 3,
         child: Scaffold(
           appBar: AppBar(
-            title: Text("My Contraption"),
+            title: Text('My Contraption'),
             actions: <Widget>[
               IconButton(
                 icon: const Icon(Icons.add_circle_outline),

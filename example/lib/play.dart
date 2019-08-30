@@ -47,7 +47,7 @@ class PlayEngine extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return(
-      Text("Select engine:")
+      Text('Select engine:')
     );
   }
 }
@@ -56,9 +56,9 @@ class PlayControls extends StatelessWidget{
   Widget build(BuildContext context) {
     return(
       Column(children: <Widget>[
-        Text("WASD / Arrow Keys: Apply directional force."),
-        Text("Z/X: Apply torque."),
-        Text("Hold: Accelerate towards the point selected.")
+        Text('WASD / Arrow Keys: Apply directional force.'),
+        Text('Z/X: Apply torque.'),
+        Text('Hold: Accelerate towards the point selected.')
       ])
     );
   }
@@ -89,7 +89,7 @@ class PlayStatus extends StatelessWidget{
           ],
         ),
         Consumer<GameStatus>(
-            builder: (context, status, child) => Text("Running using ${status.engine} at ${status.fps} FPS")
+            builder: (context, status, child) => Text('Running using ${status.engine} at ${status.fps} FPS')
           )
       ],)
     );

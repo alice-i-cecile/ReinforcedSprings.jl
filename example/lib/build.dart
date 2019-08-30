@@ -8,7 +8,7 @@ import 'contraption.dart';
 // STATE
 // TODO: add drag tool
 class Tool with ChangeNotifier{
-  String selectedTool = "Node";
+  String selectedTool = 'Node';
 
   void changeTool(String toolName){
     selectedTool = toolName;
@@ -47,11 +47,11 @@ void buildGesture(ContraptionParameters contraption, Offset position, String too
   }
 
   switch(tool) {
-    case "Node": {
+    case 'Node': {
       contraption.node(position);
       break;
     }
-    case "Spring": {
+    case 'Spring': {
       if (contraption.points.length >= 2){
         var points = contraption.points;
         double first = distance(points[0], position);
@@ -91,7 +91,7 @@ void buildGesture(ContraptionParameters contraption, Offset position, String too
 
       break;
     }
-    case "Select": {
+    case 'Select': {
       if (contraption.points.length >= 1){
         var points = contraption.points;
             
@@ -145,7 +145,7 @@ class BuildInterface extends StatelessWidget {
             BuildComponents()
           ]),
           Consumer<Tool>(
-            builder: (context, tool, child) => Text("Tool: ${tool.selectedTool}")
+            builder: (context, tool, child) => Text('Tool: ${tool.selectedTool}')
           )
         ]
       )
@@ -160,48 +160,48 @@ class BuildProperties extends StatelessWidget{
       Column(
         children: <Widget>[
           Row(children: <Widget>[
-            Text("Mass", style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('Mass', style: TextStyle(fontWeight: FontWeight.bold)),
             Slider(
               min: 0.0,
               value: 1.0,
               max: 100.0,
-              label: "currentMass",
+              label: 'currentMass',
               onChanged: (newMass) {}),
           ]),
           Row(children: <Widget>[
-            Text("Spring Strength", style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('Spring Strength', style: TextStyle(fontWeight: FontWeight.bold)),
             Slider(
               min: 0.0,
               value: 1.0,
               max: 100.0,
-              label: "currentStrength",
+              label: 'currentStrength',
               onChanged: (newStrength) {}),
           ]),
           Row(children: <Widget>[
-            Text("Gravity", style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('Gravity', style: TextStyle(fontWeight: FontWeight.bold)),
             Slider(
               min: -100.0,
               value: 10.0,
               max: 100.0,
-              label: "currentGravity",
+              label: 'currentGravity',
               onChanged: (newStrength) {}),
           ]),
           Row(children: <Widget>[
-            Text("Elasticity", style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('Elasticity', style: TextStyle(fontWeight: FontWeight.bold)),
             Slider(
               min: 0.0,
               value: 0.4,
               max: 1.0,
-              label: "currentElasticity",
+              label: 'currentElasticity',
               onChanged: (newStrength) {}),
           ]),
           Row(children: <Widget>[
-            Text("Drag", style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('Drag', style: TextStyle(fontWeight: FontWeight.bold)),
             Slider(
               min: 0.0,
               value: 0.4,
               max: 1.0,
-              label: "currentDrag",
+              label: 'currentDrag',
               onChanged: (newDrag) {}),
           ]),
         ]
@@ -290,10 +290,10 @@ class BuildComponents extends StatelessWidget{
       children: <Widget>[
         RaisedButton(
           onPressed: () => Provider.of<Tool>(context, listen: false).changeTool('Node'),
-          child: Text("Node")),
+          child: Text('Node')),
         RaisedButton(
           onPressed: () => Provider.of<Tool>(context, listen: false).changeTool('Spring'),
-          child: Text("Spring"))
+          child: Text('Spring'))
       ],
     );
   }
