@@ -145,10 +145,19 @@ class ContraptionParameters with ChangeNotifier {
   }
 
   void connect(Set<int> selected){
-    for (int i in selected){
-      for (int j in selected){
-        if (i > j){
+    if (selected.length == 0){
+      int n = points.length;
+      for (int i = 0; i < n; i++){
+        for (int j = 0; j < i; j++){
           lines.add([i, j]);
+        }
+      }
+    } else {
+      for (int i in selected){
+        for (int j in selected){
+          if (i > j){
+            lines.add([i, j]);
+          }
         }
       }
     }
@@ -157,16 +166,20 @@ class ContraptionParameters with ChangeNotifier {
   }
 
   void disconnect(Set<int> selected){
-    var newLines = Set();
-    
-    for (var line in lines){
-      if (!(selected.contains(line[0]) && 
-            selected.contains(line[1]))){
-            newLines.add(line);
-          }
-    }
+    if (selected.length == 0){
+      lines = Set();
+    } else {
+      var newLines = Set();
+      
+      for (var line in lines){
+        if (!(selected.contains(line[0]) && 
+              selected.contains(line[1]))){
+              newLines.add(line);
+            }
+      }
 
-    lines = newLines;
+      lines = newLines;
+    }
 
     notifyListeners();
   }
