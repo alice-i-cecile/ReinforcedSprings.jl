@@ -92,19 +92,53 @@ class ContraptionParameters with ChangeNotifier {
     notifyListeners();
   }
 
-  // TODO: vary rotate based on selected nodes
-  void rotate(angle){
-    double cx = 200.0;
-    double cy = 200.0;
+  void rotate(angle, Set<int> selected){
+    double width = 400.0;
+    double height = 400.0;
+    double sumX = 0.0;
+    double sumY = 0.0;
+    int n = selected.length;
+
+    if (selected.length == 0){
+      n = points.length;
+      for (int i = 0; i < points.length; i++){
+        sumX += points[i].dx;
+        sumY += points[i].dy;
+      }
+    } else {
+      for (int i = 0; i < points.length; i++){
+        if (selected.contains(i)){
+          sumX += points[i].dx;
+          sumY += points[i].dy;
+        }
+      }
+    }
+
+    double cx = sumX/n;
+    double cy = sumY/n;
     
     for (int i = 0; i < points.length; i++){
-      double dx = points[i].dx;
-      double dy = points[i].dy;
+      if (selected.length == 0 || selected.contains(i)){
+        double dx = points[i].dx;
+        double dy = points[i].dy;
 
-      double rx = cos(angle) * (dx - cx) - sin(angle) * (dy - cy) + cx;
-      double ry = sin(angle) * (dx - cx) + cos(angle) * (dy - cy) + cy;
+        double rx = cos(angle) * (dx - cx) - sin(angle) * (dy - cy) + cx;
+        double ry = sin(angle) * (dx - cx) + cos(angle) * (dy - cy) + cy;
 
-      points[i] = Offset(rx, ry);
+        if (rx < 0){
+          rx = 0;
+        } else if (rx > width){
+          rx = width;
+        }
+
+        if (ry < 0){
+          ry = 0;
+        } else if (ry > height){
+          ry = height;
+        }
+
+        points[i] = Offset(rx, ry);
+      }
     }
 
     notifyListeners();

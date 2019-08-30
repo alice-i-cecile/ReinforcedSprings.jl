@@ -232,10 +232,12 @@ class BuildTools extends StatelessWidget{
           ),
         ],),
         Row(children: <Widget>[
-          IconButton(                
-            icon: const Icon(Icons.rotate_right),
-            tooltip: 'Rotate',
-            onPressed: () => Provider.of<ContraptionParameters>(context, listen: false).rotate(3.14159/6.0),
+          Consumer<Selection>(
+            builder: (context, selection, child) => IconButton(
+              icon: const Icon(Icons.rotate_right),
+              tooltip: 'Rotate',
+              onPressed: () => Provider.of<ContraptionParameters>(context, listen: false).rotate(3.14159/6.0, selection.selectedNodes)
+            )
           ),
           Consumer<Selection>(
             builder: (context, selection, child) => IconButton(
