@@ -146,9 +146,6 @@ class BuildInterface extends StatelessWidget {
           ]),
           Consumer<Tool>(
             builder: (context, tool, child) => Text("Tool: ${tool.selectedTool}")
-          ),
-          Consumer<Selection>(
-            builder: (context, selection, child) => Text("Selection: ${selection.selectedNodes}")
           )
         ]
       )
@@ -214,7 +211,6 @@ class BuildProperties extends StatelessWidget{
 }
 
 class BuildTools extends StatelessWidget{
-  //TODO: change connect and disconnect to ContraptionParameters methods
   @override
   Widget build(BuildContext context) {
     return(
@@ -290,6 +286,7 @@ class BuildComponents extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
         RaisedButton(
           onPressed: () => Provider.of<Tool>(context, listen: false).changeTool('Node'),
@@ -334,7 +331,7 @@ class BuildPainter extends CustomPainter {
   ContraptionParameters contraptionParameters;
   Selection selection;
 
-  // TODO: repaint when selection changes
+  // TODO: update when selection changes
   BuildPainter(ContraptionParameters contraptionParameters, Selection selection) : super(repaint: contraptionParameters) {
     this.contraptionParameters = contraptionParameters;
     this.selection = selection;
@@ -345,7 +342,6 @@ class BuildPainter extends CustomPainter {
     double pointRadius = 3.0;
     var pointPaint = Paint();
     var selectPaint = Paint();
-    selectPaint.color = Colors.red;
 
     var linePaint = Paint();
 
@@ -355,7 +351,7 @@ class BuildPainter extends CustomPainter {
       var point = contraptionParameters.points[i];
       
       if (selected.contains(i)) {
-        canvas.drawCircle(point, pointRadius, selectPaint);
+        canvas.drawCircle(point, 1.5 * pointRadius, selectPaint);
       } else {
         canvas.drawCircle(point, pointRadius, pointPaint);
       }
