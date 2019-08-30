@@ -234,12 +234,11 @@ class ContraptionState with ChangeNotifier{
   var lines = Set();
   var velocity = [];
 
-  // TODO: reset not working. State seems to be leaking
   void reset(ContraptionParameters contraptionParameters){
     this.pause();
 
-    this.points = contraptionParameters.nodes;
-    this.lines = contraptionParameters.connections;
+    this.points = List.from(contraptionParameters.nodes);
+    this.lines = Set.from(contraptionParameters.connections);
     this.velocity = List.filled(points.length, [0.0, 0.0]);
 
     notifyListeners();
