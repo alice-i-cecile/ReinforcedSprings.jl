@@ -346,8 +346,7 @@ class BuildPainter extends CustomPainter {
   ContraptionParameters contraptionParameters;
   Selection selection;
 
-  // TODO: update when selection changes
-  BuildPainter(ContraptionParameters contraptionParameters, Selection selection) : super(repaint: contraptionParameters) {
+  BuildPainter(ContraptionParameters contraptionParameters, Selection selection) : super(repaint: Listenable.merge([contraptionParameters, selection])) {
     this.contraptionParameters = contraptionParameters;
     this.selection = selection;
   }
