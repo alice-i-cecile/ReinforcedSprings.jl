@@ -110,6 +110,47 @@ class ContraptionParameters with ChangeNotifier {
 
     notifyListeners();
   }
+
+  void translate(Offset position, Set<int> selected){
+    double width = 400.0;
+    double height = 400.0;
+
+    int n = selected.length;
+    double sumX = 0.0;
+    double sumY = 0.0;
+    for (int i = 0; i < points.length; i++){
+      if (selected.contains(i)){
+        sumX += points[i].dx;
+        sumY += points[i].dy;
+      }
+    }
+
+    var center = [sumX/n, sumY/n];
+    var shift = [position.dx - center[0], position.dy - center[1]];
+
+    for (int i = 0; i < points.length; i++){
+      if (selected.contains(i)){
+        double newX = points[i].dx + shift[0];
+        double newY = points[i].dy + shift[1];
+
+        if (newX < 0) {
+          newX = 0;
+        } else if (newX > width){
+          newX = width;
+        }
+
+        if (newY < 0) {
+          newY = 0;
+        } else if (newY > height){
+          newY = height;
+        }
+
+        points[i] = Offset(newX, newY);
+      }
+    }
+
+    notifyListeners();
+  }
 }
 
 class ContraptionState with ChangeNotifier{

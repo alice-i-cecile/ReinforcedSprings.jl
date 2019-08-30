@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'contraption.dart';
 
 // STATE
-// TODO: add drag tool
 class Tool with ChangeNotifier{
   String selectedTool = 'Node';
 
@@ -113,7 +112,12 @@ void buildGesture(ContraptionParameters contraption, Offset position, String too
 
       break;
     }
+    case 'Transform': {
+      contraption.translate(position, selection.selectedNodes);
+      break;
+    }
   }
+
 }
 
 // TAB
@@ -268,6 +272,11 @@ class BuildTools extends StatelessWidget{
           )
         ]),
         Row(children: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.transform),
+            tooltip: 'Transform',
+            onPressed: () => Provider.of<Tool>(context, listen: false).changeTool('Transform')
+          ),
           Consumer<Selection>(
             builder: (context, selection, child) => IconButton(                
               icon: const Icon(Icons.delete),
