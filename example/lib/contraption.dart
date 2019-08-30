@@ -6,18 +6,18 @@ import 'dart:async';
 import 'engine.dart';
 
 class ContraptionParameters with ChangeNotifier {
-  var points = <Offset>[];
+  var points = [];
   var lines = Set();
 
   void blank(){
-    points = <Offset>[];
+    points = [];
     lines = Set();
 
     notifyListeners();
   }
 
   void node(position) {
-    points.add(position);
+    points.add([position.dx, position.dy]);
 
     notifyListeners();
   }
@@ -29,7 +29,7 @@ class ContraptionParameters with ChangeNotifier {
   }
 
   void delete(Set<int> selected){
-    var newPoints = <Offset>[];
+    var newPoints = [];
 
     for (int i = 0; i < points.length; i++){
       if (!selected.contains(i)){
@@ -60,12 +60,12 @@ class ContraptionParameters with ChangeNotifier {
     if (selected.length == 0){
       n = points.length;
       for (int i = 0; i < points.length; i++){
-        sumX += points[i].dx;
+        sumX += points[i][0];
       }
     } else {
       for (int i = 0; i < points.length; i++){
         if (selected.contains(i)){
-          sumX += points[i].dx;
+          sumX += points[i][0];
         }
       }
     }
@@ -77,7 +77,7 @@ class ContraptionParameters with ChangeNotifier {
       // Distance between center and final position must be the same
       // Thus c + (c-x) gives the final position
       if (selected.length == 0 || selected.contains(i)){
-        double newX = 2*center - points[i].dx;
+        double newX = 2*center - points[i][0];
 
         if (newX < 0){
           newX = 0;
@@ -85,7 +85,7 @@ class ContraptionParameters with ChangeNotifier {
           newX = width;
         }
         
-        points[i] = Offset(newX, points[i].dy);
+        points[i] = [newX, points[i][1]];
       }
     }
 
@@ -102,14 +102,14 @@ class ContraptionParameters with ChangeNotifier {
     if (selected.length == 0){
       n = points.length;
       for (int i = 0; i < points.length; i++){
-        sumX += points[i].dx;
-        sumY += points[i].dy;
+        sumX += points[i][0];
+        sumY += points[i][1];
       }
     } else {
       for (int i = 0; i < points.length; i++){
         if (selected.contains(i)){
-          sumX += points[i].dx;
-          sumY += points[i].dy;
+          sumX += points[i][0];
+          sumY += points[i][1];
         }
       }
     }
@@ -119,8 +119,8 @@ class ContraptionParameters with ChangeNotifier {
     
     for (int i = 0; i < points.length; i++){
       if (selected.length == 0 || selected.contains(i)){
-        double dx = points[i].dx;
-        double dy = points[i].dy;
+        double dx = points[i][0];
+        double dy = points[i][1];
 
         double rx = cos(angle) * (dx - cx) - sin(angle) * (dy - cy) + cx;
         double ry = sin(angle) * (dx - cx) + cos(angle) * (dy - cy) + cy;
@@ -137,7 +137,7 @@ class ContraptionParameters with ChangeNotifier {
           ry = height;
         }
 
-        points[i] = Offset(rx, ry);
+        points[i] = [rx, ry];
       }
     }
 
@@ -184,7 +184,7 @@ class ContraptionParameters with ChangeNotifier {
     notifyListeners();
   }
 
-  void translate(Offset position, Set<int> selected){
+  void translate(position, Set<int> selected){
     double width = 400.0;
     double height = 400.0;
 
@@ -197,8 +197,8 @@ class ContraptionParameters with ChangeNotifier {
     double sumY = 0.0;
     for (int i = 0; i < points.length; i++){
       if (selected.contains(i) || selected.length == 0){
-        sumX += points[i].dx;
-        sumY += points[i].dy;
+        sumX += points[i][0];
+        sumY += points[i][1];
       }
     }
 
@@ -207,8 +207,8 @@ class ContraptionParameters with ChangeNotifier {
 
     for (int i = 0; i < points.length; i++){
       if (selected.contains(i) || selected.length == 0){
-        double newX = points[i].dx + shift[0];
-        double newY = points[i].dy + shift[1];
+        double newX = points[i][0] + shift[0];
+        double newY = points[i][1] + shift[1];
 
         if (newX < 0) {
           newX = 0;
@@ -222,7 +222,7 @@ class ContraptionParameters with ChangeNotifier {
           newY = height;
         }
 
-        points[i] = Offset(newX, newY);
+        points[i] = [newX, newY];
       }
     }
 
@@ -231,16 +231,17 @@ class ContraptionParameters with ChangeNotifier {
 }
 
 class ContraptionState with ChangeNotifier{
-  var points = <Offset>[];
+  var points = [];
   var lines = Set();
   var velocity = [];
 
+  // TODO: reset not working. State seems to be leaking
   void reset(ContraptionParameters contraptionParameters){
     this.pause();
 
-    points = contraptionParameters.points;
-    lines = contraptionParameters.lines;
-    velocity = List.filled(points.length, [0.0, 0.0]);
+    this.points = contraptionParameters.points;
+    this.lines = contraptionParameters.lines;
+    this.velocity = List.filled(points.length, [0.0, 0.0]);
 
     notifyListeners();
   }
@@ -256,8 +257,8 @@ class ContraptionState with ChangeNotifier{
   void simulate(Environment environment, ContraptionParameters contraptionParameters, double timeStep){
     if (velocity.length != 0){
       var newState = engine(environment, contraptionParameters, this, timeStep);
-      points = newState['points'];
-      velocity = newState['velocity'];
+      this.points = newState['points'];
+      this.velocity = newState['velocity'];
 
       notifyListeners();
     }
@@ -270,7 +271,7 @@ class ContraptionState with ChangeNotifier{
 }
 
 class Environment with ChangeNotifier{
-  double gravity = 50;
+  double gravity = 10;
   double drag = 0.01;
   double elasticity = 0.1;
 }

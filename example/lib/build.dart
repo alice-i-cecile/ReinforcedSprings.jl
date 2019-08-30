@@ -39,9 +39,9 @@ class Selection with ChangeNotifier{
 
 // Interaction
 void buildGesture(ContraptionParameters contraption, Offset position, String tool, Selection selection){
-  double distance(Offset a, Offset b){
-    double d = (a.dx - b.dx)*(a.dx - b.dx) + 
-               (a.dy - b.dy)*(a.dy - b.dy);
+  double distance(aX, aY, bX, bY){
+    double d = (aX - bX)*(aX - bX) + 
+               (aY - bY)*(aY - bY);
     return d;
   }
 
@@ -53,8 +53,8 @@ void buildGesture(ContraptionParameters contraption, Offset position, String too
     case 'Spring': {
       if (contraption.points.length >= 2){
         var points = contraption.points;
-        double first = distance(points[0], position);
-        double second = distance(points[1], position);
+        double first = distance(points[0][0], points[0][1], position.dx, position.dy);
+        double second = distance(points[1][0], points[1][1], position.dx, position.dy);
         int node1 = 0;
         int node2 = 1;
 
@@ -70,7 +70,7 @@ void buildGesture(ContraptionParameters contraption, Offset position, String too
         }
 
         for (int i = 1; i < points.length; i++){
-          double current = distance(points[i], position);
+          double current = distance(points[i][0], points[i][1], position.dx, position.dy);
           if (current < second){
             if (current < first){
               second = first;
@@ -95,11 +95,11 @@ void buildGesture(ContraptionParameters contraption, Offset position, String too
         var points = contraption.points;
             
         // Find nearest node to tapped position
-        double min = distance(points[0], position);
+        double min = distance(points[0][0], points[0][1], position.dx, position.dy);
         int nodeNum = 0;
 
         for (int i = 1; i < points.length; i++){
-          double current = distance(points[i], position);
+          double current = distance(points[i][0], points[i][1], position.dx, position.dy);
           if (current < min){
             nodeNum = i;
             min = current;
@@ -367,16 +367,20 @@ class BuildPainter extends CustomPainter {
       var point = contraptionParameters.points[i];
       
       if (selected.contains(i)) {
-        canvas.drawCircle(point, 1.5 * pointRadius, selectPaint);
+        canvas.drawCircle(Offset(point[0], point[1]), 1.5 * pointRadius, selectPaint);
       } else {
-        canvas.drawCircle(point, pointRadius, pointPaint);
+        canvas.drawCircle(Offset(point[0], point[1]), pointRadius, pointPaint);
       }
     }
 
     for (var line in contraptionParameters.lines){
-      canvas.drawLine(contraptionParameters.points[line[0]], 
-                      contraptionParameters.points[line[1]], 
-                      linePaint);
+      double x0 = contraptionParameters.points[line[0]][0];
+      double y0 = contraptionParameters.points[line[0]][1];
+
+      double x1 =  contraptionParameters.points[line[1]][0];
+      double y1 = contraptionParameters.points[line[1]][1];
+
+      canvas.drawLine(Offset(x0, y0), Offset(x1, y1), linePaint); 
     }
   }
 

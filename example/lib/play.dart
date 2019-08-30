@@ -138,13 +138,17 @@ class PlayPainter extends CustomPainter {
     var linePaint = Paint();
 
     for (var point in contraptionState.points){
-      canvas.drawCircle(point, pointRadius, pointPaint);
+      canvas.drawCircle(Offset(point[0], point[1]), pointRadius, pointPaint);
     }
 
     for (var line in contraptionState.lines){
-      canvas.drawLine(contraptionState.points[line[0]], 
-                      contraptionState.points[line[1]], 
-                      linePaint);
+      double x0 = contraptionState.points[line[0]][0];
+      double y0 = contraptionState.points[line[0]][1];
+
+      double x1 =  contraptionState.points[line[1]][0];
+      double y1 = contraptionState.points[line[1]][1];
+
+      canvas.drawLine(Offset(x0, y0), Offset(x1, y1), linePaint); 
     }
   }
 
