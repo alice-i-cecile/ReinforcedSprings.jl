@@ -157,7 +157,7 @@ class BuildInterface extends StatelessWidget {
   }
 }
 
-// TODO: connect sliders
+// TODO: replace sliders with text inputs
 class BuildProperties extends StatelessWidget{
   @override
   Widget build(BuildContext context) {

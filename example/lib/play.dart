@@ -123,7 +123,6 @@ class PlayDisplay extends StatelessWidget{
 }
 
 class PlayPainter extends CustomPainter {
-
   ContraptionState contraptionState;
 
   PlayPainter(ContraptionState contraptionState) : super(repaint: contraptionState) {
