@@ -1,4 +1,5 @@
 import 'contraption.dart';
+import 'dart:math';
 
 collisionCheck(double x, double y, 
                double vx, double vy, 
@@ -69,22 +70,46 @@ collisionCheck(double x, double y,
 
 engine(Environment environment, ContraptionParameters contraptionParameters, ContraptionState contraptionState, double timeStep){
   var state = contraptionState;
-  var newPoints = contraptionState.points;
-  var newVelocity = contraptionState.velocity;
+  var newPoints = List.from(contraptionState.points);
+  var newVelocity = List.from(contraptionState.velocity);
   
-  springAcceleration(nodeID){
-    var a = [0.0, 0.0];
+  // Compute all spring forces in linear time
+  var springs = List.generate(newPoints.length, (_) => [0.0, 0.0]);
 
-    return a;
+  for (var connection in contraptionParameters.connections){
+    int i = connection[0];
+    int j = connection[1];
+    // TODO: record strength, restLength and mass in ContraptionParameters
+    double strength = 1.0;
+    double restLength = 100.0;
+    double massI = 1.0;
+    double massJ = 2.0;
+
+    double distX = newPoints[i][0] - newPoints[j][0];
+    double distY = newPoints[i][1] - newPoints[j][1];
+    double dist = sqrt(distX*distX + distY*distY);
+
+    double force = -strength*(dist - restLength);
+    double forceX = force*distX/dist;
+    double forceY = force*distY/dist;
+
+    print("Start: ${springs[i]}");
+    springs[i][0] += forceX / massI;
+    springs[i][1] += forceY / massI;
+
+    print("Middle: ${springs[i]}");
+
+    springs[j][0] -= forceX / massJ;
+    springs[j][1] -= forceY / massJ;
+    print("End: ${springs[i]}");
   }
-  
+
   for (int i = 0; i < newPoints.length; i++){
-    var springs = springAcceleration(i);
     var drag = [environment.drag*state.velocity[i][0], 
                 environment.drag*state.velocity[i][1]];
 
-    double ax = springs[0] - drag[0];
-    double ay = springs[1] - drag[1] + environment.gravity;
+    double ax = springs[i][0] - drag[0];
+    double ay = springs[i][1] - drag[1] + environment.gravity;
 
     double vx = state.velocity[i][0] + ax * timeStep;
     double vy = state.velocity[i][1] + ay * timeStep;
