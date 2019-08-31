@@ -45,7 +45,13 @@ class ContraptionParameters with ChangeNotifier {
   }
 
   void spring(int node1, int node2){
-    connections.add([node1, node2]);
+    // node1 must be greater than node 2
+    // Prevents double and self connections 
+    if (node1 < node2){
+      connections.add([node2, node1]);
+    } else if (node1 > node2){
+      connections.add([node1, node2]);
+    }
 
     notifyListeners();
   }
