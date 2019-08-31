@@ -247,19 +247,43 @@ class BuildTools extends StatelessWidget{
             tooltip: 'Clear Selection',
             onPressed: () => Provider.of<Selection>(context, listen: false).clearSelection(),
           ),
-        ],),
+          Consumer<Selection>(
+            builder: (context, selection, child) => IconButton(                
+              icon: const Icon(Icons.delete),
+              tooltip: 'Delete',
+              onPressed: (){
+                Provider.of<ContraptionParameters>(context, listen: false).delete(selection.selectedNodes);
+                selection.clearSelection();
+              }
+            ),
+          )
+        ]),
         Row(children: <Widget>[
           Consumer<Selection>(
             builder: (context, selection, child) => IconButton(
+              icon: const Icon(Icons.rotate_left),
+              tooltip: 'Rotate Counterclockwise',
+              onPressed: () => Provider.of<ContraptionParameters>(context, listen: false).rotate(-3.14159/6.0, selection.selectedNodes)
+            )
+          ),
+          Consumer<Selection>(
+            builder: (context, selection, child) => IconButton(
               icon: const Icon(Icons.rotate_right),
-              tooltip: 'Rotate',
+              tooltip: 'Rotate Clockwise',
               onPressed: () => Provider.of<ContraptionParameters>(context, listen: false).rotate(3.14159/6.0, selection.selectedNodes)
             )
           ),
           Consumer<Selection>(
             builder: (context, selection, child) => IconButton(
               icon: const Icon(Icons.flip),
-              tooltip: 'Mirror',
+              tooltip: 'Mirror Horizontally',
+              onPressed: () => Provider.of<ContraptionParameters>(context, listen: false).mirror(selection.selectedNodes)
+            )
+          ),
+          Consumer<Selection>(
+            builder: (context, selection, child) => IconButton(
+              icon: const Icon(Icons.flip),
+              tooltip: 'Mirror Vertically',
               onPressed: () => Provider.of<ContraptionParameters>(context, listen: false).mirror(selection.selectedNodes)
             )
           ),
@@ -279,7 +303,12 @@ class BuildTools extends StatelessWidget{
               onPressed: () => Provider.of<ContraptionParameters>(context, listen: false).disconnect(selection.selectedNodes)
             ),
           ),
-        ],),
+          IconButton(
+            icon: const Icon(Icons.transform),
+            tooltip: 'Transform',
+            onPressed: () => Provider.of<Tool>(context, listen: false).changeTool('Transform')
+          ),
+        ]),
         Row(children: <Widget>[
           IconButton(                
             icon: const Icon(Icons.undo),
@@ -292,24 +321,6 @@ class BuildTools extends StatelessWidget{
             onPressed: (){},
           )
         ]),
-        Row(children: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.transform),
-            tooltip: 'Transform',
-            onPressed: () => Provider.of<Tool>(context, listen: false).changeTool('Transform')
-          ),
-          Consumer<Selection>(
-            builder: (context, selection, child) => IconButton(                
-              icon: const Icon(Icons.delete),
-              tooltip: 'Delete',
-              onPressed: (){
-                Provider.of<ContraptionParameters>(context, listen: false).delete(selection.selectedNodes);
-                selection.clearSelection();
-                }
-                ,
-            ),
-          )
-        ])
       ])
     );
   }
