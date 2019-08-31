@@ -256,8 +256,18 @@ class ContraptionState with ChangeNotifier{
   var lines = Set();
   var velocity = [];
 
+  var gameClock;
+
+  @override 
+  void dispose(){
+    super.dispose();
+    gameClock.cancel();
+  }
+
   void reset(ContraptionParameters contraptionParameters){
-    this.pause();
+    if (gameClock != null){
+      this.pause();
+    }
 
     this.points = List.from(contraptionParameters.nodes);
     this.lines = Set.from(contraptionParameters.connections);
@@ -270,10 +280,9 @@ class ContraptionState with ChangeNotifier{
     int timeStep = 50;
     Timer.periodic(Duration(milliseconds: timeStep),
     (timer){
+      gameClock = timer;
       simulate(environment, contraptionParameters, timeStep.toDouble()/1000);
     });
-
-    // TODO: stop timer when contraptionParameters or environment is disposed of
   }
 
   void simulate(Environment environment, ContraptionParameters contraptionParameters, double timeStep){
@@ -286,8 +295,8 @@ class ContraptionState with ChangeNotifier{
     }
   }
 
-  //TODO: implement pausing
   void pause(){
+    gameClock.cancel();
 
     notifyListeners();
   }
