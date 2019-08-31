@@ -158,9 +158,14 @@ class BuildInterface extends StatelessWidget {
 }
 
 // TODO: replace sliders with text inputs
+
 class BuildProperties extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
+    var contraptionParameters = Provider.of<ContraptionParameters>(context);
+    var environment = Provider.of<Environment>(context);
+    var selection =  Provider.of<Selection>(context);
+
     return(
       Column(
         children: <Widget>[
@@ -168,60 +173,60 @@ class BuildProperties extends StatelessWidget{
             Text('Mass', style: TextStyle(fontWeight: FontWeight.bold)),
             Slider(
               min: 0.0,
-              value: Provider.of<ContraptionParameters>(context).mass,
+              value: contraptionParameters.defaultMass,
               max: 100.0,
               label: 'currentMass',
-              onChanged: (newMass) => Provider.of<ContraptionParameters>(context, listen: false).editMass(selection, newMass)
+              onChanged: (newMass) => contraptionParameters.editMass(selection.selectedNodes, newMass)
             ),          
           ]),
           Row(children: <Widget>[
             Text('Spring Strength', style: TextStyle(fontWeight: FontWeight.bold)),
             Slider(
               min: 0.0,
-              value: Provider.of<ContraptionParameters>(context).strength,
+              value: contraptionParameters.defaultStrength,
               max: 100.0,
               label: 'currentStrength',
-              onChanged: (newStrength) => Provider.of<ContraptionParameters>(context, listen: false).editStrength(selection, newStrength)
+              onChanged: (newStrength) => contraptionParameters.editStrength(selection.selectedNodes, newStrength)
             ),
           ]),
           Row(children: <Widget>[
             Text('Relative Rest Length', style: TextStyle(fontWeight: FontWeight.bold)),
             Slider(
               min: 0.01,
-              value: Provider.of<ContraptionParameters>(context).restLength,
+              value: 1.0,
               max: 100.0,
               label: 'currentScale',
-              onChanged: (scale) => Provider.of<ContraptionParameters>(context, listen: false).editRestLength(selection, scale)
+              onChanged: (scale) => contraptionParameters.editRestLength(selection.selectedNodes, scale)
             ),          
           ]),
           Row(children: <Widget>[
             Text('Gravity', style: TextStyle(fontWeight: FontWeight.bold)),
             Slider(
               min: 0.0,
-              value: Provider.of<Environment>(context).gravity,
+              value: environment.gravity,
               max: 100.0,
               label: 'currentGravity',
-              onChanged: (newGravity) => Provider.of<Environment>(context, listen: false).setGravity(newGravity)
+              onChanged: (newGravity) => environment.setGravity(newGravity)
             ),
           ]),
           Row(children: <Widget>[
             Text('Elasticity', style: TextStyle(fontWeight: FontWeight.bold)),
             Slider(
               min: 0.0,
-              value: Provider.of<Environment>(context).elasticity,
+              value: environment.elasticity,
               max: 1.0,
               label: 'currentElasticity',
-              onChanged: (newElasticity) => Provider.of<Environment>(context, listen: false).setElasticity(newElasticity)
+              onChanged: (newElasticity) => environment.setElasticity(newElasticity)
             ),
           ]),
           Row(children: <Widget>[
             Text('Drag', style: TextStyle(fontWeight: FontWeight.bold)),
             Slider(
               min: 0.0,
-              value: Provider.of<Environment>(context).drag,
+              value: environment.drag,
               max: 1.0,
               label: 'currentDrag',
-              onChanged: (newDrag) => Provider.of<Environment>(context, listen: false).setDrag(newDrag)
+              onChanged: (newDrag) => environment.setDrag(newDrag)
             ),
           ]),
         ]
