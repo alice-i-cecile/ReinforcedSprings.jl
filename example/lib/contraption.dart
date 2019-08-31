@@ -239,7 +239,7 @@ class ContraptionState with ChangeNotifier{
 
     this.points = List.from(contraptionParameters.nodes);
     this.lines = Set.from(contraptionParameters.connections);
-    this.velocity = List.filled(points.length, [0.0, 0.0]);
+    this.velocity = List.generate(points.length, (_) => [0.0, 0.0]);
 
     notifyListeners();
   }
@@ -250,6 +250,8 @@ class ContraptionState with ChangeNotifier{
     (timer){
       simulate(environment, contraptionParameters, timeStep.toDouble()/1000);
     });
+
+    // TODO: stop timer when contraptionParameters or environment is disposed of
   }
 
   void simulate(Environment environment, ContraptionParameters contraptionParameters, double timeStep){
