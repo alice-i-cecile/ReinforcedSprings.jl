@@ -171,7 +171,7 @@ class BuildProperties extends StatelessWidget{
               value: Provider.of<ContraptionParameters>(context).mass,
               max: 100.0,
               label: 'currentMass',
-              onChanged: (newMass) => Provider.of<ContraptionParameters>(context, listen: false).setMass(newMass)
+              onChanged: (newMass) => Provider.of<ContraptionParameters>(context, listen: false).editMass(selection, newMass)
             ),          
           ]),
           Row(children: <Widget>[
@@ -181,7 +181,7 @@ class BuildProperties extends StatelessWidget{
               value: Provider.of<ContraptionParameters>(context).strength,
               max: 100.0,
               label: 'currentStrength',
-              onChanged: (newStrength) => Provider.of<ContraptionParameters>(context, listen: false).setStrength(newStrength)
+              onChanged: (newStrength) => Provider.of<ContraptionParameters>(context, listen: false).editStrength(selection, newStrength)
             ),
           ]),
           Row(children: <Widget>[
@@ -190,8 +190,8 @@ class BuildProperties extends StatelessWidget{
               min: 0.01,
               value: Provider.of<ContraptionParameters>(context).restLength,
               max: 100.0,
-              label: 'currentRestLength',
-              onChanged: (newRestLength) => Provider.of<ContraptionParameters>(context, listen: false).setRestLength(newRestLength)
+              label: 'currentScale',
+              onChanged: (scale) => Provider.of<ContraptionParameters>(context, listen: false).editRestLength(selection, scale)
             ),          
           ]),
           Row(children: <Widget>[

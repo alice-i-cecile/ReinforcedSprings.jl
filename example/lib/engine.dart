@@ -68,22 +68,22 @@ collisionCheck(double x, double y,
   return {'x': x, 'y': y, 'vx': vx, 'vy': vy};
 }
 
-engine(Environment environment, ContraptionParameters contraptionParameters, ContraptionState contraptionState, double timeStep){
-  var state = contraptionState;
-  var newPoints = List.from(contraptionState.points);
-  var newVelocity = List.from(contraptionState.velocity);
+engine(Environment environment, ContraptionParameters parameters, ContraptionState state, double timeStep){
+  var newPoints = List.from(state.points);
+  var newVelocity = List.from(state.velocity);
   
   // Compute all spring forces in linear time
   var springs = List.generate(newPoints.length, (_) => [0.0, 0.0]);
 
-  for (var connection in contraptionParameters.connections){
+  for (var connection in parameters.connections){
     int i = connection[0];
     int j = connection[1];
-    // TODO: individualize spring and node parameters
-    double strength = contraptionParameters.strength;
-    double restLength = contraptionParameters.restLength;
-    double massI = contraptionParameters.mass;
-    double massJ = contraptionParameters.mass;
+    String key = i.toString() + "," + j.toString();
+
+    double strength = parameters.strength[key];
+    double restLength = parameters.restLength[key];
+    double massI = parameters.mass[i.toString()];
+    double massJ = parameters.mass[j.toString()];
 
     double distX = newPoints[i][0] - newPoints[j][0];
     double distY = newPoints[i][1] - newPoints[j][1];

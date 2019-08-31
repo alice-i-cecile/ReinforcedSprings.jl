@@ -9,37 +9,129 @@ class ContraptionParameters with ChangeNotifier {
   var nodes = [];
   var connections = Set();
 
-  double mass = 1.0;
-  double strength = 1.0;
-  double restLength = 100.0;
+  double defaultMass = 1.0;
+  double defaultStrength = 1.0;
 
-  void setMass(newMass){
-    mass = newMass;
-
-    notifyListeners();
-  }
-
-  void setStrength(newStrength){
-    strength = newStrength;
-
-    notifyListeners();
-  }
-
-  void setRestLength(newRestLength){
-    restLength = newRestLength;
-
-    notifyListeners();
-  }
-
+  var mass = {};
+  var strength = {};
+  var restLength = {};
+  
   void blank(){
     nodes = [];
     connections = Set();
 
+    defaultMass = 1.0;
+    defaultStrength = 1.0;
+
+    mass = {};
+    strength = {};
+    restLength = {};
+
+    notifyListeners();
+  }
+
+  double dist(node1, node2){
+    double x1 = nodes[node1][0];
+    double x2 = nodes[node2][0];
+    double y1 = nodes[node1][1];
+    double y2 = nodes[node2][1];
+
+    double d = sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
+    return d;
+  }
+
+  double distSquared(node1, node2){
+    double x1 = nodes[node1][0];
+    double x2 = nodes[node2][0];
+    double y1 = nodes[node1][1];
+    double y2 = nodes[node2][1];
+
+    double d2 = (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2);
+    return d2;
+  }
+
+  void setMass(int node, double newMass){
+    String key = node.toString();
+    mass[key] = newMass;
+
+    notifyListeners();
+  }
+
+  void setStrength(int node1, int node2, double newStrength){
+    String key = node1.toString() + "," + node2.toString();
+    strength[key] = newStrength;
+
+    notifyListeners();
+  }
+
+  void setRestLength(int node1, int node2, double newRestLength){
+    String key = node1.toString() + "," + node2.toString();
+    restLength[key] = newRestLength;
+
+    notifyListeners();
+  }
+
+  void editMass(Set<int> selection, double newMass){
+    if (selection.length == 0){
+      for (int i = 0; i < nodes.length; i++){
+        setMass(i, newMass);
+      }
+    } else {
+      for (int i in selection){
+        setMass(i, newMass);
+      }
+    }
+    
+    notifyListeners();
+  }
+
+  void editStrength(Set<int> selection, double newStrength){
+    if (selection.length == 0){
+      for (var connection in connections){
+        setStrength(connection[0], connection[1], newStrength);
+      }
+    } else {
+      for (var connection in connections){
+        int i = connection[0];
+        int j = connection[1];
+        if (selection.contains(i) && selection.contains(j)){
+          setStrength(i, j, newStrength);
+        }
+      }
+    }
+    
+    notifyListeners();
+  }
+
+  void editRestLength(Set<int> selection, double scale){
+    if (selection.length == 0){
+      for (var connection in connections){
+        int i = connection[0];
+        int j = connection[1];
+        double newRestLength = scale * dist(i, j);
+        setStrength(connection[0], connection[1], newRestLength);
+      }
+    } else {
+      for (var connection in connections){
+        int i = connection[0];
+        int j = connection[1];
+        if (selection.contains(i) && selection.contains(j)){
+          int i = connection[0];
+          int j = connection[1];
+          double newRestLength = scale * dist(i, j);
+          setStrength(connection[0], connection[1], newRestLength);        
+        }
+      }
+    }
+    
     notifyListeners();
   }
 
   void node(position) {
     nodes.add([position.dx, position.dy]);
+    int i = nodes.length;
+
+    setMass(i, defaultMass);
 
     notifyListeners();
   }
@@ -49,8 +141,12 @@ class ContraptionParameters with ChangeNotifier {
     // Prevents double and self connections 
     if (node1 < node2){
       connections.add([node2, node1]);
+      setStrength(node2, node1, defaultStrength);
+      setRestLength(node2, node1, dist(node2, node1));
     } else if (node1 > node2){
       connections.add([node1, node2]);
+      setStrength(node1, node2, defaultStrength);
+      setRestLength(node1, node2, dist(node1, node2));
     }
 
     notifyListeners();
@@ -75,6 +171,8 @@ class ContraptionParameters with ChangeNotifier {
     } 
 
     connections = newConnections;
+
+    // TODO: delete node and spring properties
 
     notifyListeners();
   }
@@ -215,14 +313,14 @@ class ContraptionParameters with ChangeNotifier {
       int n = nodes.length;
       for (int i = 0; i < n; i++){
         for (int j = 0; j < i; j++){
-          connections.add([i, j]);
+          spring(i, j);
         }
       }
     } else {
       for (int i in selected){
         for (int j in selected){
           if (i > j){
-            connections.add([i, j]);
+            spring(i,j);
           }
         }
       }
@@ -246,6 +344,7 @@ class ContraptionParameters with ChangeNotifier {
 
       connections = newConnections;
     }
+    //TODO: remove connection properties
 
     notifyListeners();
   }
@@ -291,6 +390,8 @@ class ContraptionParameters with ChangeNotifier {
         nodes[i] = [newX, newY];
       }
     }
+
+    // TODO: update rest length
 
     notifyListeners();
   }
