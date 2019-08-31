@@ -230,7 +230,6 @@ class BuildProperties extends StatelessWidget{
   }
 }
 
-// TODO: add ability to rotate and flip in alternate directions
 class BuildTools extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
@@ -277,14 +276,14 @@ class BuildTools extends StatelessWidget{
             builder: (context, selection, child) => IconButton(
               icon: const Icon(Icons.flip),
               tooltip: 'Mirror Horizontally',
-              onPressed: () => Provider.of<ContraptionParameters>(context, listen: false).mirror(selection.selectedNodes)
+              onPressed: () => Provider.of<ContraptionParameters>(context, listen: false).mirror(selection.selectedNodes, 'horizontal')
             )
           ),
           Consumer<Selection>(
             builder: (context, selection, child) => IconButton(
-              icon: const Icon(Icons.flip),
+              icon: Transform.rotate(angle: 3.14159/2, child:const Icon(Icons.flip)),
               tooltip: 'Mirror Vertically',
-              onPressed: () => Provider.of<ContraptionParameters>(context, listen: false).mirror(selection.selectedNodes)
+              onPressed: () => Provider.of<ContraptionParameters>(context, listen: false).mirror(selection.selectedNodes, 'vertical')
             )
           ),
         ]),

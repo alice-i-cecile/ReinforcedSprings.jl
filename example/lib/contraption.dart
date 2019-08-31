@@ -79,40 +79,79 @@ class ContraptionParameters with ChangeNotifier {
     notifyListeners();
   }
 
-  void mirror(Set<int> selected){
+  void mirror(Set<int> selected, String direction){
     double width = 400.0;
-    double sumX = 0.0;
-    int n = selected.length;
+    double height = 400.0;
+    
+    if (direction == 'horizontal'){
+      double sumX = 0.0;
+      int n = selected.length;
 
-    if (selected.length == 0){
-      n = nodes.length;
-      for (int i = 0; i < nodes.length; i++){
-        sumX += nodes[i][0];
-      }
-    } else {
-      for (int i = 0; i < nodes.length; i++){
-        if (selected.contains(i)){
+      if (selected.length == 0){
+        n = nodes.length;
+        for (int i = 0; i < nodes.length; i++){
           sumX += nodes[i][0];
         }
-      }
-    }
-
-    double center = sumX/n;
-    
-    for (int i = 0; i < nodes.length; i++){
-      // Distance between center and initial position is c - x
-      // Distance between center and final position must be the same
-      // Thus c + (c-x) gives the final position
-      if (selected.length == 0 || selected.contains(i)){
-        double newX = 2*center - nodes[i][0];
-
-        if (newX < 0){
-          newX = 0;
-        } else if (newX > width){
-          newX = width;
+      } else {
+        for (int i = 0; i < nodes.length; i++){
+          if (selected.contains(i)){
+            sumX += nodes[i][0];
+          }
         }
-        
-        nodes[i] = [newX, nodes[i][1]];
+      }
+
+      double center = sumX/n;
+      
+      for (int i = 0; i < nodes.length; i++){
+        // Distance between center and initial position is c - x
+        // Distance between center and final position must be the same
+        // Thus c + (c-x) gives the final position
+        if (selected.length == 0 || selected.contains(i)){
+          double newX = 2*center - nodes[i][0];
+
+          if (newX < 0){
+            newX = 0;
+          } else if (newX > width){
+            newX = width;
+          }
+          
+          nodes[i] = [newX, nodes[i][1]];
+        }
+      }
+    } else if (direction == 'vertical'){
+      double sumY = 0.0;
+      int n = selected.length;
+
+      if (selected.length == 0){
+        n = nodes.length;
+        for (int i = 0; i < nodes.length; i++){
+          sumY += nodes[i][1];
+        }
+      } else {
+        for (int i = 0; i < nodes.length; i++){
+          if (selected.contains(i)){
+            sumY += nodes[i][1];
+          }
+        }
+      }
+
+      double center = sumY/n;
+      
+      for (int i = 0; i < nodes.length; i++){
+        // Distance between center and initial position is c - x
+        // Distance between center and final position must be the same
+        // Thus c + (c-x) gives the final position
+        if (selected.length == 0 || selected.contains(i)){
+          double newY = 2*center - nodes[i][1];
+
+          if (newY < 0){
+            newY = 0;
+          } else if (newY > height){
+            newY = height;
+          }
+          
+          nodes[i] = [nodes[i][0], newY];
+        }
       }
     }
 
