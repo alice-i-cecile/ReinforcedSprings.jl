@@ -157,6 +157,7 @@ class BuildInterface extends StatelessWidget {
   }
 }
 
+// TODO: connect sliders
 class BuildProperties extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
@@ -184,29 +185,32 @@ class BuildProperties extends StatelessWidget{
           Row(children: <Widget>[
             Text('Gravity', style: TextStyle(fontWeight: FontWeight.bold)),
             Slider(
-              min: -100.0,
-              value: 10.0,
+              min: 0.0,
+              value: Provider.of<Environment>(context).gravity,
               max: 100.0,
               label: 'currentGravity',
-              onChanged: (newStrength) {}),
+              onChanged: (newGravity) => Provider.of<Environment>(context, listen: false).setGravity(newGravity)
+            ),
           ]),
           Row(children: <Widget>[
             Text('Elasticity', style: TextStyle(fontWeight: FontWeight.bold)),
             Slider(
               min: 0.0,
-              value: 0.4,
+              value: Provider.of<Environment>(context).elasticity,
               max: 1.0,
               label: 'currentElasticity',
-              onChanged: (newStrength) {}),
+              onChanged: (newElasticity) => Provider.of<Environment>(context, listen: false).setElasticity(newElasticity)
+            ),
           ]),
           Row(children: <Widget>[
             Text('Drag', style: TextStyle(fontWeight: FontWeight.bold)),
             Slider(
               min: 0.0,
-              value: 0.4,
+              value: Provider.of<Environment>(context).drag,
               max: 1.0,
               label: 'currentDrag',
-              onChanged: (newDrag) {}),
+              onChanged: (newDrag) => Provider.of<Environment>(context, listen: false).setDrag(newDrag)
+            ),
           ]),
         ]
       )
@@ -214,6 +218,7 @@ class BuildProperties extends StatelessWidget{
   }
 }
 
+// TODO: add ability to rotate and flip in alternate directions
 class BuildTools extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
@@ -298,6 +303,7 @@ class BuildTools extends StatelessWidget{
   }
 }
 
+// TODO: add regular polygons
 class BuildComponents extends StatelessWidget{
 
   @override

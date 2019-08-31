@@ -264,6 +264,7 @@ class ContraptionState with ChangeNotifier{
     }
   }
 
+  //TODO: implement pausing
   void pause(){
 
     notifyListeners();
@@ -272,6 +273,24 @@ class ContraptionState with ChangeNotifier{
 
 class Environment with ChangeNotifier{
   double gravity = 10;
-  double drag = 0.01;
   double elasticity = 0.8;
+  double drag = 0.01;
+
+  void setGravity(double newGravity){
+    gravity = newGravity;
+
+    notifyListeners();
+  }
+
+  void setElasticity(double newElasticity){
+    elasticity = newElasticity;
+
+    notifyListeners();
+  }
+
+  void setDrag(double newDrag){
+    drag = newDrag;
+
+    notifyListeners();
+  }
 }
