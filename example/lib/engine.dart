@@ -72,20 +72,30 @@ engine(Environment environment, ContraptionParameters contraptionParameters, Con
   var newPoints = contraptionState.points;
   var newVelocity = contraptionState.velocity;
   
-  double ax = 0.0;
-  double ay = environment.gravity;
+  springAcceleration(nodeID){
+    var a = [0.0, 0.0];
+
+    return a;
+  }
   
   for (int i = 0; i < newPoints.length; i++){
+    var springs = springAcceleration(i);
+    var drag = [environment.drag*state.velocity[i][0], 
+                environment.drag*state.velocity[i][1]];
+
+    double ax = springs[0] - drag[0];
+    double ay = springs[1] - drag[1] + environment.gravity;
+
     double vx = state.velocity[i][0] + ax * timeStep;
     double vy = state.velocity[i][1] + ay * timeStep;
 
     double x = state.points[i][0] + vx * timeStep;
     double y = state.points[i][1] + vy * timeStep;
 
-    var corrected = collisionCheck(x, y, vx, vy, 
-                                   state.points[i][0], state.points[i][1], 
+    var corrected = collisionCheck(x, y, vx, vy,
+                                   state.points[i][0], state.points[i][1],
                                    environment.elasticity, timeStep);
-    
+  
     newVelocity[i] = [corrected['vx'], corrected['vy']];
     newPoints[i] = [corrected['x'], corrected['y']];
   }
