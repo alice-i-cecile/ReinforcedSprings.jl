@@ -79,11 +79,11 @@ engine(Environment environment, ContraptionParameters contraptionParameters, Con
   for (var connection in contraptionParameters.connections){
     int i = connection[0];
     int j = connection[1];
-    // TODO: record strength, restLength and mass in ContraptionParameters
-    double strength = 1.0;
-    double restLength = 100.0;
-    double massI = 1.0;
-    double massJ = 2.0;
+    // TODO: individualize spring and node parameters
+    double strength = contraptionParameters.strength;
+    double restLength = contraptionParameters.restLength;
+    double massI = contraptionParameters.mass;
+    double massJ = contraptionParameters.mass;
 
     double distX = newPoints[i][0] - newPoints[j][0];
     double distY = newPoints[i][1] - newPoints[j][1];

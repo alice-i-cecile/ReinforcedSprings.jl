@@ -9,6 +9,28 @@ class ContraptionParameters with ChangeNotifier {
   var nodes = [];
   var connections = Set();
 
+  double mass = 1.0;
+  double strength = 1.0;
+  double restLength = 100.0;
+
+  void setMass(newMass){
+    mass = newMass;
+
+    notifyListeners();
+  }
+
+  void setStrength(newStrength){
+    strength = newStrength;
+
+    notifyListeners();
+  }
+
+  void setRestLength(newRestLength){
+    restLength = newRestLength;
+
+    notifyListeners();
+  }
+
   void blank(){
     nodes = [];
     connections = Set();

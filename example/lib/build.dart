@@ -168,19 +168,31 @@ class BuildProperties extends StatelessWidget{
             Text('Mass', style: TextStyle(fontWeight: FontWeight.bold)),
             Slider(
               min: 0.0,
-              value: 1.0,
+              value: Provider.of<ContraptionParameters>(context).mass,
               max: 100.0,
               label: 'currentMass',
-              onChanged: (newMass) {}),
+              onChanged: (newMass) => Provider.of<ContraptionParameters>(context, listen: false).setMass(newMass)
+            ),          
           ]),
           Row(children: <Widget>[
             Text('Spring Strength', style: TextStyle(fontWeight: FontWeight.bold)),
             Slider(
               min: 0.0,
-              value: 1.0,
+              value: Provider.of<ContraptionParameters>(context).strength,
               max: 100.0,
               label: 'currentStrength',
-              onChanged: (newStrength) {}),
+              onChanged: (newStrength) => Provider.of<ContraptionParameters>(context, listen: false).setStrength(newStrength)
+            ),
+          ]),
+          Row(children: <Widget>[
+            Text('Relative Rest Length', style: TextStyle(fontWeight: FontWeight.bold)),
+            Slider(
+              min: 0.01,
+              value: Provider.of<ContraptionParameters>(context).restLength,
+              max: 100.0,
+              label: 'currentRestLength',
+              onChanged: (newRestLength) => Provider.of<ContraptionParameters>(context, listen: false).setRestLength(newRestLength)
+            ),          
           ]),
           Row(children: <Widget>[
             Text('Gravity', style: TextStyle(fontWeight: FontWeight.bold)),
