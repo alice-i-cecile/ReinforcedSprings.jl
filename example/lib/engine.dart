@@ -93,15 +93,12 @@ engine(Environment environment, ContraptionParameters contraptionParameters, Con
     double forceX = force*distX/dist;
     double forceY = force*distY/dist;
 
-    print("Start: ${springs[i]}");
     springs[i][0] += forceX / massI;
     springs[i][1] += forceY / massI;
 
-    print("Middle: ${springs[i]}");
 
     springs[j][0] -= forceX / massJ;
     springs[j][1] -= forceY / massJ;
-    print("End: ${springs[i]}");
   }
 
   for (int i = 0; i < newPoints.length; i++){
