@@ -1,6 +1,5 @@
 import 'package:provider/provider.dart';
 import 'package:positioned_tap_detector/positioned_tap_detector.dart';
-
 import 'package:flutter/material.dart';
 
 import 'contraption.dart';
@@ -417,10 +416,14 @@ class BuildDisplay extends StatelessWidget{
 class BuildPainter extends CustomPainter {
   ContraptionParameters contraptionParameters;
   Selection selection;
+  var nodes;
+  var connections;
 
   BuildPainter(ContraptionParameters contraptionParameters, Selection selection) : super(repaint: Listenable.merge([contraptionParameters, selection])) {
     this.contraptionParameters = contraptionParameters;
     this.selection = selection;
+    this.nodes = contraptionParameters.nodes;
+    this.connections = contraptionParameters.connections;
   }
   
   @override
@@ -433,8 +436,8 @@ class BuildPainter extends CustomPainter {
 
     var selected = selection.selectedNodes;
 
-    for (int i = 0; i < contraptionParameters.nodes.length; i++){
-      var point = contraptionParameters.nodes[i];
+    for (int i = 0; i < nodes.length; i++){
+      var point = nodes[i];
       var radius = contraptionParameters.radius[i.toString()];
       
       if (selected.contains(i)) {
@@ -444,12 +447,12 @@ class BuildPainter extends CustomPainter {
       }
     }
 
-    for (var line in contraptionParameters.connections){
-      double x0 = contraptionParameters.nodes[line[0]][0];
-      double y0 = contraptionParameters.nodes[line[0]][1];
+    for (var line in connections){
+      double x0 = nodes[line[0]][0];
+      double y0 = nodes[line[0]][1];
 
-      double x1 =  contraptionParameters.nodes[line[1]][0];
-      double y1 = contraptionParameters.nodes[line[1]][1];
+      double x1 = nodes[line[1]][0];
+      double y1 = nodes[line[1]][1];
 
       canvas.drawLine(Offset(x0, y0), Offset(x1, y1), linePaint); 
     }
