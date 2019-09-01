@@ -161,11 +161,11 @@ class PropertyInput extends StatefulWidget{
 
   final String fieldName;
   final double minValue;
-  final double initialValue;
+  final double shownValue;
   final double maxValue;
   final updateFunction;
   
-  const PropertyInput({Key key, this.fieldName, this.minValue, this.initialValue, this.maxValue, this.updateFunction}): super(key: key);
+  const PropertyInput({Key key, this.fieldName, this.minValue, this.shownValue, this.maxValue, this.updateFunction}): super(key: key);
 
   @override
   _PropertyInputState createState() => _PropertyInputState();
@@ -174,43 +174,46 @@ class PropertyInput extends StatefulWidget{
 class _PropertyInputState extends State<PropertyInput>{
   String numValidator(String input){
     if (input == null){
-      return widget.initialValue.toString();
+      return widget.shownValue.toString();
     }
 
     double x = double.tryParse(input);
     if (x == null){
-      return widget.initialValue.toString();
+      return widget.shownValue.toString();
     }
 
     if (x < widget.minValue){
-      return widget.minValue.toString();
+      x = widget.minValue;
     } else if (x > widget.maxValue){
-      return widget.maxValue.toString();
-    } else {
-      return x.toString();
+      x = widget.maxValue;
     }
+
+    String value = x.toString();
+
+    return value;
   }
 
   @override
   Widget build(BuildContext context){
     return(
-      Container(child:
-        TextFormField(
-          decoration: InputDecoration(
-            labelText: widget.fieldName,
+      Row(children: <Widget>[
+        Container(child:
+          TextField(
+            decoration: InputDecoration(
+              labelText: widget.fieldName,
+            ),
+            keyboardType: TextInputType.number, 
+            textAlign: TextAlign.right,
+            onChanged: (String input) => widget.updateFunction(double.parse(numValidator(input)))
           ),
-          initialValue: widget.initialValue.toString(),
-          keyboardType: TextInputType.number, 
-          validator: numValidator, 
-          textAlign: TextAlign.right,
-          onSaved: (String input) => widget.updateFunction(double.parse(input))
-        ),
-        width: 150
-      ) 
+          width: 150),
+        Text(widget.shownValue.toString())
+      ]) 
     );
   }
 }
 
+//TODO: add better displayed values
 class BuildProperties extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
@@ -223,42 +226,42 @@ class BuildProperties extends StatelessWidget{
         PropertyInput(
           fieldName: 'Mass', 
           minValue: 0.01,
-          initialValue: contraptionParameters.defaultMass,
+          shownValue: contraptionParameters.defaultMass,
           maxValue: 100.0,
           updateFunction: (newMass) => contraptionParameters.editMass(selection.selectedNodes, newMass)
         ),
         PropertyInput(
           fieldName: 'Spring Strength', 
           minValue: 0.0,
-          initialValue: contraptionParameters.defaultStrength,
+          shownValue: contraptionParameters.defaultStrength,
           maxValue: 100.0,
           updateFunction: (newStrength) => contraptionParameters.editMass(selection.selectedNodes, newStrength)
         ),
         PropertyInput(
           fieldName: 'Rest Length', 
           minValue: 0.01,
-          initialValue: 1.0,
+          shownValue: 1.0,
           maxValue: 100.0,
           updateFunction: (scale) => contraptionParameters.editRestLength(selection.selectedNodes, scale)
         ),
         PropertyInput(
           fieldName: 'Gravity', 
           minValue: -100.0,
-          initialValue: environment.gravity,
+          shownValue: environment.gravity,
           maxValue: 100.0,
           updateFunction: (newGravity) => environment.setGravity(newGravity)
         ),
         PropertyInput(
           fieldName: 'Elasticity', 
           minValue: 0.0,
-          initialValue: environment.elasticity, 
+          shownValue: environment.elasticity, 
           maxValue: 1.0,
           updateFunction: (newElasticity) => environment.setElasticity(newElasticity)
         ),
         PropertyInput(
           fieldName: 'Drag', 
           minValue: 0.0,
-          initialValue: environment.drag,
+          shownValue: environment.drag,
           maxValue: 1.0,
           updateFunction: (newDrag) => environment.setDrag(newDrag)
         )
