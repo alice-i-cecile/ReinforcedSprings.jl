@@ -16,6 +16,7 @@ class ContraptionParameters with ChangeNotifier {
   var radius = {};
 
   var strength = {};
+  var springWidth = {};
   var restLength = {};
   
   void blank(){
@@ -65,6 +66,7 @@ class ContraptionParameters with ChangeNotifier {
   void setStrength(int node1, int node2, double newStrength){
     String key = node1.toString() + "," + node2.toString();
     strength[key] = newStrength;
+    springWidth[key] = sqrt(newStrength) * 1.0;
 
     notifyListeners();
   }
@@ -186,7 +188,8 @@ class ContraptionParameters with ChangeNotifier {
     for (int i  in selected){
       for (int j in selected){
         String key = i.toString() + "," + j.toString();
-        connections.remove(key);
+        strength.remove(key);
+        springWidth.remove(key);
         restLength.remove(key);
       }
     }
@@ -365,7 +368,8 @@ class ContraptionParameters with ChangeNotifier {
     for (int i  in selected){
       for (int j in selected){
         String key = i.toString() + "," + j.toString();
-        connections.remove(key);
+        strength.remove(key);
+        springWidth.remove(key);
         restLength.remove(key);
       }
     }

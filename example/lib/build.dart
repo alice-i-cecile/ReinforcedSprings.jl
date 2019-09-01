@@ -244,7 +244,7 @@ class BuildProperties extends StatelessWidget{
           minValue: 0.0,
           shownValue: contraptionParameters.defaultStrength,
           maxValue: 100.0,
-          updateFunction: (newStrength) => contraptionParameters.editMass(selection.selectedNodes, newStrength)
+          updateFunction: (newStrength) => contraptionParameters.editStrength(selection.selectedNodes, newStrength)
         ),
         PropertyInput(
           fieldName: 'Rest Length', 
@@ -445,14 +445,16 @@ class BuildPainter extends CustomPainter {
     }
 
     for (var line in contraptionParameters.connections){
-      double x0 = contraptionParameters.nodes[line[0]][0];
-      double y0 = contraptionParameters.nodes[line[0]][1];
+      int i = line[0];
+      int j = line[1];
+      double x0 = contraptionParameters.nodes[i][0];
+      double y0 = contraptionParameters.nodes[i][1];
 
-      double x1 =  contraptionParameters.nodes[line[1]][0];
-      double y1 = contraptionParameters.nodes[line[1]][1];
+      double x1 =  contraptionParameters.nodes[j][0];
+      double y1 = contraptionParameters.nodes[j][1];
 
-      //String key = nodes[line[0]].toString() + "," + nodes[line[1]].toString();
-      //linePaint.strokeWidth = contraptionParameters.springWidth[key];
+      String key = i.toString() + "," + j.toString();
+      linePaint.strokeWidth = contraptionParameters.springWidth[key];
       canvas.drawLine(Offset(x0, y0), Offset(x1, y1), linePaint); 
     }
   }
