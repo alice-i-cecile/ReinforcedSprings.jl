@@ -116,7 +116,7 @@ class ContraptionParameters with ChangeNotifier {
         int i = connection[0];
         int j = connection[1];
         double newRestLength = scale * dist(i, j);
-        setStrength(connection[0], connection[1], newRestLength);
+        setRestLength(connection[0], connection[1], newRestLength);
       }
     } else {
       for (var connection in connections){
@@ -126,7 +126,7 @@ class ContraptionParameters with ChangeNotifier {
           int i = connection[0];
           int j = connection[1];
           double newRestLength = scale * dist(i, j);
-          setStrength(connection[0], connection[1], newRestLength);        
+          setRestLength(connection[0], connection[1], newRestLength);        
         }
       }
     }
@@ -441,6 +441,16 @@ class ContraptionState with ChangeNotifier{
   void dispose(){
     super.dispose();
     gameClock.cancel();
+  }
+
+  double dist(point1, point2){
+    double x1 = points[point1][0];
+    double x2 = points[point2][0];
+    double y1 = points[point1][1];
+    double y2 = points[point2][1];
+
+    double d = sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
+    return d;
   }
 
   void reset(ContraptionParameters contraptionParameters){

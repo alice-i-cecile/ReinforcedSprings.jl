@@ -455,6 +455,17 @@ class BuildPainter extends CustomPainter {
 
       String key = i.toString() + "," + j.toString();
       linePaint.strokeWidth = contraptionParameters.springWidth[key];
+
+      double compressionRatio = contraptionParameters.dist(i, j) / 
+                                contraptionParameters.restLength[key];
+      if (compressionRatio == 1){
+        linePaint.color = Colors.black;
+      } else if (compressionRatio > 1) {
+        linePaint.color = Colors.blue;
+      } else {
+        linePaint.color = Colors.red;
+      }
+
       canvas.drawLine(Offset(x0, y0), Offset(x1, y1), linePaint); 
     }
   }
