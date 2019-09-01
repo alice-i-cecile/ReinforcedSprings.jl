@@ -157,8 +157,61 @@ class BuildInterface extends StatelessWidget {
   }
 }
 
-// TODO: replace sliders with text inputs
+class PropertyInput extends StatefulWidget{
 
+  final String fieldName;
+  final double minValue;
+  final double initialValue;
+  final double maxValue;
+  final updateFunction;
+  
+  const PropertyInput({Key key, this.fieldName, this.minValue, this.initialValue, this.maxValue, this.updateFunction}): super(key: key);
+
+  @override
+  _PropertyInputState createState() => _PropertyInputState();
+}
+
+class _PropertyInputState extends State<PropertyInput>{
+  String numValidator(String input){
+    if (input == null){
+      return widget.initialValue.toString();
+    }
+
+    double x = double.tryParse(input);
+    if (x == null){
+      return widget.initialValue.toString();
+    }
+
+    if (x < widget.minValue){
+      return widget.minValue.toString();
+    } else if (x > widget.maxValue){
+      return widget.maxValue.toString();
+    } else {
+      return x.toString();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context){
+    return(
+      Container(child:
+        TextFormField(
+          decoration: InputDecoration(
+            labelText: widget.fieldName,
+          ),
+          initialValue: widget.initialValue.toString(),
+          keyboardType: TextInputType.number, 
+          validator: numValidator, 
+          textAlign: TextAlign.right,
+          onSaved: (String input) => widget.updateFunction(double.parse(input))
+        ),
+        width: 150
+      ) 
+    );
+  }
+}
+
+// TODO: Null is somehow being passed through
 class BuildProperties extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
@@ -167,70 +220,50 @@ class BuildProperties extends StatelessWidget{
     var selection =  Provider.of<Selection>(context);
 
     return(
-      Column(
-        children: <Widget>[
-          Row(children: <Widget>[
-            Text('Mass', style: TextStyle(fontWeight: FontWeight.bold)),
-            Slider(
-              min: 0.0,
-              value: contraptionParameters.defaultMass,
-              max: 100.0,
-              label: 'currentMass',
-              onChanged: (newMass) => contraptionParameters.editMass(selection.selectedNodes, newMass)
-            ),          
-          ]),
-          Row(children: <Widget>[
-            Text('Spring Strength', style: TextStyle(fontWeight: FontWeight.bold)),
-            Slider(
-              min: 0.0,
-              value: contraptionParameters.defaultStrength,
-              max: 100.0,
-              label: 'currentStrength',
-              onChanged: (newStrength) => contraptionParameters.editStrength(selection.selectedNodes, newStrength)
-            ),
-          ]),
-          Row(children: <Widget>[
-            Text('Relative Rest Length', style: TextStyle(fontWeight: FontWeight.bold)),
-            Slider(
-              min: 0.01,
-              value: 1.0,
-              max: 100.0,
-              label: 'currentScale',
-              onChanged: (scale) => contraptionParameters.editRestLength(selection.selectedNodes, scale)
-            ),          
-          ]),
-          Row(children: <Widget>[
-            Text('Gravity', style: TextStyle(fontWeight: FontWeight.bold)),
-            Slider(
-              min: 0.0,
-              value: environment.gravity,
-              max: 100.0,
-              label: 'currentGravity',
-              onChanged: (newGravity) => environment.setGravity(newGravity)
-            ),
-          ]),
-          Row(children: <Widget>[
-            Text('Elasticity', style: TextStyle(fontWeight: FontWeight.bold)),
-            Slider(
-              min: 0.0,
-              value: environment.elasticity,
-              max: 1.0,
-              label: 'currentElasticity',
-              onChanged: (newElasticity) => environment.setElasticity(newElasticity)
-            ),
-          ]),
-          Row(children: <Widget>[
-            Text('Drag', style: TextStyle(fontWeight: FontWeight.bold)),
-            Slider(
-              min: 0.0,
-              value: environment.drag,
-              max: 1.0,
-              label: 'currentDrag',
-              onChanged: (newDrag) => environment.setDrag(newDrag)
-            ),
-          ]),
-        ]
-      )
+      Column(children: <Widget>[
+        PropertyInput(
+          fieldName: 'Mass', 
+          minValue: 0.01,
+          initialValue: contraptionParameters.defaultMass,
+          maxValue: 100.0,
+          updateFunction: (newMass) => contraptionParameters.editMass(selection.selectedNodes, newMass)
+        ),
+        PropertyInput(
+          fieldName: 'Spring Strength', 
+          minValue: 0.0,
+          initialValue: contraptionParameters.defaultStrength,
+          maxValue: 100.0,
+          updateFunction: (newStrength) => contraptionParameters.editMass(selection.selectedNodes, newStrength)
+        ),
+        PropertyInput(
+          fieldName: 'Rest Length', 
+          minValue: 0.01,
+          initialValue: 1.0,
+          maxValue: 100.0,
+          updateFunction: (scale) => contraptionParameters.editRestLength(selection.selectedNodes, scale)
+        ),
+        PropertyInput(
+          fieldName: 'Gravity', 
+          minValue: -100.0,
+          initialValue: environment.gravity,
+          maxValue: 100.0,
+          updateFunction: (newGravity) => environment.setGravity(newGravity)
+        ),
+        PropertyInput(
+          fieldName: 'Elasticity', 
+          minValue: 0.0,
+          initialValue: environment.elasticity, 
+          maxValue: 1.0,
+          updateFunction: (newElasticity) => environment.setElasticity(newElasticity)
+        ),
+        PropertyInput(
+          fieldName: 'Drag', 
+          minValue: 0.0,
+          initialValue: environment.drag,
+          maxValue: 1.0,
+          updateFunction: (newDrag) => environment.setDrag(newDrag)
+        )
+      ])
     );
   }
 }
