@@ -129,7 +129,7 @@ class ContraptionParameters with ChangeNotifier {
 
   void node(position) {
     nodes.add([position.dx, position.dy]);
-    int i = nodes.length;
+    int i = nodes.length - 1;
 
     setMass(i, defaultMass);
 

@@ -96,7 +96,6 @@ engine(Environment environment, ContraptionParameters parameters, ContraptionSta
     springs[i][0] += forceX / massI;
     springs[i][1] += forceY / massI;
 
-
     springs[j][0] -= forceX / massJ;
     springs[j][1] -= forceY / massJ;
   }

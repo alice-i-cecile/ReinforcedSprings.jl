@@ -211,7 +211,6 @@ class _PropertyInputState extends State<PropertyInput>{
   }
 }
 
-// TODO: Null is somehow being passed through
 class BuildProperties extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
