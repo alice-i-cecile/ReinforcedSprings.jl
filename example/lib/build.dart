@@ -454,6 +454,8 @@ class BuildPainter extends CustomPainter {
       double x1 = nodes[line[1]][0];
       double y1 = nodes[line[1]][1];
 
+      //String key = nodes[line[0]].toString() + "," + nodes[line[1]].toString();
+      //linePaint.strokeWidth = contraptionParameters.springWidth[key];
       canvas.drawLine(Offset(x0, y0), Offset(x1, y1), linePaint); 
     }
   }
