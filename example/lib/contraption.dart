@@ -409,7 +409,12 @@ class ContraptionParameters with ChangeNotifier {
       }
     }
 
-    // TODO: update rest length
+    for (var connection in connections){
+      if (selected.contains(connection[0]) || selected.contains(connection[1])){
+        String key = connection[0].toString() + "," + connection[1].toString();
+        restLength[key] = dist(connection[0], connection[1]);
+      }
+    }
 
     notifyListeners();
   }
