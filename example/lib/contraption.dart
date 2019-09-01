@@ -13,6 +13,8 @@ class ContraptionParameters with ChangeNotifier {
   double defaultStrength = 1.0;
 
   var mass = {};
+  var radius = {};
+
   var strength = {};
   var restLength = {};
   
@@ -53,6 +55,7 @@ class ContraptionParameters with ChangeNotifier {
   void setMass(int node, double newMass){
     String key = node.toString();
     mass[key] = newMass;
+    radius[key] = pow(newMass, 0.333);
 
     notifyListeners();
   }
@@ -175,6 +178,7 @@ class ContraptionParameters with ChangeNotifier {
     for (int i  in selected){
       String key = i.toString();
       mass.remove(key);
+      radius.remove(key);
     }
 
     for (int i  in selected){
@@ -422,8 +426,8 @@ class ContraptionParameters with ChangeNotifier {
 
 class ContraptionState with ChangeNotifier{
   var points = [];
-  var lines = Set();
   var velocity = [];
+  var lines = Set();
 
   var gameClock;
 

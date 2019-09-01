@@ -371,7 +371,6 @@ class BuildTools extends StatelessWidget{
 
 // TODO: add regular polygons
 class BuildComponents extends StatelessWidget{
-
   @override
   Widget build(BuildContext context) {
     var tool = Provider.of<Tool>(context, listen: false);
@@ -436,11 +435,12 @@ class BuildPainter extends CustomPainter {
 
     for (int i = 0; i < contraptionParameters.nodes.length; i++){
       var point = contraptionParameters.nodes[i];
+      var radius = contraptionParameters.radius[i.toString()] * pointRadius;
       
       if (selected.contains(i)) {
-        canvas.drawCircle(Offset(point[0], point[1]), 1.5 * pointRadius, selectPaint);
+        canvas.drawCircle(Offset(point[0], point[1]), 1.5 * radius, selectPaint);
       } else {
-        canvas.drawCircle(Offset(point[0], point[1]), pointRadius, pointPaint);
+        canvas.drawCircle(Offset(point[0], point[1]), radius, pointPaint);
       }
     }
 

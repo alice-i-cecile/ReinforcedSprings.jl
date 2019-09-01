@@ -107,10 +107,11 @@ class PlayDisplay extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    var contraption = Provider.of<ContraptionState>(context, listen: false);
+    var contraptionState = Provider.of<ContraptionState>(context, listen: false);
+    var contraptionParameters = Provider.of<ContraptionParameters>(context, listen: false);
 
     return CustomPaint(
-      painter: PlayPainter(contraption),
+      painter: PlayPainter(contraptionState, contraptionParameters),
       child: Container(
         width: 400,
         height: 400,
@@ -124,9 +125,11 @@ class PlayDisplay extends StatelessWidget{
 
 class PlayPainter extends CustomPainter {
   ContraptionState contraptionState;
+  ContraptionParameters contraptionParameters;
 
-  PlayPainter(ContraptionState contraptionState) : super(repaint: contraptionState) {
+  PlayPainter(ContraptionState contraptionState, ContraptionParameters contraptionParameters) : super(repaint: contraptionState) {
     this.contraptionState = contraptionState;
+    this.contraptionParameters = contraptionParameters;
   }
   
   @override
@@ -136,8 +139,11 @@ class PlayPainter extends CustomPainter {
 
     var linePaint = Paint();
 
-    for (var point in contraptionState.points){
-      canvas.drawCircle(Offset(point[0], point[1]), pointRadius, pointPaint);
+    for (int i = 0; i < contraptionState.points.length; i++){
+      var point = contraptionState.points[i];
+      var radius = contraptionParameters.radius[i.toString()] * pointRadius;      
+      
+      canvas.drawCircle(Offset(point[0], point[1]), radius, pointPaint);
     }
 
     for (var line in contraptionState.lines){
