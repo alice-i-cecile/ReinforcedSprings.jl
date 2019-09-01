@@ -19,6 +19,16 @@ class Tool with ChangeNotifier{
 class Selection with ChangeNotifier{
   Set<int> selectedNodes = Set();
 
+  void selectAll(ContraptionParameters contraptionParameters){
+    int n = contraptionParameters.nodes.length;
+    selectedNodes = Set();
+    for (int i = 0; i < n; i++){
+      selectedNodes.add(i);
+    }
+
+    notifyListeners();
+  }
+
   void clearSelection(){
     selectedNodes = Set();
 
@@ -140,7 +150,7 @@ class BuildInterface extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Tool tool = Provider.of<Tool>(context, listen: false);
-    
+
     return(
       Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -158,7 +168,6 @@ class BuildInterface extends StatelessWidget {
 }
 
 class PropertyInput extends StatefulWidget{
-
   final String fieldName;
   final double minValue;
   final double shownValue;
@@ -284,6 +293,11 @@ class BuildTools extends StatelessWidget{
             icon: const Icon(Icons.near_me),
             tooltip: 'Select',
             onPressed: () => tool.changeTool('Select'),
+          ),
+          IconButton(                
+            icon: const Icon(Icons.select_all),
+            tooltip: 'Select All',
+            onPressed: () => selection.selectAll(parameters),
           ),
           IconButton(                
             icon: const Icon(Icons.close),
