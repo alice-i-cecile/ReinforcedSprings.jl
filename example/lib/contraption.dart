@@ -172,7 +172,18 @@ class ContraptionParameters with ChangeNotifier {
 
     connections = newConnections;
 
-    // TODO: delete node and spring properties
+    for (int i  in selected){
+      String key = i.toString();
+      mass.remove(key);
+    }
+
+    for (int i  in selected){
+      for (int j in selected){
+        String key = i.toString() + "," + j.toString();
+        connections.remove(key);
+        restLength.remove(key);
+      }
+    }
 
     notifyListeners();
   }
@@ -344,7 +355,14 @@ class ContraptionParameters with ChangeNotifier {
 
       connections = newConnections;
     }
-    //TODO: remove connection properties
+
+    for (int i  in selected){
+      for (int j in selected){
+        String key = i.toString() + "," + j.toString();
+        connections.remove(key);
+        restLength.remove(key);
+      }
+    }
 
     notifyListeners();
   }
