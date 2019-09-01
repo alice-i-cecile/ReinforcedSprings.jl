@@ -425,7 +425,6 @@ class BuildPainter extends CustomPainter {
   
   @override
   void paint(Canvas canvas, Size size) {
-    double pointRadius = 3.0;
     var pointPaint = Paint();
     var selectPaint = Paint();
     selectPaint..style = PaintingStyle.stroke;
@@ -436,7 +435,7 @@ class BuildPainter extends CustomPainter {
 
     for (int i = 0; i < contraptionParameters.nodes.length; i++){
       var point = contraptionParameters.nodes[i];
-      var radius = contraptionParameters.radius[i.toString()] * pointRadius;
+      var radius = contraptionParameters.radius[i.toString()];
       
       if (selected.contains(i)) {
         canvas.drawCircle(Offset(point[0], point[1]), radius, selectPaint);

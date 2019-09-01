@@ -134,14 +134,13 @@ class PlayPainter extends CustomPainter {
   
   @override
   void paint(Canvas canvas, Size size) {
-    double pointRadius = 3.0;
     var pointPaint = Paint();
 
     var linePaint = Paint();
 
     for (int i = 0; i < contraptionState.points.length; i++){
       var point = contraptionState.points[i];
-      var radius = contraptionParameters.radius[i.toString()] * pointRadius;      
+      var radius = contraptionParameters.radius[i.toString()];      
       
       canvas.drawCircle(Offset(point[0], point[1]), radius, pointPaint);
     }

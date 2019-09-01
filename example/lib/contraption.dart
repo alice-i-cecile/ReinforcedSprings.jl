@@ -53,9 +53,11 @@ class ContraptionParameters with ChangeNotifier {
   }
 
   void setMass(int node, double newMass){
+    double pointRadius = 3.0;
+
     String key = node.toString();
     mass[key] = newMass;
-    radius[key] = pow(newMass, 0.333);
+    radius[key] = pow(newMass, 0.333) * pointRadius;
 
     notifyListeners();
   }
