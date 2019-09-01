@@ -139,6 +139,8 @@ class BuildTab extends StatelessWidget {
 class BuildInterface extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    Tool tool = Provider.of<Tool>(context, listen: false);
+    
     return(
       Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -148,9 +150,7 @@ class BuildInterface extends StatelessWidget {
             BuildTools(),
             BuildComponents()
           ]),
-          Consumer<Tool>(
-            builder: (context, tool, child) => Text('Tool: ${tool.selectedTool}')
-          )
+          Text('Tool: ${tool.selectedTool}')
         ]
       )
     );
@@ -273,79 +273,69 @@ class BuildProperties extends StatelessWidget{
 class BuildTools extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
+    Tool tool = Provider.of<Tool>(context, listen: false);
+    Selection selection = Provider.of<Selection>(context, listen: false);
+    ContraptionParameters parameters = Provider.of<ContraptionParameters>(context, listen: false);
+
     return(
       Column(children: <Widget>[
         Row(children: <Widget>[
           IconButton(                
             icon: const Icon(Icons.near_me),
             tooltip: 'Select',
-            onPressed: () => Provider.of<Tool>(context, listen: false).changeTool('Select'),
+            onPressed: () => tool.changeTool('Select'),
           ),
           IconButton(                
             icon: const Icon(Icons.close),
             tooltip: 'Clear Selection',
-            onPressed: () => Provider.of<Selection>(context, listen: false).clearSelection(),
+            onPressed: () => selection.clearSelection(),
           ),
-          Consumer<Selection>(
-            builder: (context, selection, child) => IconButton(                
-              icon: const Icon(Icons.delete),
-              tooltip: 'Delete',
-              onPressed: (){
-                Provider.of<ContraptionParameters>(context, listen: false).delete(selection.selectedNodes);
-                selection.clearSelection();
-              }
-            ),
-          )
-        ]),
-        Row(children: <Widget>[
-          Consumer<Selection>(
-            builder: (context, selection, child) => IconButton(
-              icon: const Icon(Icons.rotate_left),
-              tooltip: 'Rotate Counterclockwise',
-              onPressed: () => Provider.of<ContraptionParameters>(context, listen: false).rotate(-3.14159/6.0, selection.selectedNodes)
-            )
-          ),
-          Consumer<Selection>(
-            builder: (context, selection, child) => IconButton(
-              icon: const Icon(Icons.rotate_right),
-              tooltip: 'Rotate Clockwise',
-              onPressed: () => Provider.of<ContraptionParameters>(context, listen: false).rotate(3.14159/6.0, selection.selectedNodes)
-            )
-          ),
-          Consumer<Selection>(
-            builder: (context, selection, child) => IconButton(
-              icon: const Icon(Icons.flip),
-              tooltip: 'Mirror Horizontally',
-              onPressed: () => Provider.of<ContraptionParameters>(context, listen: false).mirror(selection.selectedNodes, 'horizontal')
-            )
-          ),
-          Consumer<Selection>(
-            builder: (context, selection, child) => IconButton(
-              icon: Transform.rotate(angle: 3.14159/2, child:const Icon(Icons.flip)),
-              tooltip: 'Mirror Vertically',
-              onPressed: () => Provider.of<ContraptionParameters>(context, listen: false).mirror(selection.selectedNodes, 'vertical')
-            )
+          IconButton(                
+            icon: const Icon(Icons.delete),
+            tooltip: 'Delete',
+            onPressed: (){
+              parameters.delete(selection.selectedNodes);
+              selection.clearSelection();
+            }
           ),
         ]),
         Row(children: <Widget>[
-          Consumer<Selection>(
-            builder: (context, selection, child) => IconButton(
-              icon: const Icon(Icons.share),
-              tooltip: 'Connect',
-              onPressed: () => Provider.of<ContraptionParameters>(context, listen: false).connect(selection.selectedNodes)
-            ),
+          IconButton(
+            icon: const Icon(Icons.rotate_left),
+            tooltip: 'Rotate Counterclockwise',
+            onPressed: () => parameters.rotate(-3.14159/6.0, selection.selectedNodes)
           ),
-          Consumer<Selection>(
-            builder: (context, selection, child) => IconButton(
-              icon: const Icon(Icons.scatter_plot),
-              tooltip: 'Disconnect',
-              onPressed: () => Provider.of<ContraptionParameters>(context, listen: false).disconnect(selection.selectedNodes)
-            ),
+          IconButton(
+            icon: const Icon(Icons.rotate_right),
+            tooltip: 'Rotate Clockwise',
+            onPressed: () => parameters.rotate(3.14159/6.0, selection.selectedNodes)
+          ),
+          IconButton(
+            icon: const Icon(Icons.flip),
+            tooltip: 'Mirror Horizontally',
+            onPressed: () => parameters.mirror(selection.selectedNodes, 'horizontal')
+          ),
+          IconButton(
+            icon: Transform.rotate(angle: 3.14159/2, child:const Icon(Icons.flip)),
+            tooltip: 'Mirror Vertically',
+            onPressed: () => parameters.mirror(selection.selectedNodes, 'vertical')
+          ),
+        ]),
+        Row(children: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.share),
+            tooltip: 'Connect',
+            onPressed: () => parameters.connect(selection.selectedNodes)
+          ),
+          IconButton(
+            icon: const Icon(Icons.scatter_plot),
+            tooltip: 'Disconnect',
+            onPressed: () => parameters.disconnect(selection.selectedNodes)
           ),
           IconButton(
             icon: const Icon(Icons.transform),
             tooltip: 'Transform',
-            onPressed: () => Provider.of<Tool>(context, listen: false).changeTool('Transform')
+            onPressed: () => tool.changeTool('Transform')
           ),
         ]),
         Row(children: <Widget>[
@@ -370,14 +360,16 @@ class BuildComponents extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+    var tool = Provider.of<Tool>(context, listen: false);
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
         RaisedButton(
-          onPressed: () => Provider.of<Tool>(context, listen: false).changeTool('Node'),
+          onPressed: () => tool.changeTool('Node'),
           child: Text('Node')),
         RaisedButton(
-          onPressed: () => Provider.of<Tool>(context, listen: false).changeTool('Spring'),
+          onPressed: () => tool.changeTool('Spring'),
           child: Text('Spring'))
       ],
     );
@@ -390,22 +382,19 @@ class BuildDisplay extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     var contraption = Provider.of<ContraptionParameters>(context, listen: false);
-    var selected = Provider.of<Selection>(context, listen: false);
+    var selection = Provider.of<Selection>(context, listen: false);
+    var tool = Provider.of<Tool>(context, listen: false);
 
     return CustomPaint(
-      painter: BuildPainter(contraption, selected),
+      painter: BuildPainter(contraption, selection),
       child: Container(
         width: 400,
         height: 400,
         decoration: BoxDecoration(
           border: Border.all(width: 2),
         ),
-        child: Consumer<Tool>(
-          builder: (context, tool, child) => Consumer<Selection>(
-            builder: (context, selection, child) => PositionedTapDetector(
-              onTap: (position) => buildGesture(contraption, position.relative, tool.selectedTool, selection)
-            )
-          )
+        child: PositionedTapDetector(
+          onTap: (position) => buildGesture(contraption, position.relative, tool.selectedTool, selection)
         )
       )
     );
