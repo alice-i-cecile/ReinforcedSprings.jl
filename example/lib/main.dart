@@ -37,6 +37,7 @@ class ModeTabs extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.add_circle_outline),
                 tooltip: 'New Contraption',
+                // TODO: blank() does not clear selection
                 onPressed: () => Provider.of<ContraptionParameters>(context, listen: false).blank(),
               ),
               IconButton(

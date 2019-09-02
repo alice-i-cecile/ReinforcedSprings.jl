@@ -6,12 +6,16 @@ import 'package:flutter/material.dart';
 import 'contraption.dart';
 
 // STATE
-//TODO: add SelectRegion tool
 class Tool with ChangeNotifier{
   String selectedTool = 'Node';
+  Offset point1;
+  Offset point2;
 
   void changeTool(String toolName){
     selectedTool = toolName;
+
+    point1 = null;
+    point2 = null;
 
     notifyListeners();
   }
@@ -49,14 +53,14 @@ class Selection with ChangeNotifier{
 }
 
 // Interaction
-void buildGesture(ContraptionParameters contraption, Offset position, String tool, Selection selection){
+void buildGesture(ContraptionParameters contraption, Offset position, Tool tool, Selection selection){
   double distance(aX, aY, bX, bY){
     double d = (aX - bX)*(aX - bX) + 
                (aY - bY)*(aY - bY);
     return d;
   }
 
-  switch(tool) {
+  switch(tool.selectedTool) {
     case 'Node': {
       contraption.node(position);
       break;
@@ -117,8 +121,48 @@ void buildGesture(ContraptionParameters contraption, Offset position, String too
           }
         } 
 
-        //selection.selectedNodes.add(nodeNum);
         selection.select(nodeNum);    
+      }
+
+      break;
+    }
+    // TODO: add visual indicator of selected region
+    case 'SelectRegion': {
+      if (tool.point1 == null){
+        tool.point1 = position;
+      } else {
+        tool.point2 = position;
+        double xMin;
+        double xMax;
+        double yMin;
+        double yMax;
+
+        if (tool.point1.dx < tool.point2.dx){
+          xMin = tool.point1.dx;
+          xMax = tool.point2.dx;
+        } else {
+          xMin = tool.point2.dx;
+          xMax = tool.point1.dx;
+        }
+
+        if (tool.point1.dy < tool.point2.dy){
+          yMin = tool.point1.dy;
+          yMax = tool.point2.dy;
+        } else {
+          yMin = tool.point2.dy;
+          yMax = tool.point1.dy;
+        }
+
+        for (int i = 0; i < contraption.nodes.length; i++){
+          var node = contraption.nodes[i];
+          if ((xMin < node[0]) && (node[0] < xMax) && 
+              (yMin < node[1]) && (node[1] < yMax)){
+              selection.select(i);
+          }
+        }
+
+        tool.point1 = null;
+        tool.point2 = null;
       }
 
       break;
@@ -411,7 +455,7 @@ class BuildDisplay extends StatelessWidget{
           border: Border.all(width: 2),
         ),
         child: PositionedTapDetector(
-          onTap: (position) => buildGesture(contraption, position.relative, tool.selectedTool, selection)
+          onTap: (position) => buildGesture(contraption, position.relative, tool, selection)
         )
       )
     );
@@ -426,7 +470,7 @@ class BuildPainter extends CustomPainter {
     this.contraptionParameters = contraptionParameters;
     this.selection = selection;
   }
-  
+  // TODO: display selected tool in corner of screen
   @override
   void paint(Canvas canvas, Size size) {
     var pointPaint = Paint();
