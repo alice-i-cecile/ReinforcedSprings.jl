@@ -19,6 +19,34 @@ class Tool with ChangeNotifier{
 
     notifyListeners();
   }
+
+  Widget toolIcon(String toolName){
+    Widget icon;
+    switch(toolName){
+      case 'Node': {
+        icon = Text('Node');
+        break;
+      }
+      case 'Spring': {
+        icon = Text('Spring');
+        break;
+      }
+      case 'Select': {
+        icon = Icon(Icons.near_me);
+        break;
+      }
+      case 'SelectRegion': {
+        icon = Icon(Icons.crop_free);
+        break;
+      }
+      case 'Transform': {
+        icon = Icon(Icons.transform);
+        break;
+      }
+    }
+
+    return icon;
+  }
 }
 
 class Selection with ChangeNotifier{
@@ -194,14 +222,11 @@ class BuildTab extends StatelessWidget {
 class BuildInterface extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Tool tool = Provider.of<Tool>(context, listen: true);
-
     return(
       Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           BuildProperties(),
-          Text('Tool: ${tool.selectedTool}'),
           BuildTools(),
           BuildComponents()
         ]
@@ -439,23 +464,26 @@ class BuildComponents extends StatelessWidget{
 
 // DISPLAY
 class BuildDisplay extends StatelessWidget{
-
   @override
   Widget build(BuildContext context) {
     var contraption = Provider.of<ContraptionParameters>(context, listen: false);
     var selection = Provider.of<Selection>(context, listen: false);
-    var tool = Provider.of<Tool>(context, listen: false);
+    var tool = Provider.of<Tool>(context, listen: true);
 
-    return CustomPaint(
-      painter: BuildPainter(contraption, selection),
-      child: Container(
-        width: 400,
-        height: 400,
-        decoration: BoxDecoration(
-          border: Border.all(width: 2),
-        ),
-        child: PositionedTapDetector(
-          onTap: (position) => buildGesture(contraption, position.relative, tool, selection)
+    return PositionedTapDetector(
+      onTap: (position) => buildGesture(contraption, position.relative, tool, selection),
+        child: CustomPaint(
+          painter: BuildPainter(contraption, selection),
+          child: Container(
+            width: 400,
+            height: 400,
+            decoration: BoxDecoration(
+              border: Border.all(width: 2),
+            ),
+            child: Align(
+              child: tool.toolIcon(tool.selectedTool),
+              alignment: Alignment.bottomRight,
+            )
         )
       )
     );
@@ -470,7 +498,7 @@ class BuildPainter extends CustomPainter {
     this.contraptionParameters = contraptionParameters;
     this.selection = selection;
   }
-  // TODO: display selected tool in corner of screen
+
   @override
   void paint(Canvas canvas, Size size) {
     var pointPaint = Paint();
@@ -530,7 +558,7 @@ class BuildPainter extends CustomPainter {
         linePaint.color = HSLColor.fromAHSL(1.0, 230.0, colorCurve(1/compressionRatio), 0.25).toColor();
       }
 
-      canvas.drawLine(Offset(x0, y0), Offset(x1, y1), linePaint); 
+      canvas.drawLine(Offset(x0, y0), Offset(x1, y1), linePaint);
     }
   }
 
