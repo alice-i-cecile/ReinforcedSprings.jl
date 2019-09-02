@@ -2,6 +2,7 @@ import 'package:provider/provider.dart';
 import 'package:positioned_tap_detector/positioned_tap_detector.dart';
 
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 import 'contraption.dart';
 
@@ -11,12 +12,35 @@ class Tool with ChangeNotifier{
   Offset point1;
   Offset point2;
 
+  int nPolygon = 5;
+  double radiusPolygon = 100.0;
+  Set<int> connectivityPolygon = Set();
+
   void changeTool(String toolName){
     selectedTool = toolName;
 
     point1 = null;
     point2 = null;
 
+    notifyListeners();
+  }
+
+  void nPolygonUpdate(int value){
+    nPolygon = value;
+    notifyListeners();
+  }
+
+  void radiusPolygonUpdate(double value){
+    radiusPolygon = value;
+    notifyListeners();
+  }
+
+  void connectivityPolygonUpdate(int value){
+    if (!connectivityPolygon.contains(value)){
+      connectivityPolygon.add(value);
+    } else {
+      connectivityPolygon.remove(value);
+    }
     notifyListeners();
   }
 
@@ -29,6 +53,10 @@ class Tool with ChangeNotifier{
       }
       case 'Spring': {
         icon = Text('Spring');
+        break;
+      }
+      case 'RegularPolygon': {
+        icon = Text('RegularPolygon');
         break;
       }
       case 'Select': {
@@ -90,7 +118,7 @@ void buildGesture(ContraptionParameters contraption, Offset position, Tool tool,
 
   switch(tool.selectedTool) {
     case 'Node': {
-      contraption.node(position);
+      contraption.node(position.dx, position.dy);
       break;
     }
     case 'Spring': {
@@ -150,6 +178,49 @@ void buildGesture(ContraptionParameters contraption, Offset position, Tool tool,
         } 
 
         selection.select(nodeNum);    
+      }
+
+      break;
+    }
+    case 'RegularPolygon': {
+      var center = [position.dx, position.dy];
+      double x;
+      double y;
+      double angle = 0.0;
+      double slice = 2* pi / tool.nPolygon;
+      double width = 400.0;
+      double height = 400.0;
+      int initial = contraption.nodes.length;
+
+      for (int i = initial; i < initial + tool.nPolygon; i++){
+        angle += slice;
+        x = center[0] + tool.radiusPolygon * cos(angle);
+        y = center[1] + tool.radiusPolygon * sin(angle);
+
+        if (x < 0){
+          x = 0;
+        } else if (x > width){
+          x = width;
+        }
+
+        if (y < 0){
+          y = 0;
+        } else if (y > height){
+          y = height;
+        }
+
+        contraption.node(x, y);
+        selection.select(i);
+      }
+
+      for (int i = initial; i < initial + tool.nPolygon; i++){
+        for (int c in tool.connectivityPolygon){
+          int j = i + c;
+          while (j > initial + tool.nPolygon - 1){
+            j -= tool.nPolygon;
+          }
+          contraption.spring(i, j);
+        }
       }
 
       break;
@@ -235,20 +306,20 @@ class BuildInterface extends StatelessWidget {
   }
 }
 
-class PropertyInput extends StatefulWidget{
+class DoubleInput extends StatefulWidget{
   final String fieldName;
   final double minValue;
   final double shownValue;
   final double maxValue;
   final updateFunction;
   
-  const PropertyInput({Key key, this.fieldName, this.minValue, this.shownValue, this.maxValue, this.updateFunction}): super(key: key);
+  const DoubleInput({Key key, this.fieldName, this.minValue, this.shownValue, this.maxValue, this.updateFunction}): super(key: key);
 
   @override
-  _PropertyInputState createState() => _PropertyInputState();
+  _DoubleInputState createState() => _DoubleInputState();
 }
 
-class _PropertyInputState extends State<PropertyInput>{
+class _DoubleInputState extends State<DoubleInput>{
   String numValidator(String input){
     if (input == null){
       return widget.shownValue.toString();
@@ -290,6 +361,61 @@ class _PropertyInputState extends State<PropertyInput>{
   }
 }
 
+class IntInput extends StatefulWidget{
+  final String fieldName;
+  final int minValue;
+  final int shownValue;
+  final int maxValue;
+  final updateFunction;
+  
+  const IntInput({Key key, this.fieldName, this.minValue, this.shownValue, this.maxValue, this.updateFunction}): super(key: key);
+
+  @override
+  _IntInputState createState() => _IntInputState();
+}
+
+class _IntInputState extends State<IntInput>{
+String numValidator(String input){
+    if (input == null){
+      return widget.shownValue.toString();
+    }
+
+    int x = int.tryParse(input);
+    if (x == null){
+      return widget.shownValue.toString();
+    }
+
+    if (x < widget.minValue){
+      x = widget.minValue;
+    } else if (x > widget.maxValue){
+      x = widget.maxValue;
+    }
+
+    String value = x.toString();
+
+    return value;
+  }
+
+  @override
+  Widget build(BuildContext context){
+    return(
+      Row(children: <Widget>[
+        Container(child:
+          TextField(
+            decoration: InputDecoration(
+              labelText: widget.fieldName,
+            ),
+            keyboardType: TextInputType.number, 
+            textAlign: TextAlign.right,
+            onChanged: (String input) => widget.updateFunction(int.parse(numValidator(input)))
+          ),
+          width: 150),
+        Text(widget.shownValue.toString())
+      ]) 
+    );
+  }
+}
+
 //TODO: add better displayed values
 class BuildProperties extends StatelessWidget{
   @override
@@ -300,42 +426,42 @@ class BuildProperties extends StatelessWidget{
 
     return(
       Column(children: <Widget>[
-        PropertyInput(
+        DoubleInput(
           fieldName: 'Mass', 
           minValue: 0.01,
           shownValue: contraptionParameters.defaultMass,
           maxValue: 100.0,
           updateFunction: (newMass) => contraptionParameters.editMass(selection.selectedNodes, newMass)
         ),
-        PropertyInput(
+        DoubleInput(
           fieldName: 'Spring Strength', 
           minValue: 0.0,
           shownValue: contraptionParameters.defaultStrength,
           maxValue: 100.0,
           updateFunction: (newStrength) => contraptionParameters.editStrength(selection.selectedNodes, newStrength)
         ),
-        PropertyInput(
+        DoubleInput(
           fieldName: 'Rest Length', 
           minValue: 0.01,
           shownValue: 1.0,
           maxValue: 100.0,
           updateFunction: (scale) => contraptionParameters.editRestLength(selection.selectedNodes, scale)
         ),
-        PropertyInput(
+        DoubleInput(
           fieldName: 'Gravity', 
           minValue: -100.0,
           shownValue: environment.gravity,
           maxValue: 100.0,
           updateFunction: (newGravity) => environment.setGravity(newGravity)
         ),
-        PropertyInput(
+        DoubleInput(
           fieldName: 'Elasticity', 
           minValue: 0.0,
           shownValue: environment.elasticity, 
           maxValue: 1.0,
           updateFunction: (newElasticity) => environment.setElasticity(newElasticity)
         ),
-        PropertyInput(
+        DoubleInput(
           fieldName: 'Drag', 
           minValue: 0.0,
           shownValue: environment.drag,
@@ -442,7 +568,41 @@ class BuildTools extends StatelessWidget{
   }
 }
 
-// TODO: add regular polygons
+class RegularPolygon extends StatelessWidget{
+  @override
+  Widget build(BuildContext context){
+      var tool = Provider.of<Tool>(context, listen: true);
+
+      return Column(children: <Widget>[
+        RaisedButton(
+          onPressed: () => tool.changeTool('RegularPolygon'),
+          child: Text('Regular Polygon')
+        ),
+        IntInput(
+          fieldName: 'Polygon Points',
+          minValue: 0,
+          shownValue: tool.nPolygon,
+          maxValue: 100,
+          updateFunction: (input) => tool.nPolygonUpdate(input)
+        ),
+        DoubleInput(
+          fieldName: 'Polygon Radius',
+          minValue: 10.0,
+          shownValue: tool.radiusPolygon,
+          maxValue: 200.0,
+          updateFunction: (input) => tool.radiusPolygonUpdate(input)
+        ),
+        // TODO: display connectivity value
+       IntInput(
+          fieldName: 'Polygon Connectivity',
+          minValue: 1,
+          shownValue: 0,
+          maxValue: tool.nPolygon - 1,
+          updateFunction: (input) => tool.connectivityPolygonUpdate(input)
+        )
+      ]);
+  }
+}
 class BuildComponents extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
@@ -453,10 +613,13 @@ class BuildComponents extends StatelessWidget{
       children: <Widget>[
         RaisedButton(
           onPressed: () => tool.changeTool('Node'),
-          child: Text('Node')),
+          child: Text('Node')
+        ),
         RaisedButton(
           onPressed: () => tool.changeTool('Spring'),
-          child: Text('Spring'))
+          child: Text('Spring')
+        ),
+        RegularPolygon()
       ],
     );
   }
