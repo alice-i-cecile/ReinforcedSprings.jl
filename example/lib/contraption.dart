@@ -465,18 +465,18 @@ class ContraptionState with ChangeNotifier{
     notifyListeners();
   }
 
-  void play(Environment environment, ContraptionParameters contraptionParameters){
+  void play(Environment environment, ContraptionParameters contraptionParameters, Input input){
     int timeStep = 50;
     Timer.periodic(Duration(milliseconds: timeStep),
     (timer){
       gameClock = timer;
-      simulate(environment, contraptionParameters, timeStep.toDouble()/1000);
+      simulate(environment, contraptionParameters, input, timeStep.toDouble()/1000);
     });
   }
 
-  void simulate(Environment environment, ContraptionParameters contraptionParameters, double timeStep){
+  void simulate(Environment environment, ContraptionParameters contraptionParameters, Input input, double timeStep){
     if (velocity.length != 0){
-      var newState = engine(environment, contraptionParameters, this, timeStep);
+      var newState = engine(environment, contraptionParameters, this, input, timeStep);
       this.points = newState['points'];
       this.velocity = newState['velocity'];
 
@@ -511,6 +511,23 @@ class Environment with ChangeNotifier{
   void setDrag(double newDrag){
     drag = newDrag;
 
+    notifyListeners();
+  }
+}
+
+class Input with ChangeNotifier{
+  double inputForce = 10.0;
+  bool up = false;
+  bool down = false;
+  bool left = false;
+  bool right = false;
+
+  double inputTorque = 10.0;
+  bool clockwise = false;
+  bool widdershins = false;
+
+  void update(field, value){
+    field = value;
     notifyListeners();
   }
 }

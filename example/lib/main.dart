@@ -78,6 +78,7 @@ class ModeTabs extends StatelessWidget {
                 providers: [
                   ChangeNotifierProvider(builder: (context) => GameStatus()),
                   ChangeNotifierProvider(builder: (context) => ContraptionState()),
+                  ChangeNotifierProvider(builder: (context) => Input()),
                 ],
                 child: PlayTab(),
               ),

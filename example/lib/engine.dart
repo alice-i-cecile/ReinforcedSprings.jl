@@ -69,8 +69,32 @@ collisionCheck(double x, double y,
   return {'x': x, 'y': y, 'vx': vx, 'vy': vy};
 }
 
+handleInput(Input input, int nodeID, ContraptionState state, ContraptionParameters parameters){
+  double ax = 0.0;
+  double ay = 0.0;
+  String key = nodeID.toString();
+
+  if (input.up){
+    ay -= input.inputForce/parameters.mass[key];
+  }
+
+  if (input.down){
+    ay += input.inputForce/parameters.mass[key];
+  }
+
+  if (input.left){
+    ax -= input.inputForce/parameters.mass[key];
+  }
+
+  if (input.right){
+    ax += input.inputForce/parameters.mass[key];
+  }
+
+  return [ax, ay];
+}
+
 // TODO: add user input control
-engine(Environment environment, ContraptionParameters parameters, ContraptionState state, double timeStep){
+engine(Environment environment, ContraptionParameters parameters, ContraptionState state, Input input, double timeStep){
   var newPoints = List.from(state.points);
   var newVelocity = List.from(state.velocity);
   
@@ -103,11 +127,13 @@ engine(Environment environment, ContraptionParameters parameters, ContraptionSta
   }
 
   for (int i = 0; i < newPoints.length; i++){
+    var inputAccel = handleInput(input, i, state, parameters);
+
     var drag = [environment.drag*state.velocity[i][0], 
                 environment.drag*state.velocity[i][1]];
 
-    double ax = springs[i][0] - drag[0];
-    double ay = springs[i][1] - drag[1] + environment.gravity;
+    double ax = springs[i][0] - drag[0] + inputAccel[0];
+    double ay = springs[i][1] - drag[1] + inputAccel[1] + environment.gravity;
 
     double vx = state.velocity[i][0] + ax * timeStep;
     double vy = state.velocity[i][1] + ay * timeStep;

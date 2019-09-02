@@ -33,11 +33,11 @@ class PlayInterface extends StatelessWidget {
   Widget build(BuildContext context) {
     return(
       Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          PlayEngine(),
+          PlayStatus(),
           PlayControls(),
-          PlayStatus()
+          PlayEngine()
       ])
     );
   }
@@ -47,18 +47,32 @@ class PlayEngine extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return(
-      Text('Select engine:')
+      Text('Select engine: Flutter / Julia / DiffEq.jl')
     );
   }
 }
 class PlayControls extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
+    Input input = Provider.of<Input>(context, listen: false);
+
     return(
       Column(children: <Widget>[
-        Text('WASD / Arrow Keys: Apply directional force.'),
-        Text('Z/X: Apply torque.'),
-        Text('Hold: Accelerate towards the point selected.')
+        RaisedButton(
+          onPressed: () => input.up = !input.up,
+          child: Text("Up"),
+        ),
+        RaisedButton(
+          onPressed: () => input.down = !input.down,
+          child: Text("Down"),
+        ),        
+        RaisedButton(
+          onPressed: () => input.left = !input.left,
+          child: Text("Left"),
+        ),        RaisedButton(
+          onPressed: () => input.right = !input.right,
+          child: Text("Right"),
+        ),
       ])
     );
   }
@@ -67,36 +81,34 @@ class PlayControls extends StatelessWidget{
 class PlayStatus extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
+    Environment environment = Provider.of<Environment>(context, listen:false);
+    ContraptionParameters parameters = Provider.of<ContraptionParameters>(context, listen:false);
+    ContraptionState state = Provider.of<ContraptionState>(context, listen:false);
+    Input input = Provider.of<Input>(context, listen:false);
+    GameStatus status = Provider.of<GameStatus>(context, listen:false);
+
     return(
       Column(children: <Widget>[
         Row(
           children: <Widget>[
-            Consumer<ContraptionParameters>(builder: (context, parameters, child) =>
-              Consumer<Environment>(builder: (context, environment, child) =>
-                IconButton(
-                  icon: const Icon(Icons.play_arrow),
-                  tooltip: 'Play',
-                  onPressed: () => Provider.of<ContraptionState>(context, listen: false).play(environment, parameters)
-                )
-              )
+            IconButton(
+              icon: const Icon(Icons.play_arrow),
+              tooltip: 'Play',
+              onPressed: () => state.play(environment, parameters, input)
             ),
             IconButton(                
               icon: const Icon(Icons.pause),
               tooltip: 'Pause',
-              onPressed: () => Provider.of<ContraptionState>(context, listen: false).pause(),
+              onPressed: () => state.pause(),
             ),
-            Consumer<ContraptionParameters>(
-              builder: (context, parameters, child) => IconButton(
-                icon: const Icon(Icons.replay),
-                tooltip: 'Reset',
-                onPressed: () => Provider.of<ContraptionState>(context, listen: false).reset(parameters)
-              )
+            IconButton(
+              icon: const Icon(Icons.replay),
+              tooltip: 'Reset',
+              onPressed: () => state.reset(parameters)
             )
           ],
         ),
-        Consumer<GameStatus>(
-            builder: (context, status, child) => Text('Running using ${status.engine} at ${status.fps} FPS')
-        )
+        Text('Running using ${status.engine} at ${status.fps} FPS')
       ],)
     );
   }
