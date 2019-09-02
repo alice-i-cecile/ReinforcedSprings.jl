@@ -52,6 +52,17 @@ class ContraptionParameters with ChangeNotifier {
     notifyListeners();
   }
 
+  // TODO: complete copy and paste methods
+  ContraptionParameters copy(Set<int> selected){
+    return ContraptionParameters();
+  }
+
+  void paste(ContraptionParameters clipboard, Offset postion){
+
+
+    notifyListeners();
+  }
+
   double dist(node1, node2){
     double x1 = nodes[node1][0];
     double x2 = nodes[node2][0];

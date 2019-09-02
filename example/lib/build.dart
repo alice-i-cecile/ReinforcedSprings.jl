@@ -16,6 +16,8 @@ class Tool with ChangeNotifier{
   double radiusPolygon = 100.0;
   Set<int> connectivityPolygon = Set();
 
+  ContraptionParameters clipboard = ContraptionParameters();
+
   void changeTool(String toolName){
     selectedTool = toolName;
 
@@ -44,6 +46,12 @@ class Tool with ChangeNotifier{
     notifyListeners();
   }
 
+  void copy(Set<int> selected, ContraptionParameters parameters){
+    clipboard = parameters.copy(selected);
+
+    notifyListeners();
+  }
+
   Widget toolIcon(String toolName){
     Widget icon;
     switch(toolName){
@@ -65,6 +73,10 @@ class Tool with ChangeNotifier{
       }
       case 'SelectRegion': {
         icon = Icon(Icons.crop_free);
+        break;
+      }
+      case 'Paste': {
+        icon = Icon(Icons.content_paste);
         break;
       }
       case 'Transform': {
@@ -254,6 +266,11 @@ void buildGesture(ContraptionParameters contraption, Offset position, Tool tool,
 
       break;
     }
+    case 'Paste': {
+      contraption.paste(tool.clipboard, position);
+      break;
+    }
+
     case 'Transform': {
       contraption.translate(position, selection.selectedNodes);
       break;
@@ -462,7 +479,6 @@ class BuildProperties extends StatelessWidget{
   }
 }
 
-// TODO: add copy paste functionality
 // TODO: add align and distribute functionality
 // TODO: add scaling functionality to transform
 class BuildTools extends StatelessWidget{
@@ -537,14 +553,14 @@ class BuildTools extends StatelessWidget{
         ]),
         Row(children: <Widget>[
           IconButton(                
-            icon: const Icon(Icons.undo),
-            tooltip: 'Undo',
-            onPressed: (){},
+            icon: const Icon(Icons.content_copy),
+            tooltip: 'Copy',
+            onPressed: () => tool.copy(selection.selectedNodes, parameters)
           ),
           IconButton(                
-            icon: const Icon(Icons.redo),
-            tooltip: 'Redo',
-            onPressed: (){},
+            icon: const Icon(Icons.content_paste),
+            tooltip: 'Paste',
+            onPressed: () => tool.changeTool('Paste')
           ),
           IconButton(                
             icon: const Icon(Icons.delete),
@@ -554,6 +570,18 @@ class BuildTools extends StatelessWidget{
               selection.clearSelection();
             }
           ),
+        ]),
+        Row(children: <Widget>[
+          IconButton(                
+            icon: const Icon(Icons.undo),
+            tooltip: 'Undo',
+            onPressed: (){},
+          ),
+          IconButton(                
+            icon: const Icon(Icons.redo),
+            tooltip: 'Redo',
+            onPressed: (){},
+          )
         ]),
       ])
     );
