@@ -475,11 +475,11 @@ class BuildPainter extends CustomPainter {
       }
 
       if (compressionRatio == 1){
-        linePaint.color = HSLColor.fromAHSL(1.0, 0.0, 0.0, 0.15).toColor();
+        linePaint.color = HSLColor.fromAHSL(1.0, 0.0, 0.0, 0.25).toColor();
       } else if (compressionRatio > 1) {
-        linePaint.color = HSLColor.fromAHSL(1.0, 0.0, colorCurve(compressionRatio), 0.15).toColor();
+        linePaint.color = HSLColor.fromAHSL(1.0, 0.0, colorCurve(compressionRatio), 0.25).toColor();
       } else {
-        linePaint.color = HSLColor.fromAHSL(1.0, 230.0, colorCurve(1/compressionRatio), 0.15).toColor();
+        linePaint.color = HSLColor.fromAHSL(1.0, 230.0, colorCurve(1/compressionRatio), 0.25).toColor();
       }
 
       canvas.drawLine(Offset(x0, y0), Offset(x1, y1), linePaint); 

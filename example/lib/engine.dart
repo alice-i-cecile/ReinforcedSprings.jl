@@ -1,6 +1,7 @@
 import 'contraption.dart';
 import 'dart:math';
 
+// TODO: bad jumpy behaviour in corner
 collisionCheck(double x, double y, 
                double vx, double vy, 
                double oldX, double oldY, 
