@@ -69,6 +69,7 @@ collisionCheck(double x, double y,
   return {'x': x, 'y': y, 'vx': vx, 'vy': vy};
 }
 
+// TODO: add user input control
 engine(Environment environment, ContraptionParameters parameters, ContraptionState state, double timeStep){
   var newPoints = List.from(state.points);
   var newVelocity = List.from(state.velocity);

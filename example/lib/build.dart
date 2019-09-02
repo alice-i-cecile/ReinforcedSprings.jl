@@ -121,6 +121,7 @@ void buildGesture(ContraptionParameters contraption, Offset position, Tool tool,
       contraption.node(position.dx, position.dy);
       break;
     }
+    // TODO: change spring tool to work as users expect
     case 'Spring': {
       if (contraption.nodes.length >= 2){
         var nodes = contraption.nodes;
@@ -473,6 +474,9 @@ class BuildProperties extends StatelessWidget{
   }
 }
 
+// TODO: add copy paste functionality
+// TODO: add align and distribute functionality
+// TODO: add scaling functionality to transform
 class BuildTools extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
@@ -603,6 +607,7 @@ class RegularPolygon extends StatelessWidget{
       ]);
   }
 }
+// Convert to tools with icons
 class BuildComponents extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
