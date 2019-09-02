@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'contraption.dart';
 
 // STATE
+//TODO: add SelectRegion tool
 class Tool with ChangeNotifier{
   String selectedTool = 'Node';
 
@@ -149,18 +150,16 @@ class BuildTab extends StatelessWidget {
 class BuildInterface extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Tool tool = Provider.of<Tool>(context, listen: false);
+    Tool tool = Provider.of<Tool>(context, listen: true);
 
     return(
       Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           BuildProperties(),
-          Row(children: <Widget>[
-            BuildTools(),
-            BuildComponents()
-          ]),
-          Text('Tool: ${tool.selectedTool}')
+          Text('Tool: ${tool.selectedTool}'),
+          BuildTools(),
+          BuildComponents()
         ]
       )
     );
@@ -300,17 +299,14 @@ class BuildTools extends StatelessWidget{
             onPressed: () => selection.selectAll(parameters),
           ),
           IconButton(                
+            icon: const Icon(Icons.crop_free),
+            tooltip: 'Select in Region',
+            onPressed: () => tool.changeTool('SelectRegion'),
+          ),
+          IconButton(                
             icon: const Icon(Icons.close),
             tooltip: 'Clear Selection',
             onPressed: () => selection.clearSelection(),
-          ),
-          IconButton(                
-            icon: const Icon(Icons.delete),
-            tooltip: 'Delete',
-            onPressed: (){
-              parameters.delete(selection.selectedNodes);
-              selection.clearSelection();
-            }
           ),
         ]),
         Row(children: <Widget>[
@@ -362,7 +358,15 @@ class BuildTools extends StatelessWidget{
             icon: const Icon(Icons.redo),
             tooltip: 'Redo',
             onPressed: (){},
-          )
+          ),
+          IconButton(                
+            icon: const Icon(Icons.delete),
+            tooltip: 'Delete',
+            onPressed: (){
+              parameters.delete(selection.selectedNodes);
+              selection.clearSelection();
+            }
+          ),
         ]),
       ])
     );
