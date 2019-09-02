@@ -5,6 +5,25 @@ import 'dart:async';
 
 import 'engine.dart';
 
+boundsSanitize(double x, double y){
+  double width = 400.0;
+  double height = 400.0;
+
+  if (x < 0){
+    x = 0;
+  } else if (x > width){
+    x = width;
+  }
+
+  if (y < 0){
+    y = 0;
+  } else if (y > height){
+    y = height;
+  }
+
+  return [x, y];
+}
+
 class ContraptionParameters with ChangeNotifier {
   var nodes = [];
   var connections = Set();
@@ -197,10 +216,7 @@ class ContraptionParameters with ChangeNotifier {
     notifyListeners();
   }
 
-  void mirror(Set<int> selected, String direction){
-    double width = 400.0;
-    double height = 400.0;
-    
+  void mirror(Set<int> selected, String direction){    
     if (direction == 'horizontal'){
       double sumX = 0.0;
       int n = selected.length;
@@ -226,14 +242,8 @@ class ContraptionParameters with ChangeNotifier {
         // Thus c + (c-x) gives the final position
         if (selected.length == 0 || selected.contains(i)){
           double newX = 2*center - nodes[i][0];
-
-          if (newX < 0){
-            newX = 0;
-          } else if (newX > width){
-            newX = width;
-          }
           
-          nodes[i] = [newX, nodes[i][1]];
+          nodes[i] = boundsSanitize(newX, nodes[i][1]);
         }
       }
     } else if (direction == 'vertical'){
@@ -261,14 +271,8 @@ class ContraptionParameters with ChangeNotifier {
         // Thus c + (c-x) gives the final position
         if (selected.length == 0 || selected.contains(i)){
           double newY = 2*center - nodes[i][1];
-
-          if (newY < 0){
-            newY = 0;
-          } else if (newY > height){
-            newY = height;
-          }
           
-          nodes[i] = [nodes[i][0], newY];
+          nodes[i] = boundsSanitize(nodes[i][0], newY);
         }
       }
     }
@@ -277,8 +281,6 @@ class ContraptionParameters with ChangeNotifier {
   }
 
   void rotate(angle, Set<int> selected){
-    double width = 400.0;
-    double height = 400.0;
     double sumX = 0.0;
     double sumY = 0.0;
     int n = selected.length;
@@ -309,19 +311,7 @@ class ContraptionParameters with ChangeNotifier {
         double rx = cos(angle) * (dx - cx) - sin(angle) * (dy - cy) + cx;
         double ry = sin(angle) * (dx - cx) + cos(angle) * (dy - cy) + cy;
 
-        if (rx < 0){
-          rx = 0;
-        } else if (rx > width){
-          rx = width;
-        }
-
-        if (ry < 0){
-          ry = 0;
-        } else if (ry > height){
-          ry = height;
-        }
-
-        nodes[i] = [rx, ry];
+        nodes[i] = boundsSanitize(rx, ry);
       }
     }
 
@@ -378,9 +368,6 @@ class ContraptionParameters with ChangeNotifier {
   }
 
   void translate(position, Set<int> selected){
-    double width = 400.0;
-    double height = 400.0;
-
     int n = selected.length;
     if (n == 0){
       n = nodes.length;
@@ -403,19 +390,7 @@ class ContraptionParameters with ChangeNotifier {
         double newX = nodes[i][0] + shift[0];
         double newY = nodes[i][1] + shift[1];
 
-        if (newX < 0) {
-          newX = 0;
-        } else if (newX > width){
-          newX = width;
-        }
-
-        if (newY < 0) {
-          newY = 0;
-        } else if (newY > height){
-          newY = height;
-        }
-
-        nodes[i] = [newX, newY];
+        nodes[i] = boundsSanitize(newX, newY);
       }
     }
 

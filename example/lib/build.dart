@@ -189,8 +189,6 @@ void buildGesture(ContraptionParameters contraption, Offset position, Tool tool,
       double y;
       double angle = 0.0;
       double slice = 2* pi / tool.nPolygon;
-      double width = 400.0;
-      double height = 400.0;
       int initial = contraption.nodes.length;
 
       for (int i = initial; i < initial + tool.nPolygon; i++){
@@ -198,19 +196,8 @@ void buildGesture(ContraptionParameters contraption, Offset position, Tool tool,
         x = center[0] + tool.radiusPolygon * cos(angle);
         y = center[1] + tool.radiusPolygon * sin(angle);
 
-        if (x < 0){
-          x = 0;
-        } else if (x > width){
-          x = width;
-        }
-
-        if (y < 0){
-          y = 0;
-        } else if (y > height){
-          y = height;
-        }
-
-        contraption.node(x, y);
+        var p = boundsSanitize(x, y);
+        contraption.node(p[0], p[1]);
         selection.select(i);
       }
 
