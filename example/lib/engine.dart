@@ -93,7 +93,6 @@ handleInput(Input input, int nodeID, ContraptionState state, ContraptionParamete
   return [ax, ay];
 }
 
-// TODO: add user input control
 engine(Environment environment, ContraptionParameters parameters, ContraptionState state, Input input, double timeStep){
   var newPoints = List.from(state.points);
   var newVelocity = List.from(state.velocity);

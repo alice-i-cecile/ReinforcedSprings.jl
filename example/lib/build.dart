@@ -417,7 +417,8 @@ String numValidator(String input){
   }
 }
 
-//TODO: add better displayed values
+// TODO: add better displayed values
+// TODO: change to dedicated tab interface
 class BuildProperties extends StatelessWidget{
   @override
   Widget build(BuildContext context) {

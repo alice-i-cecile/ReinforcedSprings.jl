@@ -51,6 +51,7 @@ class PlayEngine extends StatelessWidget{
     );
   }
 }
+// TODO: add hotkey controls
 class PlayControls extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
@@ -69,10 +70,11 @@ class PlayControls extends StatelessWidget{
         RaisedButton(
           onPressed: () => input.left = !input.left,
           child: Text("Left"),
-        ),        RaisedButton(
+        ),        
+        RaisedButton(
           onPressed: () => input.right = !input.right,
           child: Text("Right"),
-        ),
+        )
       ])
     );
   }

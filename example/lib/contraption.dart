@@ -522,10 +522,6 @@ class Input with ChangeNotifier{
   bool left = false;
   bool right = false;
 
-  double inputTorque = 10.0;
-  bool clockwise = false;
-  bool widdershins = false;
-
   void update(field, value){
     field = value;
     notifyListeners();
