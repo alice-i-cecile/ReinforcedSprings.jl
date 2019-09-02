@@ -66,7 +66,7 @@ class ContraptionParameters with ChangeNotifier {
   void setStrength(int node1, int node2, double newStrength){
     String key = node1.toString() + "," + node2.toString();
     strength[key] = newStrength;
-    springWidth[key] = sqrt(newStrength) * 1.0;
+    springWidth[key] = sqrt(newStrength) * 2.0;
 
     notifyListeners();
   }

@@ -458,12 +458,28 @@ class BuildPainter extends CustomPainter {
 
       double compressionRatio = contraptionParameters.dist(i, j) / 
                                 contraptionParameters.restLength[key];
+      
+      double colorCurve(x){
+        // f(1) = 0
+        // f(infinity) = 1
+        // Monotonically increasing
+        // Increases faster near the start
+        
+        // Derivation:
+        //0 = (ax - 1)/x + 0.99
+        //a - 1 + 0.99 = 0
+        //a = 0.01
+
+        double rate = 10000.0;
+        return rate*(0.01*x - 1)/(rate*x) + 0.99; 
+      }
+
       if (compressionRatio == 1){
-        linePaint.color = Colors.black;
+        linePaint.color = HSLColor.fromAHSL(1.0, 0.0, 0.0, 0.15).toColor();
       } else if (compressionRatio > 1) {
-        linePaint.color = Colors.blue;
+        linePaint.color = HSLColor.fromAHSL(1.0, 0.0, colorCurve(compressionRatio), 0.15).toColor();
       } else {
-        linePaint.color = Colors.red;
+        linePaint.color = HSLColor.fromAHSL(1.0, 230.0, colorCurve(1/compressionRatio), 0.15).toColor();
       }
 
       canvas.drawLine(Offset(x0, y0), Offset(x1, y1), linePaint); 
