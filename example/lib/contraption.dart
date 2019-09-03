@@ -100,7 +100,7 @@ class ContraptionParameters with ChangeNotifier {
         int i = connection[0];
         int j = connection[1];
         if (selected.contains(i) && selected.contains(j)){
-          clipboard.connections.add(SpringIndex(i,j));
+          clipboard.connections.add([i,j]);
           clipboard.strength[SpringIndex(i,j)] = strength[SpringIndex(i,j)];
           clipboard.springWidth[SpringIndex(i,j)] = springWidth[SpringIndex(i,j)];
           clipboard.restLength[SpringIndex(i,j)] = restLength[SpringIndex(i,j)];
@@ -115,9 +115,13 @@ class ContraptionParameters with ChangeNotifier {
     var cToP = Map();
 
     for (int i in clipboard.nodes.keys){
-      node(clipboard.nodes[i][0] + position.dx,
-           clipboard.nodes[i][1] + position.dy);
       cToP[i] = nodeNum;
+      
+      var p = boundsSanitize(
+        clipboard.nodes[i][0] + position.dx,
+        clipboard.nodes[i][1] + position.dy
+      );
+      node(p[0], p[1]);
       mass[nodeNum] = clipboard.mass[i];
       radius[nodeNum] = clipboard.radius[i];
     }
@@ -133,7 +137,7 @@ class ContraptionParameters with ChangeNotifier {
 
       connections.add([parentI, parentJ]);
       strength[keyP] = clipboard.strength[keyC];
-      springWidth[keyP] = clipboard.strength[keyC];
+      springWidth[keyP] = clipboard.springWidth[keyC];
       restLength[keyP] = clipboard.restLength[keyC];
     }
 
