@@ -8,7 +8,7 @@ import 'contraption.dart';
 
 // STATE
 class Tool with ChangeNotifier{
-  String selectedTool = 'Node';
+  String selectedTool = 'Select';
   Offset point1;
   Offset point2;
 
@@ -251,19 +251,188 @@ class BuildTab extends StatelessWidget {
   }
 }
 
-// INTERFACE
-// TODO: convert to tabbed interface
-class BuildInterface extends StatelessWidget {
+class EditTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return(
-      Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          BuildProperties(),
-          BuildTools()
+          EditInterface(), 
+          BuildDisplay()],
+      )
+    );
+  }
+}
+
+// INTERFACE
+// TODO: custom icons
+// TODO: add align and distribute functionality
+// TODO: add scaling functionality
+// TODO: add grouping functionality
+// TODO: add toy chest functionality
+// TODO: add polygon dialogue
+class BuildInterface extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    Tool tool = Provider.of<Tool>(context, listen: false);
+    Selection selection = Provider.of<Selection>(context, listen: false);
+    ContraptionParameters parameters = Provider.of<ContraptionParameters>(context, listen: false);
+
+    return(
+      Column(mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Row(children: <Widget>[
+            IconButton(
+              icon: Icon(Icons.help_outline),
+              tooltip: "Create Node",
+              onPressed: () => tool.changeTool('Node'),
+            ),
+            IconButton(
+              icon: Icon(Icons.help_outline),
+              tooltip: "Create Spring",
+              onPressed: () => tool.changeTool('Spring'),
+            ),          
+            IconButton(
+              icon: Icon(Icons.help_outline),
+              tooltip: "Create Regular Polygon",
+              onPressed: () => tool.changeTool('RegularPolygon'),
+            ),
+            IconButton(
+              icon: Icon(Icons.help_outline),
+              tooltip: "Toy Chest",
+              onPressed: () => {},
+            ),
+          ]),
+          Row(children: <Widget>[
+            IconButton(                
+              icon: const Icon(Icons.near_me),
+              tooltip: 'Select',
+              onPressed: () => tool.changeTool('Select'),
+            ),
+            IconButton(                
+              icon: const Icon(Icons.select_all),
+              tooltip: 'Select All',
+              onPressed: () => selection.selectAll(parameters),
+            ),
+            IconButton(                
+              icon: const Icon(Icons.help_outline),
+              tooltip: 'Select in Region',
+              onPressed: () => tool.changeTool('SelectRegion'),
+            ),
+            IconButton(                
+              icon: const Icon(Icons.close),
+              tooltip: 'Clear Selection',
+              onPressed: () => selection.clearSelection(),
+            ),
+          ]),
+          Row(children: <Widget>[
+            IconButton(                
+              icon: const Icon(Icons.content_copy),
+              tooltip: 'Copy',
+              onPressed: () => tool.copy(selection.selectedNodes, parameters)
+            ),
+            IconButton(                
+              icon: const Icon(Icons.content_paste),
+              tooltip: 'Paste',
+              onPressed: () => tool.changeTool('Paste')
+            ),
+            IconButton(
+              icon: Icon(Icons.help_outline),
+              tooltip: "Groups",
+              onPressed: () => {},
+            ),
+            IconButton(                
+              icon: const Icon(Icons.delete),
+              tooltip: 'Delete',
+              onPressed: (){
+                parameters.delete(selection.selectedNodes);
+                selection.clearSelection();
+              }
+            ),
+          ]),
+          Row(children: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.rotate_left),
+              tooltip: 'Rotate Counterclockwise',
+              onPressed: () => parameters.rotate(-3.14159/6.0, selection.selectedNodes)
+            ),
+            IconButton(
+              icon: const Icon(Icons.rotate_right),
+              tooltip: 'Rotate Clockwise',
+              onPressed: () => parameters.rotate(3.14159/6.0, selection.selectedNodes)
+            ),
+            IconButton(
+              icon: const Icon(Icons.flip),
+              tooltip: 'Mirror Horizontally',
+              onPressed: () => parameters.mirror(selection.selectedNodes, 'horizontal')
+            ),
+            IconButton(
+              icon: Transform.rotate(angle: 3.14159/2, child:const Icon(Icons.flip)),
+              tooltip: 'Mirror Vertically',
+              onPressed: () => parameters.mirror(selection.selectedNodes, 'vertical')
+            ),
+          ]),
+          Row(children: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.share),
+              tooltip: 'Connect',
+              onPressed: () => parameters.connect(selection.selectedNodes)
+            ),
+            IconButton(
+              icon: const Icon(Icons.scatter_plot),
+              tooltip: 'Disconnect',
+              onPressed: () => parameters.disconnect(selection.selectedNodes)
+            ),
+            IconButton(
+              icon: const Icon(Icons.help_outline),
+              tooltip: 'Translate Nodes',
+              onPressed: () => tool.changeTool('Translate')
+            ),
+            IconButton(
+              icon: const Icon(Icons.transform),
+              tooltip: 'Scale Nodes',
+              onPressed: () => {}
+            ),
+          ],),
+          Row(children: <Widget>[
+            IconButton(
+              icon: Icon(Icons.help_outline),
+              tooltip: "Align Vertically",
+              onPressed: () => {},
+            ),
+            IconButton(
+              icon: Icon(Icons.help_outline),
+              tooltip: "Align Horizontally",
+              onPressed: () => {},
+            ),
+            IconButton(
+              icon: Icon(Icons.help_outline),
+              tooltip: "Distribute Vertically",
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(Icons.help_outline),
+              tooltip: "Distribute Horizontally",
+              onPressed: () {},
+            ),  
+          ]),
         ]
       )
+    );
+  }
+}
+
+// EDIT INTERFACE
+class EditInterface extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        EditProperties(),
+        EditTools()
+      ]
     );
   }
 }
@@ -379,8 +548,7 @@ String numValidator(String input){
 }
 
 // TODO: add better displayed values
-// TODO: change to dedicated tab interface
-class BuildProperties extends StatelessWidget{
+class EditProperties extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     var contraptionParameters = Provider.of<ContraptionParameters>(context);
@@ -436,159 +604,36 @@ class BuildProperties extends StatelessWidget{
   }
 }
 
-// TODO: custom icons
-// TODO: add align and distribute functionality
-// TODO: add scaling functionality
-// TODO: add grouping functionality
-// TODO: add toy chest functionality
-// TODO: add polygon dialogue
-class BuildTools extends StatelessWidget{
-  @override
-  Widget build(BuildContext context) {
+class EditTools extends StatelessWidget{
+
+@override
+Widget build(BuildContext context) {
     Tool tool = Provider.of<Tool>(context, listen: false);
     Selection selection = Provider.of<Selection>(context, listen: false);
     ContraptionParameters parameters = Provider.of<ContraptionParameters>(context, listen: false);
-
-    return(
-      Column(children: <Widget>[
-        Row(children: <Widget>[
-          IconButton(
-            icon: Icon(Icons.help_outline),
-            tooltip: "Create Node",
-            onPressed: () => tool.changeTool('Node'),
-          ),
-          IconButton(
-            icon: Icon(Icons.help_outline),
-            tooltip: "Create Spring",
-            onPressed: () => tool.changeTool('Spring'),
-          ),          
-          IconButton(
-            icon: Icon(Icons.help_outline),
-            tooltip: "Create Regular Polygon",
-            onPressed: () => tool.changeTool('RegularPolygon'),
-          ),
-          IconButton(
-            icon: Icon(Icons.help_outline),
-            tooltip: "Toy Chest",
-            onPressed: () => {},
-          ),
-        ]),
-        Row(children: <Widget>[
-          IconButton(                
-            icon: const Icon(Icons.near_me),
-            tooltip: 'Select',
-            onPressed: () => tool.changeTool('Select'),
-          ),
-          IconButton(                
-            icon: const Icon(Icons.select_all),
-            tooltip: 'Select All',
-            onPressed: () => selection.selectAll(parameters),
-          ),
-          IconButton(                
-            icon: const Icon(Icons.help_outline),
-            tooltip: 'Select in Region',
-            onPressed: () => tool.changeTool('SelectRegion'),
-          ),
-          IconButton(                
-            icon: const Icon(Icons.close),
-            tooltip: 'Clear Selection',
-            onPressed: () => selection.clearSelection(),
-          ),
-
-        ]),
-        Row(children: <Widget>[
-          IconButton(                
-            icon: const Icon(Icons.content_copy),
-            tooltip: 'Copy',
-            onPressed: () => tool.copy(selection.selectedNodes, parameters)
-          ),
-          IconButton(                
-            icon: const Icon(Icons.content_paste),
-            tooltip: 'Paste',
-            onPressed: () => tool.changeTool('Paste')
-          ),
-          IconButton(
-            icon: Icon(Icons.help_outline),
-            tooltip: "Groups",
-            onPressed: () => {},
-          ),
-          IconButton(                
-            icon: const Icon(Icons.delete),
-            tooltip: 'Delete',
-            onPressed: (){
-              parameters.delete(selection.selectedNodes);
-              selection.clearSelection();
-            }
-          ),
-        ]),
-        Row(children: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.rotate_left),
-            tooltip: 'Rotate Counterclockwise',
-            onPressed: () => parameters.rotate(-3.14159/6.0, selection.selectedNodes)
-          ),
-          IconButton(
-            icon: const Icon(Icons.rotate_right),
-            tooltip: 'Rotate Clockwise',
-            onPressed: () => parameters.rotate(3.14159/6.0, selection.selectedNodes)
-          ),
-          IconButton(
-            icon: const Icon(Icons.flip),
-            tooltip: 'Mirror Horizontally',
-            onPressed: () => parameters.mirror(selection.selectedNodes, 'horizontal')
-          ),
-          IconButton(
-            icon: Transform.rotate(angle: 3.14159/2, child:const Icon(Icons.flip)),
-            tooltip: 'Mirror Vertically',
-            onPressed: () => parameters.mirror(selection.selectedNodes, 'vertical')
-          ),
-        ]),
-        Row(children: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.share),
-            tooltip: 'Connect',
-            onPressed: () => parameters.connect(selection.selectedNodes)
-          ),
-          IconButton(
-            icon: const Icon(Icons.scatter_plot),
-            tooltip: 'Disconnect',
-            onPressed: () => parameters.disconnect(selection.selectedNodes)
-          ),
-          IconButton(
-            icon: const Icon(Icons.help_outline),
-            tooltip: 'Translate Nodes',
-            onPressed: () => tool.changeTool('Translate')
-          ),
-          IconButton(
-            icon: const Icon(Icons.transform),
-            tooltip: 'Scale Nodes',
-            onPressed: () => {}
-          ),
-        ],),
-        Row(children: <Widget>[
-          IconButton(
-            icon: Icon(Icons.help_outline),
-            tooltip: "Align Vertically",
-            onPressed: () => {},
-          ),
-          IconButton(
-            icon: Icon(Icons.help_outline),
-            tooltip: "Align Horizontally",
-            onPressed: () => {},
-          ),
-          IconButton(
-            icon: Icon(Icons.help_outline),
-            tooltip: "Distribute Vertically",
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: Icon(Icons.help_outline),
-            tooltip: "Distribute Horizontally",
-            onPressed: () {},
-          ),  
-        ]),
-      ])
-    );
+    
+    return Row(children: <Widget>[
+      IconButton(                
+        icon: const Icon(Icons.near_me),
+        tooltip: 'Select',
+        onPressed: () => tool.changeTool('Select'),
+      ),
+      IconButton(                
+        icon: const Icon(Icons.select_all),
+        tooltip: 'Select All',
+        onPressed: () => selection.selectAll(parameters),
+      ),
+      IconButton(                
+        icon: const Icon(Icons.help_outline),
+        tooltip: 'Select in Region',
+        onPressed: () => tool.changeTool('SelectRegion'),
+      ),
+      IconButton(                
+        icon: const Icon(Icons.close),
+        tooltip: 'Clear Selection',
+        onPressed: () => selection.clearSelection(),
+      ),
+    ]);
   }
 }
 

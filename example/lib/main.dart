@@ -34,7 +34,7 @@ class ModeTabs extends StatelessWidget {
 
     return MaterialApp(
       home: DefaultTabController(
-        length: 3,
+        length: 4,
         child: Scaffold(
           appBar: AppBar(
             title: Text('My Contraption'),
@@ -64,6 +64,7 @@ class ModeTabs extends StatelessWidget {
             bottom: TabBar(
               tabs: [
                 Tab(icon: Icon(Icons.build)),
+                Tab(icon: Icon(Icons.edit)),
                 Tab(icon: Icon(Icons.toys)),
                 Tab(icon: Icon(Icons.lightbulb_outline)),
               ],
@@ -76,6 +77,12 @@ class ModeTabs extends StatelessWidget {
                   ChangeNotifierProvider(builder: (context) => Tool()),
                 ],
                 child: BuildTab(),
+              ),
+              MultiProvider(
+                providers: [
+                  ChangeNotifierProvider(builder: (context) => Tool()),
+                ],
+                child: EditTab(),
               ),
               MultiProvider(
                 providers: [
