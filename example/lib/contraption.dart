@@ -160,6 +160,28 @@ class ContraptionParameters with ChangeNotifier {
     return d2;
   }
 
+  int nearest(double x, double y){
+    double distance(aX, aY, bX, bY){
+      double d = (aX - bX)*(aX - bX) + 
+                 (aY - bY)*(aY - bY);
+      return d;
+    }
+
+    // Find nearest node to tapped position
+    double min = distance(nodes[0][0], nodes[0][1], x, y);
+    int nodeNum = 0;
+
+    for (int i in nodes.keys){
+      double current = distance(nodes[i][0], nodes[i][1], x, y);
+      if (current < min){
+        nodeNum = i;
+        min = current;
+      }
+    } 
+
+    return nodeNum;
+  }
+
   void setMass(int node, double newMass){
     double pointRadius = 3.0;
 

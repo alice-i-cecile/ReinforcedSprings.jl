@@ -121,75 +121,33 @@ class Selection with ChangeNotifier{
 
 // Interaction
 void buildGesture(ContraptionParameters contraption, Offset position, Tool tool, Selection selection){
-  double distance(aX, aY, bX, bY){
-    double d = (aX - bX)*(aX - bX) + 
-               (aY - bY)*(aY - bY);
-    return d;
-  }
 
   switch(tool.selectedTool) {
     case 'Node': {
       contraption.node(position.dx, position.dy);
       break;
     }
-    // TODO: change spring tool to work as users expect
     case 'Spring': {
       if (contraption.nodes.length >= 2){
-        var nodes = contraption.nodes;
-        double first = distance(nodes[0][0], nodes[0][1], position.dx, position.dy);
-        double second = distance(nodes[1][0], nodes[1][1], position.dx, position.dy);
-        int node1 = 0;
-        int node2 = 1;
-
-        // Node1 is always the closest node found
-        if (first > second){
-          var temp = first;
-          first = second;
-          second = temp;
-
-          var tempNode = node1;
-          node1 = node2;
-          node2 = tempNode;
-        }
-
-        for (int i in nodes.keys){
-          double current = distance(nodes[i][0], nodes[i][1], position.dx, position.dy);
-          if (current < second){
-            if (current < first){
-              second = first;
-              node2 = node1;
-
-              first = current;
-              node1 = i;
-            } else {
-              second = current;
-              node2 = i;
-            }
+        if (selection.selectedNodes.length != 1){
+          selection.clearSelection();
+          selection.select(contraption.nearest(position.dx, position.dy));
+        } else {
+          selection.select(contraption.nearest(position.dx, position.dy));
+          if (selection.selectedNodes.length == 2){
+            var node12 = selection.selectedNodes.toList();
+            int node1 = node12[0];
+            int node2 = node12[1];
+            contraption.spring(node1, node2);
           }
-        } 
-
-        contraption.spring(node1, node2);
+        }
       }
 
       break;
     }
     case 'Select': {
-      if (contraption.nodes.length >= 1){
-        var nodes = contraption.nodes;
-            
-        // Find nearest node to tapped position
-        double min = distance(nodes[0][0], nodes[0][1], position.dx, position.dy);
-        int nodeNum = 0;
-
-        for (int i in nodes.keys){
-          double current = distance(nodes[i][0], nodes[i][1], position.dx, position.dy);
-          if (current < min){
-            nodeNum = i;
-            min = current;
-          }
-        } 
-
-        selection.select(nodeNum);    
+      if (contraption.nodes.length >= 1){            
+        selection.select(contraption.nearest(position.dx, position.dy));    
       }
 
       break;
@@ -712,8 +670,6 @@ class BuildPainter extends CustomPainter {
       double x1 =  contraptionParameters.nodes[j][0];
       double y1 = contraptionParameters.nodes[j][1];
 
-      print(contraptionParameters.springWidth);
-      print(contraptionParameters.springWidth[SpringIndex(i,j)]);
       linePaint.strokeWidth = contraptionParameters.springWidth[SpringIndex(i,j)];
 
       double compressionRatio = contraptionParameters.dist(i, j) / 
