@@ -52,13 +52,71 @@ class ContraptionParameters with ChangeNotifier {
     notifyListeners();
   }
 
-  // TODO: complete copy and paste methods
+  // TODO: copy and paste methods broken
   ContraptionParameters copy(Set<int> selected){
-    return ContraptionParameters();
+    var clipboard = ContraptionParameters();
+
+    if (selected.length > 0){
+      var center = [0.0, 0.0];
+
+      for (int i  in selected){
+        center[0] += nodes[i][0];
+        center[1] += nodes[i][1];
+      }
+
+      center[0] = center[0]/selected.length;
+      center[1] = center[1]/selected.length;
+
+      //TODO: store mapping of keys for use in connection copying
+      int j = 0;
+      for (int i in selected){
+        String keyC = j.toString();
+        String keyP = i.toString();
+
+        clipboard.nodes.add([nodes[i][0] - center[0],
+                             nodes[i][1] - center[1]]);
+        clipboard.mass[keyC] = mass[keyP];
+        j++;
+      }
+
+      for (var connection in connections){
+        int i = connection[0];
+        int j = connection[1];
+        if (selected.contains(i) && selected.contains(j)){
+          String keyC = "TODO";
+          String keyP = i.toString() + "," + j.toString();
+
+          clipboard.connections.add([i, j]);
+          clipboard.strength[keyC] = strength[keyP];
+          clipboard.restLength[keyC] = restLength[keyP];
+        }
+      }
+    }
+
+    return clipboard;
   }
 
-  void paste(ContraptionParameters clipboard, Offset postion){
+  void paste(ContraptionParameters clipboard, Offset position){
+    int n = nodes.length;
 
+    for (int i = 0; i < clipboard.nodes.length; i++){
+      String keyC = i.toString();
+      String keyP = (i+n).toString();
+      nodes.add([clipboard.nodes[i][0] + position.dx,
+                clipboard.nodes[i][1] + position.dy]);
+      mass[keyP] = clipboard.mass[keyC];
+    }
+
+    for (var connection in clipboard.connections){
+      int i = connection[0];
+      int j = connection[1];
+      String keyC = i.toString() + "," + j.toString();
+      String keyP = (i+n).toString() + "," + (j+n).toString();
+      
+      connections.add([i+n, j+n]);
+      strength[keyP] = clipboard.strength[keyC];
+      restLength[keyP] = clipboard.restLength[keyC];
+    }
 
     notifyListeners();
   }
@@ -189,6 +247,7 @@ class ContraptionParameters with ChangeNotifier {
     notifyListeners();
   }
 
+  // TODO: keys aren't being updated appropriately
   void delete(Set<int> selected){
     var newNodes = [];
 
