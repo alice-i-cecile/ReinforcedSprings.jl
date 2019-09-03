@@ -63,7 +63,7 @@ class ModeTabs extends StatelessWidget {
             ], 
             bottom: TabBar(
               tabs: [
-                Tab(icon: Icon(Icons.edit)),
+                Tab(icon: Icon(Icons.build)),
                 Tab(icon: Icon(Icons.toys)),
                 Tab(icon: Icon(Icons.lightbulb_outline)),
               ],

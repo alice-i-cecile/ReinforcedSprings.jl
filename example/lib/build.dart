@@ -56,15 +56,15 @@ class Tool with ChangeNotifier{
     Widget icon;
     switch(toolName){
       case 'Node': {
-        icon = Text('Node');
+        icon = Icon(Icons.help_outline);
         break;
       }
       case 'Spring': {
-        icon = Text('Spring');
+        icon = Icon(Icons.help_outline);
         break;
       }
       case 'RegularPolygon': {
-        icon = Text('RegularPolygon');
+        icon = Icon(Icons.help_outline);
         break;
       }
       case 'Select': {
@@ -79,8 +79,8 @@ class Tool with ChangeNotifier{
         icon = Icon(Icons.content_paste);
         break;
       }
-      case 'Transform': {
-        icon = Icon(Icons.transform);
+      case 'Translate': {
+        icon = Icon(Icons.help_outline);
         break;
       }
     }
@@ -228,7 +228,7 @@ void buildGesture(ContraptionParameters contraption, Offset position, Tool tool,
       break;
     }
 
-    case 'Transform': {
+    case 'Translate': {
       contraption.translate(position, selection.selectedNodes);
       break;
     }
@@ -252,6 +252,7 @@ class BuildTab extends StatelessWidget {
 }
 
 // INTERFACE
+// TODO: convert to tabbed interface
 class BuildInterface extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -260,8 +261,7 @@ class BuildInterface extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           BuildProperties(),
-          BuildTools(),
-          BuildComponents()
+          BuildTools()
         ]
       )
     );
@@ -436,8 +436,12 @@ class BuildProperties extends StatelessWidget{
   }
 }
 
+// TODO: custom icons
 // TODO: add align and distribute functionality
-// TODO: add scaling functionality to transform
+// TODO: add scaling functionality
+// TODO: add grouping functionality
+// TODO: add toy chest functionality
+// TODO: add polygon dialogue
 class BuildTools extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
@@ -447,6 +451,28 @@ class BuildTools extends StatelessWidget{
 
     return(
       Column(children: <Widget>[
+        Row(children: <Widget>[
+          IconButton(
+            icon: Icon(Icons.help_outline),
+            tooltip: "Create Node",
+            onPressed: () => tool.changeTool('Node'),
+          ),
+          IconButton(
+            icon: Icon(Icons.help_outline),
+            tooltip: "Create Spring",
+            onPressed: () => tool.changeTool('Spring'),
+          ),          
+          IconButton(
+            icon: Icon(Icons.help_outline),
+            tooltip: "Create Regular Polygon",
+            onPressed: () => tool.changeTool('RegularPolygon'),
+          ),
+          IconButton(
+            icon: Icon(Icons.help_outline),
+            tooltip: "Toy Chest",
+            onPressed: () => {},
+          ),
+        ]),
         Row(children: <Widget>[
           IconButton(                
             icon: const Icon(Icons.near_me),
@@ -459,7 +485,7 @@ class BuildTools extends StatelessWidget{
             onPressed: () => selection.selectAll(parameters),
           ),
           IconButton(                
-            icon: const Icon(Icons.crop_free),
+            icon: const Icon(Icons.help_outline),
             tooltip: 'Select in Region',
             onPressed: () => tool.changeTool('SelectRegion'),
           ),
@@ -467,6 +493,32 @@ class BuildTools extends StatelessWidget{
             icon: const Icon(Icons.close),
             tooltip: 'Clear Selection',
             onPressed: () => selection.clearSelection(),
+          ),
+
+        ]),
+        Row(children: <Widget>[
+          IconButton(                
+            icon: const Icon(Icons.content_copy),
+            tooltip: 'Copy',
+            onPressed: () => tool.copy(selection.selectedNodes, parameters)
+          ),
+          IconButton(                
+            icon: const Icon(Icons.content_paste),
+            tooltip: 'Paste',
+            onPressed: () => tool.changeTool('Paste')
+          ),
+          IconButton(
+            icon: Icon(Icons.help_outline),
+            tooltip: "Groups",
+            onPressed: () => {},
+          ),
+          IconButton(                
+            icon: const Icon(Icons.delete),
+            tooltip: 'Delete',
+            onPressed: (){
+              parameters.delete(selection.selectedNodes);
+              selection.clearSelection();
+            }
           ),
         ]),
         Row(children: <Widget>[
@@ -503,102 +555,39 @@ class BuildTools extends StatelessWidget{
             onPressed: () => parameters.disconnect(selection.selectedNodes)
           ),
           IconButton(
+            icon: const Icon(Icons.help_outline),
+            tooltip: 'Translate Nodes',
+            onPressed: () => tool.changeTool('Translate')
+          ),
+          IconButton(
             icon: const Icon(Icons.transform),
-            tooltip: 'Transform',
-            onPressed: () => tool.changeTool('Transform')
+            tooltip: 'Scale Nodes',
+            onPressed: () => {}
           ),
-        ]),
+        ],),
         Row(children: <Widget>[
-          IconButton(                
-            icon: const Icon(Icons.content_copy),
-            tooltip: 'Copy',
-            onPressed: () => tool.copy(selection.selectedNodes, parameters)
+          IconButton(
+            icon: Icon(Icons.help_outline),
+            tooltip: "Align Vertically",
+            onPressed: () => {},
           ),
-          IconButton(                
-            icon: const Icon(Icons.content_paste),
-            tooltip: 'Paste',
-            onPressed: () => tool.changeTool('Paste')
+          IconButton(
+            icon: Icon(Icons.help_outline),
+            tooltip: "Align Horizontally",
+            onPressed: () => {},
           ),
-          IconButton(                
-            icon: const Icon(Icons.delete),
-            tooltip: 'Delete',
-            onPressed: (){
-              parameters.delete(selection.selectedNodes);
-              selection.clearSelection();
-            }
+          IconButton(
+            icon: Icon(Icons.help_outline),
+            tooltip: "Distribute Vertically",
+            onPressed: () {},
           ),
-        ]),
-        Row(children: <Widget>[
-          IconButton(                
-            icon: const Icon(Icons.undo),
-            tooltip: 'Undo',
-            onPressed: (){},
-          ),
-          IconButton(                
-            icon: const Icon(Icons.redo),
-            tooltip: 'Redo',
-            onPressed: (){},
-          )
+          IconButton(
+            icon: Icon(Icons.help_outline),
+            tooltip: "Distribute Horizontally",
+            onPressed: () {},
+          ),  
         ]),
       ])
-    );
-  }
-}
-
-class RegularPolygon extends StatelessWidget{
-  @override
-  Widget build(BuildContext context){
-      var tool = Provider.of<Tool>(context, listen: true);
-
-      return Column(children: <Widget>[
-        RaisedButton(
-          onPressed: () => tool.changeTool('RegularPolygon'),
-          child: Text('Regular Polygon')
-        ),
-        IntInput(
-          fieldName: 'Polygon Points',
-          minValue: 0,
-          shownValue: tool.nPolygon,
-          maxValue: 100,
-          updateFunction: (input) => tool.nPolygonUpdate(input)
-        ),
-        DoubleInput(
-          fieldName: 'Polygon Radius',
-          minValue: 10.0,
-          shownValue: tool.radiusPolygon,
-          maxValue: 200.0,
-          updateFunction: (input) => tool.radiusPolygonUpdate(input)
-        ),
-        // TODO: display connectivity value
-       IntInput(
-          fieldName: 'Polygon Connectivity',
-          minValue: 1,
-          shownValue: 0,
-          maxValue: tool.nPolygon - 1,
-          updateFunction: (input) => tool.connectivityPolygonUpdate(input)
-        )
-      ]);
-  }
-}
-// Convert to tools with icons
-class BuildComponents extends StatelessWidget{
-  @override
-  Widget build(BuildContext context) {
-    var tool = Provider.of<Tool>(context, listen: false);
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        RaisedButton(
-          onPressed: () => tool.changeTool('Node'),
-          child: Text('Node')
-        ),
-        RaisedButton(
-          onPressed: () => tool.changeTool('Spring'),
-          child: Text('Spring')
-        ),
-        RegularPolygon()
-      ],
     );
   }
 }
