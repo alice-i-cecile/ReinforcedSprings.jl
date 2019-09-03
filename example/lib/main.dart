@@ -18,6 +18,7 @@ main() {
       providers: [
         ChangeNotifierProvider(builder: (context) => ContraptionParameters()),
         ChangeNotifierProvider(builder: (context) => Environment()),
+        ChangeNotifierProvider(builder: (context) => Selection()),
       ],
       child: ModeTabs(),
     )
@@ -25,8 +26,12 @@ main() {
 }
 
 class ModeTabs extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
+    var parameters = Provider.of<ContraptionParameters>(context, listen: false);
+    var selection = Provider.of<Selection>(context, listen: false);
+
     return MaterialApp(
       home: DefaultTabController(
         length: 3,
@@ -37,8 +42,7 @@ class ModeTabs extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.add_circle_outline),
                 tooltip: 'New Contraption',
-                // TODO: blank() does not clear selection
-                onPressed: () => Provider.of<ContraptionParameters>(context, listen: false).blank(),
+                onPressed: () => parameters.blank(selection),
               ),
               IconButton(
                 icon: const Icon(Icons.folder_open),
@@ -70,7 +74,6 @@ class ModeTabs extends StatelessWidget {
               MultiProvider(
                 providers: [
                   ChangeNotifierProvider(builder: (context) => Tool()),
-                  ChangeNotifierProvider(builder: (context) => Selection()),
                 ],
                 child: BuildTab(),
               ),

@@ -59,7 +59,7 @@ class ContraptionParameters with ChangeNotifier {
   var springWidth = Map();
   var restLength = Map();
   
-  void blank(){
+  void blank(selection){
     nodes = Map();
     connections = Set();
 
@@ -69,6 +69,8 @@ class ContraptionParameters with ChangeNotifier {
     mass = Map();
     strength = Map();
     restLength = Map();
+
+    selection.clearSelection();
 
     notifyListeners();
   }
