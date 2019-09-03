@@ -13,7 +13,7 @@ class Tool with ChangeNotifier{
   Offset point2;
 
   int nPolygon = 5;
-  double radiusPolygon = 100.0;
+  double radiusPolygon = 50.0;
   Set<int> connectivityPolygon = Set();
 
   ContraptionParameters clipboard = ContraptionParameters();
