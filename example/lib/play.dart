@@ -152,9 +152,9 @@ class PlayPainter extends CustomPainter {
 
     var linePaint = Paint();
 
-    for (int i = 0; i < contraptionState.points.length; i++){
+    for (int i in contraptionState.points.keys){
       var point = contraptionState.points[i];
-      var radius = contraptionParameters.radius[i.toString()];      
+      var radius = contraptionParameters.radius[i];      
       
       canvas.drawCircle(Offset(point[0], point[1]), radius, pointPaint);
     }
@@ -168,11 +168,10 @@ class PlayPainter extends CustomPainter {
       double x1 = contraptionState.points[j][0];
       double y1 = contraptionState.points[j][1];
 
-      String key = i.toString() + "," + j.toString();
-      linePaint.strokeWidth = contraptionParameters.springWidth[key];
+      linePaint.strokeWidth = contraptionParameters.springWidth[[i, j]];
 
       double compressionRatio = contraptionState.dist(i, j) / 
-                                contraptionParameters.restLength[key];
+                                contraptionParameters.restLength[[i, j]];
 
       double colorCurve(x){
         // f(1) = 0

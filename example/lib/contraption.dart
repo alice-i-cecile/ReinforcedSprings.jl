@@ -25,34 +25,34 @@ boundsSanitize(double x, double y){
 }
 
 class ContraptionParameters with ChangeNotifier {
-  var nodes = [];
+  int nodeNum = 0;
+  var nodes = Map();
   var connections = Set();
 
   double defaultMass = 1.0;
   double defaultStrength = 1.0;
 
-  var mass = {};
-  var radius = {};
+  var mass = Map();
+  var radius = Map();
 
-  var strength = {};
-  var springWidth = {};
-  var restLength = {};
+  var strength = Map();
+  var springWidth = Map();
+  var restLength = Map();
   
   void blank(){
-    nodes = [];
+    nodes = Map();
     connections = Set();
 
     defaultMass = 1.0;
     defaultStrength = 1.0;
 
-    mass = {};
-    strength = {};
-    restLength = {};
+    mass = Map();
+    strength = Map();
+    restLength = Map();
 
     notifyListeners();
   }
 
-  // TODO: copy and paste methods broken
   ContraptionParameters copy(Set<int> selected){
     var clipboard = ContraptionParameters();
 
@@ -67,28 +67,21 @@ class ContraptionParameters with ChangeNotifier {
       center[0] = center[0]/selected.length;
       center[1] = center[1]/selected.length;
 
-      //TODO: store mapping of keys for use in connection copying
-      int j = 0;
       for (int i in selected){
-        String keyC = j.toString();
-        String keyP = i.toString();
-
-        clipboard.nodes.add([nodes[i][0] - center[0],
-                             nodes[i][1] - center[1]]);
-        clipboard.mass[keyC] = mass[keyP];
-        j++;
+        clipboard.nodes[i] = ([nodes[i][0] - center[0],
+                               nodes[i][1] - center[1]]);
+        clipboard.mass[i] = mass[i];
+        clipboard.radius[i] = radius[i];
       }
 
       for (var connection in connections){
         int i = connection[0];
         int j = connection[1];
         if (selected.contains(i) && selected.contains(j)){
-          String keyC = "TODO";
-          String keyP = i.toString() + "," + j.toString();
-
           clipboard.connections.add([i, j]);
-          clipboard.strength[keyC] = strength[keyP];
-          clipboard.restLength[keyC] = restLength[keyP];
+          clipboard.strength[[i,j]] = strength[[i,j]];
+          clipboard.springWidth[[i,j]] = springWidth[[i,j]];
+          clipboard.restLength[[i,j]] = restLength[[i,j]];
         }
       }
     }
@@ -97,24 +90,28 @@ class ContraptionParameters with ChangeNotifier {
   }
 
   void paste(ContraptionParameters clipboard, Offset position){
-    int n = nodes.length;
+    var cToP = Map();
 
-    for (int i = 0; i < clipboard.nodes.length; i++){
-      String keyC = i.toString();
-      String keyP = (i+n).toString();
-      nodes.add([clipboard.nodes[i][0] + position.dx,
-                clipboard.nodes[i][1] + position.dy]);
-      mass[keyP] = clipboard.mass[keyC];
+    for (int i in clipboard.nodes.keys){
+      node(clipboard.nodes[i][0] + position.dx,
+           clipboard.nodes[i][1] + position.dy);
+      cToP[i] = nodeNum;
+      mass[nodeNum] = clipboard.mass[i];
+      radius[nodeNum] = clipboard.radius[i];
     }
 
     for (var connection in clipboard.connections){
       int i = connection[0];
       int j = connection[1];
-      String keyC = i.toString() + "," + j.toString();
-      String keyP = (i+n).toString() + "," + (j+n).toString();
-      
-      connections.add([i+n, j+n]);
+      int parentI = cToP[i];
+      int parentJ = cToP[j];
+
+      var keyC = [i, j];
+      var keyP = [parentI, parentJ];
+
+      connections.add([cToP[i], cToP[j]]);
       strength[keyP] = clipboard.strength[keyC];
+      springWidth[keyP] = clipboard.strength[keyC];
       restLength[keyP] = clipboard.restLength[keyC];
     }
 
@@ -144,24 +141,21 @@ class ContraptionParameters with ChangeNotifier {
   void setMass(int node, double newMass){
     double pointRadius = 3.0;
 
-    String key = node.toString();
-    mass[key] = newMass;
-    radius[key] = pow(newMass, 0.333) * pointRadius;
+    mass[node] = newMass;
+    radius[node] = pow(newMass, 0.333) * pointRadius;
 
     notifyListeners();
   }
 
   void setStrength(int node1, int node2, double newStrength){
-    String key = node1.toString() + "," + node2.toString();
-    strength[key] = newStrength;
-    springWidth[key] = sqrt(newStrength) * 2.0;
+    strength[[node1, node2]] = newStrength;
+    springWidth[[node1, node2]] = sqrt(newStrength) * 2.0;
 
     notifyListeners();
   }
 
   void setRestLength(int node1, int node2, double newRestLength){
-    String key = node1.toString() + "," + node2.toString();
-    restLength[key] = newRestLength;
+    restLength[[node1, node2]] = newRestLength;
 
     notifyListeners();
   }
@@ -223,10 +217,8 @@ class ContraptionParameters with ChangeNotifier {
   }
 
   void node(double x, double y) {
-    nodes.add([x, y]);
-    int i = nodes.length - 1;
-
-    setMass(i, defaultMass);
+    nodes[nodeNum] = [x, y];
+    setMass(nodeNum, defaultMass);
 
     notifyListeners();
   }
@@ -247,40 +239,18 @@ class ContraptionParameters with ChangeNotifier {
     notifyListeners();
   }
 
-  // TODO: keys aren't being updated appropriately
   void delete(Set<int> selected){
-    var newNodes = [];
-
-    for (int i = 0; i < nodes.length; i++){
-      if (!selected.contains(i)){
-        newNodes.add(nodes[i]);
-      }
+    for (int i in selected){
+      nodes.remove(i);
+      mass.remove(i);
+      radius.remove(i);
     }
-    nodes = newNodes;
 
-    var newConnections = Set();
     for (var connection in connections){
-      if (!(selected.contains(connection[0]) || 
-            selected.contains(connection[1]))){
-        newConnections.add(connection);
-      }
-    } 
-
-    connections = newConnections;
-
-    for (int i  in selected){
-      String key = i.toString();
-      mass.remove(key);
-      radius.remove(key);
-    }
-
-    for (int i  in selected){
-      for (int j in selected){
-        String key = i.toString() + "," + j.toString();
-        strength.remove(key);
-        springWidth.remove(key);
-        restLength.remove(key);
-      }
+      connection.remove(connection);
+      strength.remove(connection);
+      springWidth.remove(connection);
+      restLength.remove(connection);
     }
 
     notifyListeners();
@@ -427,10 +397,9 @@ class ContraptionParameters with ChangeNotifier {
 
     for (int i  in selected){
       for (int j in selected){
-        String key = i.toString() + "," + j.toString();
-        strength.remove(key);
-        springWidth.remove(key);
-        restLength.remove(key);
+        strength.remove([i,j]);
+        springWidth.remove([i,j]);
+        restLength.remove([i,j]);
       }
     }
 
@@ -465,9 +434,10 @@ class ContraptionParameters with ChangeNotifier {
     }
 
     for (var connection in connections){
-      if (selected.contains(connection[0]) || selected.contains(connection[1])){
-        String key = connection[0].toString() + "," + connection[1].toString();
-        restLength[key] = dist(connection[0], connection[1]);
+      int i = connection[0];
+      int j = connection[1];
+      if (selected.contains(i) || selected.contains(j)){
+        restLength[[i, j]] = dist(i, j);
       }
     }
 
@@ -476,8 +446,8 @@ class ContraptionParameters with ChangeNotifier {
 }
 
 class ContraptionState with ChangeNotifier{
-  var points = [];
-  var velocity = [];
+  var points = Map();
+  var velocity = Map();
   var lines = Set();
 
   var gameClock;
@@ -503,9 +473,12 @@ class ContraptionState with ChangeNotifier{
       this.pause();
     }
 
-    this.points = List.from(contraptionParameters.nodes);
-    this.lines = Set.from(contraptionParameters.connections);
-    this.velocity = List.generate(points.length, (_) => [0.0, 0.0]);
+    points = Map.from(contraptionParameters.nodes);
+    lines = Set.from(contraptionParameters.connections);
+
+    for (int k in points.keys){
+      velocity[k] = [0.0, 0.0];
+    }
 
     notifyListeners();
   }

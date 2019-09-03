@@ -72,30 +72,29 @@ collisionCheck(double x, double y,
 handleInput(Input input, int nodeID, ContraptionState state, ContraptionParameters parameters){
   double ax = 0.0;
   double ay = 0.0;
-  String key = nodeID.toString();
 
   if (input.up){
-    ay -= input.inputForce/parameters.mass[key];
+    ay -= input.inputForce/parameters.mass[nodeID];
   }
 
   if (input.down){
-    ay += input.inputForce/parameters.mass[key];
+    ay += input.inputForce/parameters.mass[nodeID];
   }
 
   if (input.left){
-    ax -= input.inputForce/parameters.mass[key];
+    ax -= input.inputForce/parameters.mass[nodeID];
   }
 
   if (input.right){
-    ax += input.inputForce/parameters.mass[key];
+    ax += input.inputForce/parameters.mass[nodeID];
   }
 
   return [ax, ay];
 }
 
 engine(Environment environment, ContraptionParameters parameters, ContraptionState state, Input input, double timeStep){
-  var newPoints = List.from(state.points);
-  var newVelocity = List.from(state.velocity);
+  var newPoints = Map.from(state.points);
+  var newVelocity = Map.from(state.velocity);
   
   // Compute all spring forces in linear time
   var springs = List.generate(newPoints.length, (_) => [0.0, 0.0]);
@@ -103,10 +102,9 @@ engine(Environment environment, ContraptionParameters parameters, ContraptionSta
   for (var connection in parameters.connections){
     int i = connection[0];
     int j = connection[1];
-    String key = i.toString() + "," + j.toString();
 
-    double strength = parameters.strength[key];
-    double restLength = parameters.restLength[key];
+    double strength = parameters.strength[[i,j]];
+    double restLength = parameters.restLength[[i,j]];
     double massI = parameters.mass[i.toString()];
     double massJ = parameters.mass[j.toString()];
 
@@ -125,7 +123,7 @@ engine(Environment environment, ContraptionParameters parameters, ContraptionSta
     springs[j][1] -= forceY / massJ;
   }
 
-  for (int i = 0; i < newPoints.length; i++){
+  for (int i in state.points.keys){
     var inputAccel = handleInput(input, i, state, parameters);
 
     var drag = [environment.drag*state.velocity[i][0], 

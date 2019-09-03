@@ -693,9 +693,9 @@ class BuildPainter extends CustomPainter {
 
     var selected = selection.selectedNodes;
 
-    for (int i = 0; i < contraptionParameters.nodes.length; i++){
+    for (int i in contraptionParameters.nodes.keys){
       var point = contraptionParameters.nodes[i];
-      var radius = contraptionParameters.radius[i.toString()];
+      var radius = contraptionParameters.radius[i];
       
       if (selected.contains(i)) {
         canvas.drawCircle(Offset(point[0], point[1]), radius, selectPaint);
@@ -713,11 +713,10 @@ class BuildPainter extends CustomPainter {
       double x1 =  contraptionParameters.nodes[j][0];
       double y1 = contraptionParameters.nodes[j][1];
 
-      String key = i.toString() + "," + j.toString();
-      linePaint.strokeWidth = contraptionParameters.springWidth[key];
+      linePaint.strokeWidth = contraptionParameters.springWidth[[i, j]];
 
       double compressionRatio = contraptionParameters.dist(i, j) / 
-                                contraptionParameters.restLength[key];
+                                contraptionParameters.restLength[[i, j]];
       
       double colorCurve(x){
         // f(1) = 0
