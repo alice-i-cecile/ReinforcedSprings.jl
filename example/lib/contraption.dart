@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:quiver/core.dart';
 import 'dart:math';
 import 'dart:async';
 
@@ -22,6 +23,25 @@ boundsSanitize(double x, double y){
   }
 
   return [x, y];
+}
+
+class SpringIndex {
+  int i;
+  int j;
+
+  SpringIndex(int i, int j){
+    if (i > j){
+      this.i = i;
+      this.j = j;
+    } else {
+      this.i = j;
+      this.j = i;
+    }
+  }
+
+  bool operator ==(o) => o.i == this.i && o.j == this.j;
+  int get hashCode => hash2(i.hashCode, j.hashCode);
+
 }
 
 class ContraptionParameters with ChangeNotifier {
@@ -78,10 +98,10 @@ class ContraptionParameters with ChangeNotifier {
         int i = connection[0];
         int j = connection[1];
         if (selected.contains(i) && selected.contains(j)){
-          clipboard.connections.add([i, j]);
-          clipboard.strength[[i,j]] = strength[[i,j]];
-          clipboard.springWidth[[i,j]] = springWidth[[i,j]];
-          clipboard.restLength[[i,j]] = restLength[[i,j]];
+          clipboard.connections.add(SpringIndex(i,j));
+          clipboard.strength[SpringIndex(i,j)] = strength[SpringIndex(i,j)];
+          clipboard.springWidth[SpringIndex(i,j)] = springWidth[SpringIndex(i,j)];
+          clipboard.restLength[SpringIndex(i,j)] = restLength[SpringIndex(i,j)];
         }
       }
     }
@@ -106,10 +126,10 @@ class ContraptionParameters with ChangeNotifier {
       int parentI = cToP[i];
       int parentJ = cToP[j];
 
-      var keyC = [i, j];
-      var keyP = [parentI, parentJ];
+      var keyC = SpringIndex(i,j);
+      var keyP = SpringIndex(parentI, parentJ);
 
-      connections.add([cToP[i], cToP[j]]);
+      connections.add([parentI, parentJ]);
       strength[keyP] = clipboard.strength[keyC];
       springWidth[keyP] = clipboard.strength[keyC];
       restLength[keyP] = clipboard.restLength[keyC];
@@ -118,7 +138,7 @@ class ContraptionParameters with ChangeNotifier {
     notifyListeners();
   }
 
-  double dist(node1, node2){
+  double dist(int node1, int node2){
     double x1 = nodes[node1][0];
     double x2 = nodes[node2][0];
     double y1 = nodes[node1][1];
@@ -128,7 +148,7 @@ class ContraptionParameters with ChangeNotifier {
     return d;
   }
 
-  double distSquared(node1, node2){
+  double distSquared(int node1, int node2){
     double x1 = nodes[node1][0];
     double x2 = nodes[node2][0];
     double y1 = nodes[node1][1];
@@ -148,21 +168,21 @@ class ContraptionParameters with ChangeNotifier {
   }
 
   void setStrength(int node1, int node2, double newStrength){
-    strength[[node1, node2]] = newStrength;
-    springWidth[[node1, node2]] = sqrt(newStrength) * 2.0;
+    strength[SpringIndex(node1, node2)] = newStrength;
+    springWidth[SpringIndex(node1, node2)] = sqrt(newStrength) * 2.0;
 
     notifyListeners();
   }
 
   void setRestLength(int node1, int node2, double newRestLength){
-    restLength[[node1, node2]] = newRestLength;
+    restLength[SpringIndex(node1, node2)] = newRestLength;
 
     notifyListeners();
   }
 
   void editMass(Set<int> selection, double newMass){
     if (selection.length == 0){
-      for (int i = 0; i < nodes.length; i++){
+      for (int i in nodes.keys){
         setMass(i, newMass);
       }
     } else {
@@ -219,6 +239,7 @@ class ContraptionParameters with ChangeNotifier {
   void node(double x, double y) {
     nodes[nodeNum] = [x, y];
     setMass(nodeNum, defaultMass);
+    nodeNum += 1;
 
     notifyListeners();
   }
@@ -263,11 +284,11 @@ class ContraptionParameters with ChangeNotifier {
 
       if (selected.length == 0){
         n = nodes.length;
-        for (int i = 0; i < nodes.length; i++){
+        for (int i in nodes.keys){
           sumX += nodes[i][0];
         }
       } else {
-        for (int i = 0; i < nodes.length; i++){
+        for (int i in nodes.keys){
           if (selected.contains(i)){
             sumX += nodes[i][0];
           }
@@ -276,7 +297,7 @@ class ContraptionParameters with ChangeNotifier {
 
       double center = sumX/n;
       
-      for (int i = 0; i < nodes.length; i++){
+      for (int i in nodes.keys){
         // Distance between center and initial position is c - x
         // Distance between center and final position must be the same
         // Thus c + (c-x) gives the final position
@@ -292,11 +313,11 @@ class ContraptionParameters with ChangeNotifier {
 
       if (selected.length == 0){
         n = nodes.length;
-        for (int i = 0; i < nodes.length; i++){
+        for (int i in nodes.keys){
           sumY += nodes[i][1];
         }
       } else {
-        for (int i = 0; i < nodes.length; i++){
+        for (int i in nodes.keys){
           if (selected.contains(i)){
             sumY += nodes[i][1];
           }
@@ -305,7 +326,7 @@ class ContraptionParameters with ChangeNotifier {
 
       double center = sumY/n;
       
-      for (int i = 0; i < nodes.length; i++){
+      for (int i in nodes.keys){
         // Distance between center and initial position is c - x
         // Distance between center and final position must be the same
         // Thus c + (c-x) gives the final position
@@ -327,12 +348,12 @@ class ContraptionParameters with ChangeNotifier {
 
     if (selected.length == 0){
       n = nodes.length;
-      for (int i = 0; i < nodes.length; i++){
+      for (int i in nodes.keys){
         sumX += nodes[i][0];
         sumY += nodes[i][1];
       }
     } else {
-      for (int i = 0; i < nodes.length; i++){
+      for (int i in nodes.keys){
         if (selected.contains(i)){
           sumX += nodes[i][0];
           sumY += nodes[i][1];
@@ -343,7 +364,7 @@ class ContraptionParameters with ChangeNotifier {
     double cx = sumX/n;
     double cy = sumY/n;
     
-    for (int i = 0; i < nodes.length; i++){
+    for (int i in nodes.keys){
       if (selected.length == 0 || selected.contains(i)){
         double dx = nodes[i][0];
         double dy = nodes[i][1];
@@ -360,10 +381,11 @@ class ContraptionParameters with ChangeNotifier {
 
   void connect(Set<int> selected){
     if (selected.length == 0){
-      int n = nodes.length;
-      for (int i = 0; i < n; i++){
-        for (int j = 0; j < i; j++){
-          spring(i, j);
+      for (int i in nodes.keys){
+        for (int j in nodes.keys){
+          if (i > j){
+            spring(i, j);
+          }
         }
       }
     } else {
@@ -397,9 +419,9 @@ class ContraptionParameters with ChangeNotifier {
 
     for (int i  in selected){
       for (int j in selected){
-        strength.remove([i,j]);
-        springWidth.remove([i,j]);
-        restLength.remove([i,j]);
+        strength.remove(SpringIndex(i,j));
+        springWidth.remove(SpringIndex(i,j));
+        restLength.remove(SpringIndex(i,j));
       }
     }
 
@@ -414,7 +436,7 @@ class ContraptionParameters with ChangeNotifier {
 
     double sumX = 0.0;
     double sumY = 0.0;
-    for (int i = 0; i < nodes.length; i++){
+    for (int i in nodes.keys){
       if (selected.contains(i) || selected.length == 0){
         sumX += nodes[i][0];
         sumY += nodes[i][1];
@@ -424,7 +446,7 @@ class ContraptionParameters with ChangeNotifier {
     var center = [sumX/n, sumY/n];
     var shift = [position.dx - center[0], position.dy - center[1]];
 
-    for (int i = 0; i < nodes.length; i++){
+    for (int i in nodes.keys){
       if (selected.contains(i) || selected.length == 0){
         double newX = nodes[i][0] + shift[0];
         double newY = nodes[i][1] + shift[1];
@@ -437,7 +459,7 @@ class ContraptionParameters with ChangeNotifier {
       int i = connection[0];
       int j = connection[1];
       if (selected.contains(i) || selected.contains(j)){
-        restLength[[i, j]] = dist(i, j);
+        restLength[SpringIndex(i,j)] = dist(i, j);
       }
     }
 

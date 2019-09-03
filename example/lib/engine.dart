@@ -103,10 +103,10 @@ engine(Environment environment, ContraptionParameters parameters, ContraptionSta
     int i = connection[0];
     int j = connection[1];
 
-    double strength = parameters.strength[[i,j]];
-    double restLength = parameters.restLength[[i,j]];
-    double massI = parameters.mass[i.toString()];
-    double massJ = parameters.mass[j.toString()];
+    double strength = parameters.strength[SpringIndex(i,j)];
+    double restLength = parameters.restLength[SpringIndex(i,j)];
+    double massI = parameters.mass[i];
+    double massJ = parameters.mass[j];
 
     double distX = newPoints[i][0] - newPoints[j][0];
     double distY = newPoints[i][1] - newPoints[j][1];

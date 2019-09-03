@@ -93,9 +93,8 @@ class Selection with ChangeNotifier{
   Set<int> selectedNodes = Set();
 
   void selectAll(ContraptionParameters contraptionParameters){
-    int n = contraptionParameters.nodes.length;
     selectedNodes = Set();
-    for (int i = 0; i < n; i++){
+    for (int i in contraptionParameters.nodes.keys){
       selectedNodes.add(i);
     }
 
@@ -153,7 +152,7 @@ void buildGesture(ContraptionParameters contraption, Offset position, Tool tool,
           node2 = tempNode;
         }
 
-        for (int i = 1; i < nodes.length; i++){
+        for (int i in nodes.keys){
           double current = distance(nodes[i][0], nodes[i][1], position.dx, position.dy);
           if (current < second){
             if (current < first){
@@ -182,7 +181,7 @@ void buildGesture(ContraptionParameters contraption, Offset position, Tool tool,
         double min = distance(nodes[0][0], nodes[0][1], position.dx, position.dy);
         int nodeNum = 0;
 
-        for (int i = 1; i < nodes.length; i++){
+        for (int i in nodes.keys){
           double current = distance(nodes[i][0], nodes[i][1], position.dx, position.dy);
           if (current < min){
             nodeNum = i;
@@ -252,7 +251,7 @@ void buildGesture(ContraptionParameters contraption, Offset position, Tool tool,
           yMax = tool.point1.dy;
         }
 
-        for (int i = 0; i < contraption.nodes.length; i++){
+        for (int i in contraption.nodes.keys){
           var node = contraption.nodes[i];
           if ((xMin < node[0]) && (node[0] < xMax) && 
               (yMin < node[1]) && (node[1] < yMax)){
@@ -713,10 +712,12 @@ class BuildPainter extends CustomPainter {
       double x1 =  contraptionParameters.nodes[j][0];
       double y1 = contraptionParameters.nodes[j][1];
 
-      linePaint.strokeWidth = contraptionParameters.springWidth[[i, j]];
+      print(contraptionParameters.springWidth);
+      print(contraptionParameters.springWidth[SpringIndex(i,j)]);
+      linePaint.strokeWidth = contraptionParameters.springWidth[SpringIndex(i,j)];
 
       double compressionRatio = contraptionParameters.dist(i, j) / 
-                                contraptionParameters.restLength[[i, j]];
+                                contraptionParameters.restLength[SpringIndex(i,j)];
       
       double colorCurve(x){
         // f(1) = 0

@@ -168,10 +168,10 @@ class PlayPainter extends CustomPainter {
       double x1 = contraptionState.points[j][0];
       double y1 = contraptionState.points[j][1];
 
-      linePaint.strokeWidth = contraptionParameters.springWidth[[i, j]];
+      linePaint.strokeWidth = contraptionParameters.springWidth[SpringIndex(i,j)];
 
       double compressionRatio = contraptionState.dist(i, j) / 
-                                contraptionParameters.restLength[[i, j]];
+                                contraptionParameters.restLength[SpringIndex(i,j)];
 
       double colorCurve(x){
         // f(1) = 0
