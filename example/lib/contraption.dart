@@ -263,20 +263,24 @@ class ContraptionParameters with ChangeNotifier {
   }
 
   void delete(Set<int> selected){
-    for (int i in selected){
-      nodes.remove(i);
-      mass.remove(i);
-      radius.remove(i);
-    }
+    if (selected.length > 0){
+      for (int i in selected){
+        nodes.remove(i);
+        mass.remove(i);
+        radius.remove(i);
+      }
 
-    for (var connection in connections){
-      connection.remove(connection);
-      strength.remove(connection);
-      springWidth.remove(connection);
-      restLength.remove(connection);
-    }
+      for (var connection in connections){
+        connection.remove(connection);
+        strength.remove(connection);
+        springWidth.remove(connection);
+        restLength.remove(connection);
+      }
 
-    notifyListeners();
+      selected = Set();
+
+      notifyListeners();
+    }
   }
 
   void mirror(Set<int> selected, String direction){    
