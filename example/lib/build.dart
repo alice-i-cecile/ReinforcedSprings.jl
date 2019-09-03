@@ -83,6 +83,10 @@ class Tool with ChangeNotifier{
         icon = Icon(Icons.help_outline);
         break;
       }
+      case 'Scale': {
+        icon = Icon(Icons.transform);
+        break;
+      }
     }
 
     return icon;
@@ -232,6 +236,19 @@ void buildGesture(ContraptionParameters contraption, Offset position, Tool tool,
       contraption.translate(position, selection.selectedNodes);
       break;
     }
+
+    case 'Scale': {
+      if (tool.point1 == null){
+        tool.point1 = position;
+      } else {
+        tool.point2 = position;
+        contraption.scale(tool.point1, tool.point2, selection.selectedNodes);
+
+        tool.point1 = null;
+        tool.point2 = null;
+      }
+      break;
+    }
   }
 
 }
@@ -268,7 +285,6 @@ class EditTab extends StatelessWidget {
 // INTERFACE
 // TODO: custom icons
 // TODO: add align and distribute functionality
-// TODO: add scaling functionality
 // TODO: add grouping functionality
 // TODO: add toy chest functionality
 // TODO: add polygon dialogue
@@ -392,7 +408,7 @@ class BuildInterface extends StatelessWidget{
             IconButton(
               icon: const Icon(Icons.transform),
               tooltip: 'Scale Nodes',
-              onPressed: () => {}
+              onPressed: () => tool.changeTool('Scale')
             ),
           ],),
           Row(children: <Widget>[

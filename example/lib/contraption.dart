@@ -460,7 +460,7 @@ class ContraptionParameters with ChangeNotifier {
     notifyListeners();
   }
 
-  void translate(position, Set<int> selected){
+  void translate(Offset position, Set<int> selected){
     int n = selected.length;
     if (n == 0){
       n = nodes.length;
@@ -482,6 +482,56 @@ class ContraptionParameters with ChangeNotifier {
       if (selected.contains(i) || selected.length == 0){
         double newX = nodes[i][0] + shift[0];
         double newY = nodes[i][1] + shift[1];
+
+        nodes[i] = boundsSanitize(newX, newY);
+      }
+    }
+
+    for (var connection in connections){
+      int i = connection[0];
+      int j = connection[1];
+      if (selected.contains(i) || selected.contains(j)){
+        restLength[SpringIndex(i,j)] = dist(i, j);
+      }
+    }
+
+    notifyListeners();
+  }
+
+  void scale(Offset position1, Offset position2, Set<int> selected){
+    double xMin = 400.0;
+    double xMax = 0.0;
+    double yMin = 400.0;
+    double yMax = 0.0;
+
+    for (int i in selected){
+      double x = nodes[i][0];
+      double y = nodes[i][1];
+
+      if (x < xMin){
+        xMin = x;
+      }
+
+      if (x > xMax){
+        xMax = x;
+      }
+
+      if (y < yMin){
+        yMin = y;
+      }
+
+      if (y > yMax){
+        yMax = y;
+      }
+    }
+
+    double scaleX = (position1.dx - position2.dx).abs() / (xMax - xMin);
+    double scaleY = (position1.dy - position2.dy).abs() / (yMax - yMin);
+
+    for (int i in nodes.keys){
+      if (selected.contains(i) || selected.length == 0){
+        double newX = (nodes[i][0] - xMin)*scaleX + xMin;
+        double newY = (nodes[i][1] - yMin)*scaleY + yMin;
 
         nodes[i] = boundsSanitize(newX, newY);
       }
