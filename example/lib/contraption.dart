@@ -547,6 +547,71 @@ class ContraptionParameters with ChangeNotifier {
 
     notifyListeners();
   }
+
+  void align(Set<int> selected, String direction){
+    int d = (direction == 'horizontal') ? 1 : 0;
+    
+    double center = 0.0;
+    for (int i in selected){
+      center += nodes[i][d];
+    }
+    center = center / selected.length;
+
+    for (int i in selected){
+      nodes[i][d] = center;
+    }
+
+    for (var connection in connections){
+      int i = connection[0];
+      int j = connection[1];
+      if (selected.contains(i) || selected.contains(j)){
+        restLength[SpringIndex(i,j)] = dist(i, j);
+      }
+    }
+
+    notifyListeners();
+  }
+
+  void distribute(Set<int> selected, String direction){
+    if (selected.length > 1){
+      int d = (direction == 'horizontal') ? 0 : 1;
+      int n = selected.length;
+      double min = 400.0;
+      double max = 0.0;
+
+      for (int i in selected) {
+        if (nodes[i][d] < min){
+          min = nodes[i][d];
+        }
+
+        if (nodes[i][d] > max){
+          max = nodes[i][d];
+        }
+      }
+      print(min);
+      print(max);
+
+      // Sort points by coordinate
+      // Then assign them in order to spaced points
+      var sorted =  selected.toList();
+      sorted.sort((a, b) => nodes[a][d].compareTo(nodes[b][d]));
+      
+      for (int i = 0; i < n; i++){
+        nodes[sorted[i]][d] = min + (i / (n-1)) * (max - min);
+      }
+
+      for (var connection in connections){
+        int i = connection[0];
+        int j = connection[1];
+        if (selected.contains(i) || selected.contains(j)){
+          restLength[SpringIndex(i,j)] = dist(i, j);
+        }
+      }
+
+      notifyListeners();
+    }
+  }
+
 }
 
 class ContraptionState with ChangeNotifier{

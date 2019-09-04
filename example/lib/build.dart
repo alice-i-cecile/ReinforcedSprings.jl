@@ -72,7 +72,7 @@ class Tool with ChangeNotifier{
         break;
       }
       case 'SelectRegion': {
-        icon = Icon(Icons.crop_free);
+        icon = Icon(Icons.help_outline);
         break;
       }
       case 'Paste': {
@@ -284,7 +284,6 @@ class EditTab extends StatelessWidget {
 
 // INTERFACE
 // TODO: custom icons
-// TODO: add align and distribute functionality
 // TODO: add grouping functionality
 // TODO: add toy chest functionality
 // TODO: add polygon dialogue
@@ -301,22 +300,22 @@ class BuildInterface extends StatelessWidget{
           Row(children: <Widget>[
             IconButton(
               icon: Icon(Icons.help_outline),
-              tooltip: "Create Node",
+              tooltip: 'Create Node',
               onPressed: () => tool.changeTool('Node'),
             ),
             IconButton(
               icon: Icon(Icons.help_outline),
-              tooltip: "Create Spring",
+              tooltip: 'Create Spring',
               onPressed: () => tool.changeTool('Spring'),
             ),          
             IconButton(
               icon: Icon(Icons.help_outline),
-              tooltip: "Create Regular Polygon",
+              tooltip: 'Create Regular Polygon',
               onPressed: () => tool.changeTool('RegularPolygon'),
             ),
             IconButton(
               icon: Icon(Icons.help_outline),
-              tooltip: "Toy Chest",
+              tooltip: 'Toy Chest',
               onPressed: () => {},
             ),
           ]),
@@ -355,7 +354,7 @@ class BuildInterface extends StatelessWidget{
             ),
             IconButton(
               icon: Icon(Icons.help_outline),
-              tooltip: "Groups",
+              tooltip: 'Groups',
               onPressed: () => {},
             ),
             IconButton(                
@@ -414,23 +413,23 @@ class BuildInterface extends StatelessWidget{
           Row(children: <Widget>[
             IconButton(
               icon: Icon(Icons.help_outline),
-              tooltip: "Align Vertically",
-              onPressed: () => {},
+              tooltip: 'Align Vertically',
+              onPressed: () => parameters.align(selection.selectedNodes, 'vertical'),
             ),
             IconButton(
               icon: Icon(Icons.help_outline),
-              tooltip: "Align Horizontally",
-              onPressed: () => {},
+              tooltip: 'Align Horizontally',
+              onPressed: () => parameters.align(selection.selectedNodes, 'horizontal'),
             ),
             IconButton(
               icon: Icon(Icons.help_outline),
-              tooltip: "Distribute Vertically",
-              onPressed: () {},
+              tooltip: 'Distribute Vertically',
+              onPressed: () => parameters.distribute(selection.selectedNodes, 'vertical'),
             ),
             IconButton(
               icon: Icon(Icons.help_outline),
-              tooltip: "Distribute Horizontally",
-              onPressed: () {},
+              tooltip: 'Distribute Horizontally',
+              onPressed: () => parameters.distribute(selection.selectedNodes, 'horizontal'),
             ),  
           ]),
         ]
