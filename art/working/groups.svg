@@ -41,9 +41,9 @@
      inkscape:window-height="1057"
      id="namedview8"
      showgrid="false"
-     inkscape:zoom="13.906434"
-     inkscape:cx="-13.729351"
-     inkscape:cy="8.3995789"
+     inkscape:zoom="19.666668"
+     inkscape:cx="-4.460522"
+     inkscape:cy="12.148237"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
@@ -87,23 +87,29 @@
        cx="4.5254221"
        cy="18.864408"
        r="1.2203391" />
-    <path
-       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 4.5254237,18.762713 11.847457,4.4237291"
-       id="path2080"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cc" />
-    <path
-       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 8.1864406,11.211864 3.7372874,7.779662"
-       id="path2082"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cc" />
-    <path
-       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 11.847457,4.4237291 19.474575,18.991526"
-       id="path2084"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cc" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:2;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect823"
+       width="1"
+       height="16.179562"
+       x="11.82815"
+       y="-0.90694046"
+       transform="rotate(25.725059)" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:2;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect825"
+       width="1"
+       height="8.6949148"
+       x="2.2493539"
+       y="13.282024"
+       transform="rotate(-25.256291)" />
+    <rect
+       style="display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:2;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect823-8"
+       width="1"
+       height="16.179562"
+       x="7.7015944"
+       y="9.0229216"
+       transform="rotate(-28.17689)" />
   </g>
 </svg>

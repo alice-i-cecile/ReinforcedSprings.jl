@@ -72,7 +72,7 @@ class Tool with ChangeNotifier{
         break;
       }
       case 'SelectRegion': {
-        icon = Icon(Icons.help_outline);
+        icon = Icon(Icons.crop_square);
         break;
       }
       case 'Paste': {
@@ -331,7 +331,7 @@ class BuildInterface extends StatelessWidget{
               onPressed: () => selection.selectAll(parameters),
             ),
             IconButton(                
-              icon: const Icon(Icons.help_outline),
+              icon: const Icon(Icons.crop_square),
               tooltip: 'Select in Region',
               onPressed: () => tool.changeTool('SelectRegion'),
             ),

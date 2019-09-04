@@ -42,7 +42,7 @@
      id="namedview8"
      showgrid="false"
      inkscape:zoom="13.906433"
-     inkscape:cx="4.3314159"
+     inkscape:cx="-7.3538236"
      inkscape:cy="4.3962331"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
@@ -71,11 +71,13 @@
        cy="5.5912542"
        rx="2.5224979"
        ry="2.6055505" />
-    <path
-       style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 5.5370056,18.319176 18.696383,5.591254"
-       id="path27"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cc" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:2;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect6357"
+       width="2"
+       height="20"
+       x="15.970215"
+       y="-10.108643"
+       transform="rotate(45.366802)" />
   </g>
 </svg>
