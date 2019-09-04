@@ -258,6 +258,7 @@ void buildGesture(ContraptionParameters contraption, Offset position, Tool tool,
 class BuildTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    Provider.of<Tool>(context, listen: false).changeTool('Node');
     return(
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
