@@ -706,14 +706,9 @@ class Environment with ChangeNotifier{
 }
 
 class Input with ChangeNotifier{
-  double inputForce = 10.0;
+  double inputForce = 100.0;
   bool up = false;
   bool down = false;
   bool left = false;
   bool right = false;
-
-  void update(field, value){
-    field = value;
-    notifyListeners();
-  }
 }
