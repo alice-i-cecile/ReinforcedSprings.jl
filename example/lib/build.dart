@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 import 'contraption.dart';
+import 'icons.dart';
 
 // STATE
 class Tool with ChangeNotifier{
@@ -56,15 +57,15 @@ class Tool with ChangeNotifier{
     Widget icon;
     switch(toolName){
       case 'Node': {
-        icon = Icon(Icons.help_outline);
+        icon = Icon(ToolIcons.node);
         break;
       }
       case 'Spring': {
-        icon = Icon(Icons.help_outline);
+        icon = Icon(ToolIcons.spring);
         break;
       }
       case 'RegularPolygon': {
-        icon = Icon(Icons.help_outline);
+        icon = Icon(ToolIcons.regular_polygon);
         break;
       }
       case 'Select': {
@@ -80,7 +81,7 @@ class Tool with ChangeNotifier{
         break;
       }
       case 'Translate': {
-        icon = Icon(Icons.help_outline);
+        icon = Icon(ToolIcons.translate);
         break;
       }
       case 'Scale': {
@@ -299,22 +300,22 @@ class BuildInterface extends StatelessWidget{
         children: <Widget>[
           Row(children: <Widget>[
             IconButton(
-              icon: Icon(Icons.help_outline),
+              icon: Icon(ToolIcons.node),
               tooltip: 'Create Node',
               onPressed: () => tool.changeTool('Node'),
             ),
             IconButton(
-              icon: Icon(Icons.help_outline),
+              icon: Icon(ToolIcons.spring),
               tooltip: 'Create Spring',
               onPressed: () => tool.changeTool('Spring'),
             ),          
             IconButton(
-              icon: Icon(Icons.help_outline),
+              icon: Icon(ToolIcons.regular_polygon),
               tooltip: 'Create Regular Polygon',
               onPressed: () => tool.changeTool('RegularPolygon'),
             ),
             IconButton(
-              icon: Icon(Icons.help_outline),
+              icon: Icon(ToolIcons.toy_chest),
               tooltip: 'Toy Chest',
               onPressed: () => {},
             ),
@@ -353,7 +354,7 @@ class BuildInterface extends StatelessWidget{
               onPressed: () => tool.changeTool('Paste')
             ),
             IconButton(
-              icon: Icon(Icons.help_outline),
+              icon: Icon(Icons.group),
               tooltip: 'Groups',
               onPressed: () => {},
             ),
@@ -400,7 +401,7 @@ class BuildInterface extends StatelessWidget{
               onPressed: () => parameters.disconnect(selection.selectedNodes)
             ),
             IconButton(
-              icon: const Icon(Icons.help_outline),
+              icon: const Icon(Icons.translate),
               tooltip: 'Translate Nodes',
               onPressed: () => tool.changeTool('Translate')
             ),
@@ -412,22 +413,22 @@ class BuildInterface extends StatelessWidget{
           ],),
           Row(children: <Widget>[
             IconButton(
-              icon: Icon(Icons.help_outline),
+              icon: Icon(ToolIcons.align),
               tooltip: 'Align Vertically',
               onPressed: () => parameters.align(selection.selectedNodes, 'vertical'),
             ),
             IconButton(
-              icon: Icon(Icons.help_outline),
+              icon: Transform.rotate(angle: 3.14159/2, child:Icon(ToolIcons.align)),
               tooltip: 'Align Horizontally',
               onPressed: () => parameters.align(selection.selectedNodes, 'horizontal'),
             ),
             IconButton(
-              icon: Icon(Icons.help_outline),
+              icon: Icon(ToolIcons.distribute),
               tooltip: 'Distribute Vertically',
               onPressed: () => parameters.distribute(selection.selectedNodes, 'vertical'),
             ),
             IconButton(
-              icon: Icon(Icons.help_outline),
+              icon: Transform.rotate(angle: 3.14159/2, child:Icon(ToolIcons.distribute)),
               tooltip: 'Distribute Horizontally',
               onPressed: () => parameters.distribute(selection.selectedNodes, 'horizontal'),
             ),  
@@ -639,7 +640,7 @@ Widget build(BuildContext context) {
         onPressed: () => selection.selectAll(parameters),
       ),
       IconButton(                
-        icon: const Icon(Icons.help_outline),
+        icon: const Icon(Icons.crop_square),
         tooltip: 'Select in Region',
         onPressed: () => tool.changeTool('SelectRegion'),
       ),
