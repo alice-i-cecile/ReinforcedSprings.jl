@@ -67,7 +67,10 @@ class ContraptionParameters with ChangeNotifier {
     defaultStrength = 1.0;
 
     mass = Map();
+    radius = Map();
+
     strength = Map();
+    springWidth = Map();
     restLength = Map();
 
     selection.clearSelection();
