@@ -51,72 +51,28 @@ class PlayEngine extends StatelessWidget{
     );
   }
 }
-
-class HoldButton extends StatefulWidget{
-  final Widget child;
-  final callback;
-  
-  const HoldButton({Key key, this.child, this.callback}): super(key: key);
-
-  @override
-  _HoldButtonState createState() => _HoldButtonState();
-}
-
-class _HoldButtonState extends State<HoldButton>{
-
-  @override
-  Widget build(BuildContext context){
-
-    return(GestureDetector(
-      onLongPress: widget.callback,
-      onLongPressUp: widget.callback,
-      child: Container(
-        color: Colors.grey,
-        width: 100.0,
-        height: 50.0,
-        child: Center(child: widget.child)
-      )
-    ));
-  }
-}
-
-
+// TODO: add hotkey controls
 class PlayControls extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     Input input = Provider.of<Input>(context, listen: false);
-    void up(){
-      input.up = !input.up;
-    }
-
-    void down(){
-      input.down = !input.down;
-    }
-
-    void left(){
-      input.down = !input.left;
-    }
-
-    void right(){
-      input.down = !input.right;
-    }
 
     return(
       Column(children: <Widget>[
-        HoldButton(
-          callback: up,
+        RaisedButton(
+          onPressed: () => input.up = !input.up,
           child: Text("Up"),
         ),
-        HoldButton(
-          callback: down,
+        RaisedButton(
+          onPressed: () => input.down = !input.down,
           child: Text("Down"),
         ),        
-        HoldButton(
-          callback: left,
+        RaisedButton(
+          onPressed: () => input.left = !input.left,
           child: Text("Left"),
         ),        
-        HoldButton(
-          callback: right,
+        RaisedButton(
+          onPressed: () => input.right = !input.right,
           child: Text("Right"),
         )
       ])
