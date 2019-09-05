@@ -52,6 +52,7 @@ class PlayEngine extends StatelessWidget{
   }
 }
 // TODO: add hotkey controls
+// TODO: turn off input when tap stops
 class PlayControls extends StatelessWidget{
   @override
   Widget build(BuildContext context) {

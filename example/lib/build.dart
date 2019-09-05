@@ -6,8 +6,10 @@ import 'dart:math';
 
 import 'contraption.dart';
 import 'icons.dart';
+import 'input.dart';
 
 // STATE
+// TODO: change selectedTool to enum
 class Tool with ChangeNotifier{
   String selectedTool = 'Select';
   Offset point1;
@@ -288,7 +290,6 @@ class EditTab extends StatelessWidget {
 // TODO: custom icons
 // TODO: add grouping functionality
 // TODO: add toy chest functionality
-// TODO: add polygon dialogue
 class BuildInterface extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
@@ -313,7 +314,12 @@ class BuildInterface extends StatelessWidget{
             IconButton(
               icon: Icon(ToolIcons.regular_polygon),
               tooltip: 'Create Regular Polygon',
-              onPressed: () => tool.changeTool('RegularPolygon'),
+              onPressed: (){
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) => PolygonDialog(tool: tool)
+                );
+              },
             ),
             IconButton(
               icon: Icon(ToolIcons.toy_chest),
@@ -440,6 +446,110 @@ class BuildInterface extends StatelessWidget{
   }
 }
 
+class PolygonDialog extends StatelessWidget{
+  final Tool tool;
+
+  PolygonDialog({
+    @required this.tool,
+  });
+
+  @override
+  Widget build(BuildContext context){
+    return Dialog(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4.0),
+      ),
+      child: Container(
+        width: 150,
+        height: 250,
+        margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+        child: PolygonForm(tool: tool)
+      ) 
+    );
+  }
+}
+
+class PolygonForm extends StatefulWidget {
+  final Tool tool;
+  PolygonForm({
+    @required this.tool
+  });
+
+  @override
+  _PolygonFormState createState() => _PolygonFormState();
+}
+
+class _PolygonFormState extends State<PolygonForm>{
+
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          TextFormField(
+            decoration: InputDecoration(
+              labelText: 'Number of points'
+            ),
+            validator: (value) => rangeValidator(value, 0, 100),
+            onSaved: (value) => widget.tool.nPolygon = num.parse(value).floor(),
+          ),
+          TextFormField(
+            decoration: InputDecoration(
+              labelText: 'Polygon radius'
+            ),
+            validator: (value) => rangeValidator(value, 10, 200),
+            onSaved: (value) => widget.tool.radiusPolygon = double.parse(value),
+          ),
+          // TODO: allow specification of set for polygon connectivity
+          TextFormField(
+            decoration: InputDecoration(
+              labelText: 'Polygon connections'
+            ),
+            validator: (value) => rangeValidator(value, 0, 100),
+            onSaved: (value){
+              Set<int> connectivity = Set();
+              connectivity.add(num.parse(value).floor());
+              widget.tool.connectivityPolygon = connectivity;
+            },
+          ),
+          ButtonBar(
+            children: <Widget>[
+              FlatButton(
+                child: Text("Cancel"),
+                onPressed: (){
+                  Navigator.of(context).pop();
+                },),
+              FlatButton(
+                child: Text("Confirm"),
+                onPressed: (){
+                  final form = _formKey.currentState;
+                  if (form.validate()){
+                    form.save();                      
+                    widget.tool.changeTool('RegularPolygon');
+                    Navigator.of(context).pop();
+                  }
+                },
+              )
+            ],
+          ),
+        ],
+      )
+    );
+  }
+}
+
+/*
+if (_formKey.currentState.validate())
+onPressed: (){
+          tool.changeTool('RegularPolygon');
+          Navigator.of(context).pop();
+        }
+*/
 // EDIT INTERFACE
 class EditInterface extends StatelessWidget{
   @override
@@ -454,117 +564,7 @@ class EditInterface extends StatelessWidget{
   }
 }
 
-class DoubleInput extends StatefulWidget{
-  final String fieldName;
-  final double minValue;
-  final double shownValue;
-  final double maxValue;
-  final updateFunction;
-  
-  const DoubleInput({Key key, this.fieldName, this.minValue, this.shownValue, this.maxValue, this.updateFunction}): super(key: key);
 
-  @override
-  _DoubleInputState createState() => _DoubleInputState();
-}
-
-class _DoubleInputState extends State<DoubleInput>{
-  String numValidator(String input){
-    if (input == null){
-      return widget.shownValue.toString();
-    }
-
-    double x = double.tryParse(input);
-    if (x == null){
-      return widget.shownValue.toString();
-    }
-
-    if (x < widget.minValue){
-      x = widget.minValue;
-    } else if (x > widget.maxValue){
-      x = widget.maxValue;
-    }
-
-    String value = x.toString();
-
-    return value;
-  }
-
-  @override
-  Widget build(BuildContext context){
-    return(
-      Row(children: <Widget>[
-        Container(child:
-          TextField(
-            decoration: InputDecoration(
-              labelText: widget.fieldName,
-            ),
-            keyboardType: TextInputType.number, 
-            textAlign: TextAlign.right,
-            onChanged: (String input) => widget.updateFunction(double.parse(numValidator(input)))
-          ),
-          width: 150),
-        Text(widget.shownValue.toString())
-      ]) 
-    );
-  }
-}
-
-class IntInput extends StatefulWidget{
-  final String fieldName;
-  final int minValue;
-  final int shownValue;
-  final int maxValue;
-  final updateFunction;
-  
-  const IntInput({Key key, this.fieldName, this.minValue, this.shownValue, this.maxValue, this.updateFunction}): super(key: key);
-
-  @override
-  _IntInputState createState() => _IntInputState();
-}
-
-class _IntInputState extends State<IntInput>{
-String numValidator(String input){
-    if (input == null){
-      return widget.shownValue.toString();
-    }
-
-    int x = int.tryParse(input);
-    if (x == null){
-      return widget.shownValue.toString();
-    }
-
-    if (x < widget.minValue){
-      x = widget.minValue;
-    } else if (x > widget.maxValue){
-      x = widget.maxValue;
-    }
-
-    String value = x.toString();
-
-    return value;
-  }
-
-  @override
-  Widget build(BuildContext context){
-    return(
-      Row(children: <Widget>[
-        Container(child:
-          TextField(
-            decoration: InputDecoration(
-              labelText: widget.fieldName,
-            ),
-            keyboardType: TextInputType.number, 
-            textAlign: TextAlign.right,
-            onChanged: (String input) => widget.updateFunction(int.parse(numValidator(input)))
-          ),
-          width: 150),
-        Text(widget.shownValue.toString())
-      ]) 
-    );
-  }
-}
-
-// TODO: add better displayed values
 class EditProperties extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
@@ -574,42 +574,42 @@ class EditProperties extends StatelessWidget{
 
     return(
       Column(children: <Widget>[
-        DoubleInput(
+        NumInput(
           fieldName: 'Mass', 
           minValue: 0.01,
           shownValue: contraptionParameters.defaultMass,
           maxValue: 100.0,
           updateFunction: (newMass) => contraptionParameters.editMass(selection.selectedNodes, newMass)
         ),
-        DoubleInput(
+        NumInput(
           fieldName: 'Spring Strength', 
           minValue: 0.0,
           shownValue: contraptionParameters.defaultStrength,
           maxValue: 100.0,
           updateFunction: (newStrength) => contraptionParameters.editStrength(selection.selectedNodes, newStrength)
         ),
-        DoubleInput(
+        NumInput(
           fieldName: 'Rest Length', 
           minValue: 0.01,
           shownValue: 1.0,
           maxValue: 100.0,
           updateFunction: (scale) => contraptionParameters.editRestLength(selection.selectedNodes, scale)
         ),
-        DoubleInput(
+        NumInput(
           fieldName: 'Gravity', 
           minValue: -100.0,
           shownValue: environment.gravity,
           maxValue: 100.0,
           updateFunction: (newGravity) => environment.setGravity(newGravity)
         ),
-        DoubleInput(
+        NumInput(
           fieldName: 'Elasticity', 
           minValue: 0.0,
           shownValue: environment.elasticity, 
           maxValue: 1.0,
           updateFunction: (newElasticity) => environment.setElasticity(newElasticity)
         ),
-        DoubleInput(
+        NumInput(
           fieldName: 'Drag', 
           minValue: 0.0,
           shownValue: environment.drag,
